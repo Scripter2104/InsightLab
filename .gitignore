@@ -1,0 +1,25 @@
+# Python
+*.pyc
+__pycache__/
+
+# Django
+db.sqlite3
+*.sqlite3
+migrations/
+
+# Environment Variables
+.env
+
+# Virtual Environments
+venv/
+env/
+
+# Node Modules (for Tailwind CSS or other JS dependencies)
+node_modules/
+
+# IDE Files
+.idea/
+.vscode/
+
+# System Files
+.DS_Store

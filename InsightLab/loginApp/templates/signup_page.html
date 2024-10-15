@@ -12,6 +12,18 @@
             background-size: cover;
             min-height: 100vh;
         }
+        .hidden {
+            display: none;
+        }
+        .text-red-500 {
+            color: red;
+        }
+        .text-yellow-500 {
+            color: yellow;
+        }
+        .text-green-500 {
+            color: green;
+        }
     </style>
 </head>
 <body class="bg-light-gradient flex items-center justify-center">
@@ -29,29 +41,32 @@
              {% csrf_token %}
             <div class="mb-4">
                 <label for="username" class="block text-left text-gray-600 mb-1">Full Name</label>
-                <input type="text" id="username" name="username" placeholder="Enter your full name" class="input input-bordered w-full" required />
+                <input type="text" id="username" name="username" placeholder="Enter your full name" class="input input-bordered w-full" required aria-required="true" />
             </div>
 
             <div class="mb-4">
                 <label for="email" class="block text-left text-gray-600 mb-1">Email Address</label>
-                <input type="email" id="email" name="useremail" placeholder="Enter your email" class="input input-bordered w-full" required />
+                <input type="email" id="email" name="useremail" placeholder="Enter your email" class="input input-bordered w-full" required aria-required="true" />
             </div>
 
             <div class="mb-4 relative">
                 <label for="password" class="block text-left text-gray-600 mb-1">Password</label>
-                <input type="password" id="password" name="password1" placeholder="Create a password" class="input input-bordered w-full" required />
-                <button type="button" id="togglePassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700">👁️</button>
+                <input type="password" id="password" name="password1" placeholder="Create a password" class="input input-bordered w-full" required aria-required="true" />
+                <button type="button" id="togglePassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700" aria-label="Toggle password visibility">👁️</button>
             </div>
+             <div id="password-strength" class="hidden mb-4 text-left"></div> <!-- Password strength indicator -->
+
 
             <div class="mb-4 relative">
                 <label for="confirm-password" class="block text-left text-gray-600 mb-1">Confirm Password</label>
-                <input type="password" id="confirm-password" name="password2" placeholder="Confirm your password" class="input input-bordered w-full" required />
-                <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700">👁️</button>
+                <input type="password" id="confirm-password" name="password2" placeholder="Confirm your password" class="input input-bordered w-full" required aria-required="true" />
+                <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700" aria-label="Toggle confirm password visibility">👁️</button>
             </div>
 
-            <button type="submit" class="btn bg-black text-white w-full font-semibold py-2 rounded-lg hover:bg-gray-800 transition-colors">Sign Up</button>
-    </form>
+            <div id="passwordError" class="text-red-500 hidden mb-4">Passwords do not match.</div>
 
+            <button type="submit" class="btn bg-black text-white w-full font-semibold py-2 rounded-lg hover:bg-gray-800 transition-colors">Sign Up</button>
+        </form>
 
         <p class="mt-4 text-center text-gray-600">Already have an account? <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Log in</a></p>
     </div>

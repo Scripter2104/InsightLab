@@ -5,31 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.15.2/dist/full.css" rel="stylesheet">
+    <style>
+        .bg-light-gradient {
+            background: linear-gradient(135deg, #f3f4f6, #fafbfc);
+            background-size: cover;
+            min-height: 100vh;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-        <h2 class="text-2xl font-bold text-center text-gray-700">Create Account</h2>
-        <p class="text-gray-600 text-center mb-6">Join us to enjoy exclusive benefits!</p>
-        <form>
-            <div class="mb-4">
-                <label for="name" class="block text-gray-700">Full Name</label>
-                <input type="text" id="name" placeholder="John Doe" class="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+<body class="bg-light-gradient flex items-center justify-center">
+
+    <div class="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center transform transition duration-500">
+        <div class="flex justify-center mb-4">
+            <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center">
+                <span class="text-white text-3xl font-bold">🌊</span>
             </div>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Create Account</h2>
+        <p class="text-gray-500 mb-6">Join us to enjoy exclusive benefits!</p>
+
+        <form id="signupForm" method="post">
+             {% csrf_token %}
             <div class="mb-4">
-                <label for="email" class="block text-gray-700">Email Address</label>
-                <input type="email" id="email" placeholder="you@example.com" class="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <label for="username" class="block text-left text-gray-600 mb-1">Full Name</label>
+                <input type="text" id="username" name="username" placeholder="Enter your full name" class="input input-bordered w-full" required />
             </div>
+
             <div class="mb-4">
-                <label for="password" class="block text-gray-700">Password</label>
-                <input type="password" id="password" placeholder="******" class="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <label for="email" class="block text-left text-gray-600 mb-1">Email Address</label>
+                <input type="email" id="email" name="useremail" placeholder="Enter your email" class="input input-bordered w-full" required />
             </div>
-            <div class="mb-4">
-                <label for="confirm-password" class="block text-gray-700">Confirm Password</label>
-                <input type="password" id="confirm-password" placeholder="******" class="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+            <div class="mb-4 relative">
+                <label for="password" class="block text-left text-gray-600 mb-1">Password</label>
+                <input type="password" id="password" name="password1" placeholder="Create a password" class="input input-bordered w-full" required />
+                <button type="button" id="togglePassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700">👁️</button>
             </div>
-            <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 rounded hover:bg-blue-600 transition duration-200">Sign Up</button>
-        </form>
-        <p class="mt-4 text-center text-gray-600">Already have an account? <a href="{% url 'home' %}" class="text-blue-500 hover:underline">Log in</a></p>
+
+            <div class="mb-4 relative">
+                <label for="confirm-password" class="block text-left text-gray-600 mb-1">Confirm Password</label>
+                <input type="password" id="confirm-password" name="password2" placeholder="Confirm your password" class="input input-bordered w-full" required />
+                <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700">👁️</button>
+            </div>
+
+            <button type="submit" class="btn bg-black text-white w-full font-semibold py-2 rounded-lg hover:bg-gray-800 transition-colors">Sign Up</button>
+    </form>
+
+
+        <p class="mt-4 text-center text-gray-600">Already have an account? <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Log in</a></p>
     </div>
+
+    <script>
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirm-password");
+        const togglePassword = document.getElementById("togglePassword");
+        const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+        const passwordError = document.getElementById("passwordError");
+        const passwordStrength = document.getElementById("password-strength");
+
+        togglePassword.addEventListener("click", function () {
+            const type = password.getAttribute("type") === "password" ? "text" : "password";
+            password.setAttribute("type", type);
+            this.textContent = type === "password" ? "👁️" : "🙈";
+        });
+
+        toggleConfirmPassword.addEventListener("click", function () {
+            const type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
+            confirmPassword.setAttribute("type", type);
+            this.textContent = type === "password" ? "👁️" : "🙈";
+        });
+
+        confirmPassword.addEventListener("input", function () {
+            if (password.value !== confirmPassword.value) {
+                passwordError.classList.remove("hidden");
+            } else {
+                passwordError.classList.add("hidden");
+            }
+        });
+
+        password.addEventListener("input", function() {
+            const strengthText = passwordStrength;
+            strengthText.classList.remove("hidden");
+            const strength = password.value.length;
+            if (strength < 4) {
+                strengthText.textContent = "Weak";
+                strengthText.classList.add("text-red-500");
+                strengthText.classList.remove("text-yellow-500", "text-green-500");
+            } else if (strength < 8) {
+                strengthText.textContent = "Medium";
+                strengthText.classList.remove("text-red-500", "text-green-500");
+                strengthText.classList.add("text-yellow-500");
+            } else {
+                strengthText.textContent = "Strong";
+                strengthText.classList.remove("text-red-500", "text-yellow-500");
+                strengthText.classList.add("text-green-500");
+            }
+        });
+    </script>
 </body>
 </html>

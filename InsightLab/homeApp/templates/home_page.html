@@ -1,11 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
-</head>
-<body>
-<h1>Home page</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Portal Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.19.0/dist/full.css" rel="stylesheet">
+    <style>
+        /* Add custom styles for sidebar sliding */
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+            width: 200px; /* Full width */
+            position: relative; /* Enable positioning */
+        }
 
+        .sidebar.hidden {
+            transform: translateX(-150px); /* Slide out effect */
+        }
+
+        .toggle-btn {
+            position: absolute; /* Positioning the toggle button */
+            left: 100%; /* Position outside the sidebar */
+            top: 50%; /* Center vertically */
+            transform: translateY(-50%); /* Center adjustment */
+            width: 30px; /* Width of the button */
+            height: 30px; /* Height of the button */
+            background-color: white; /* Background color */
+            border: 1px solid #ccc; /* Border */
+            border-radius: 50%; /* Rounded button */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; /* Pointer cursor on hover */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow */
+        }
+
+        .test-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .test-card:hover {
+            transform: translateY(-10px) scale(1.05); /* Lift effect */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+        }
+
+        .status {
+            font-family: 'Arial', sans-serif; /* Change font for status */
+        }
+
+        .date {
+            font-family: 'Arial', sans-serif; /* Change font for date */
+        }
+    </style>
+</head>
+
+<body class="flex h-screen bg-gray-100 font-sans text-black">
+    <div id="sidebar" class="sidebar bg-white p-5">
+        <div class="logo-container flex items-center mb-6">
+            <img src="testlogo.avif" class="w-12 h-auto mr-2">
+            <span class="font-bold text-xl">TestPilot</span>
+        </div>
+        <ul class="list-none">
+            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">My tests</li>
+            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">Respondents</li>
+            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">Results database</li>
+            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">My account</li>
+            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">Help</li>
+            <li class="mt-auto cursor-pointer text-gray-600 hover:text-black">Sign out</li>
+        </ul>
+        <div class="toggle-btn" id="hideBtn">➔</div> <!-- Arrow Button -->
+    </div>
+
+    <div class="main-content flex-1 p-5">
+        <div class="top-bar flex justify-between items-center mb-5">
+            <h3 class="text-lg">My tests<span class="text-gray-500"> (4)</span></h3>
+            <div>
+                <button class="btn btn-purple mr-2">Generate Questions</button>
+                <button class="btn btn-green">New Test</button>
+            </div>
+        </div>
+
+        <div class="mb-5">
+            <input type="text" placeholder="Search Your Test Here" class="input w-2/3 border-3 border-gray-300 rounded-lg p-2 mb-5">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="test-card bg-white p-4 rounded-lg shadow-md">
+                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
+                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
+                <h3 class="text-xl my-2 font-serif">Example Quiz for Restaurant Staff</h3>
+                <p class="text-lg text-gray-600">(no description)</p>
+            </div>
+
+            <div class="test-card bg-white p-4 rounded-lg shadow-md">
+                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
+                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
+                <h3 class="text-xl my-2 font-serif">Example: Customer Care Periodic Test</h3>
+                <p class="text-lg text-gray-600">(no description)</p>
+            </div>
+
+            <div class="test-card bg-white p-4 rounded-lg shadow-md">
+                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
+                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
+                <h3 class="text-xl my-2 font-serif">Example Product Knowledge Test for Sales</h3>
+                <p class="text-lg text-gray-600">(no description)</p>
+            </div>
+
+            <div class="test-card bg-white p-4 rounded-lg shadow-md active">
+                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
+                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
+                <h3 class="text-xl my-2 font-serif">Example Reasoning Test</h3>
+                <p class="text-lg text-gray-600">(no description)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const hideBtn = document.getElementById('hideBtn');
+
+        let isHidden = false; // Track the visibility state
+
+        hideBtn.addEventListener('click', () => {
+            isHidden = !isHidden; // Toggle visibility state
+            if (isHidden) {
+                sidebar.classList.add('hidden'); // Add class to hide
+                hideBtn.innerHTML = '➔'; // Change button to indicate expanding
+            } else {
+                sidebar.classList.remove('hidden'); // Remove class to show
+                hideBtn.innerHTML = '←'; // Change button to indicate collapsing
+            }
+        });
+    </script>
 </body>
+
 </html>

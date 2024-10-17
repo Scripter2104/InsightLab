@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+
+
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-green-600">Create New Test</h2>
+
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="testName">Test Name</label>
+            <input id="testName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Enter Test Name">
+        </div>
+
+
+        <button id="addQuestionBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Add Question</button>
+
+
+        <div id="questionList" class="mt-6 space-y-4"></div>
+
+        <div class="mt-8">
+            <button id="submitTestBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Submit Test</button>
+        </div>
+    </div>
+
+
+    <template id="questionTemplate">
+        <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+            <label class="block text-gray-700 font-bold mb-2">Question</label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Enter question">
+
+            <label class="block text-gray-700 font-bold mb-2">Answer Choices</label>
+            <div class="space-y-2 mb-4">
+                <input type="text" placeholder="Option 1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="text" placeholder="Option 2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="text" placeholder="Option 3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="text" placeholder="Option 4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <button class="removeQuestionBtn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Remove Question</button>
+        </div>
+    </template>
+
+
+    <script>
+        document.getElementById('addQuestionBtn').addEventListener('click', function() {
+
+            const template = document.getElementById('questionTemplate').content.cloneNode(true);
+
+
+            template.querySelector('.removeQuestionBtn').addEventListener('click', function(e) {
+                e.target.closest('div').remove();
+            });
+
+
+            document.getElementById('questionList').appendChild(template);
+        });
+
+        document.getElementById('submitTestBtn').addEventListener('click', function() {
+            const testName = document.getElementById('testName').value;
+            const questions = document.querySelectorAll('#questionList input[type="text"]');
+
+            let testDetails = { name: testName, questions: [] };
+            questions.forEach((input, index) => {
+                if (index % 5 === 0) {
+                    testDetails.questions.push({ question: input.value, options: [] });
+                } else {
+                    testDetails.questions[testDetails.questions.length - 1].options.push(input.value);
+                }
+            });
+
+            console.log("Test Created: ", testDetails);
+            alert("Test Created! Check the console for details.");
+        });
+    </script>
+</body>
+</html>

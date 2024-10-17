@@ -1,138 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Portal Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.19.0/dist/full.css" rel="stylesheet">
-    <style>
-        /* Add custom styles for sidebar sliding */
-        .sidebar {
-            transition: transform 0.3s ease-in-out;
-            width: 200px; /* Full width */
-            position: relative; /* Enable positioning */
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-150px); /* Slide out effect */
-        }
-
-        .toggle-btn {
-            position: absolute; /* Positioning the toggle button */
-            left: 100%; /* Position outside the sidebar */
-            top: 50%; /* Center vertically */
-            transform: translateY(-50%); /* Center adjustment */
-            width: 30px; /* Width of the button */
-            height: 30px; /* Height of the button */
-            background-color: white; /* Background color */
-            border: 1px solid #ccc; /* Border */
-            border-radius: 50%; /* Rounded button */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer; /* Pointer cursor on hover */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow */
-        }
-
-        .test-card {
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .test-card:hover {
-            transform: translateY(-10px) scale(1.05); /* Lift effect */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Shadow on hover */
-        }
-
-        .status {
-            font-family: 'Arial', sans-serif; /* Change font for status */
-        }
-
-        .date {
-            font-family: 'Arial', sans-serif; /* Change font for date */
-        }
-    </style>
+    <title>Test Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-100 text-gray-800">
 
-<body class="flex h-screen bg-gray-100 font-sans text-black">
-    <div id="sidebar" class="sidebar bg-white p-5">
-        <div class="logo-container flex items-center mb-6">
-            <img src="testlogo.avif" class="w-12 h-auto mr-2">
-            <span class="font-bold text-xl">TestPilot</span>
+    <!-- Sidebar -->
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-white shadow-lg">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-green-600">InsightLab</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="p-4 hover:bg-gray-200">
+                        <a href="#" class="flex items-center">
+                            <span class="ml-2 text-gray-700">My Tests</span>
+                        </a>
+                    </li>
+                    <li class="p-4 hover:bg-gray-200">
+                        <a href="#" class="flex items-center">
+                            <span class="ml-2 text-gray-700">Respondents</span>
+                        </a>
+                    </li>
+                    <li class="p-4 hover:bg-gray-200">
+                        <a href="#" class="flex items-center">
+                            <span class="ml-2 text-gray-700">Results Database</span>
+                        </a>
+                    </li>
+                    <li class="p-4 hover:bg-gray-200">
+                        <a href="#" class="flex items-center">
+                            <span class="ml-2 text-gray-700">My Account</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-semibold">My Tests</h1>
+                <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="generateTest()">New Test</button>
+            </div>
+
+            <!-- Test List -->
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Test Card -->
+                <div class="bg-white shadow-lg rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-purple-200 text-purple-600 px-2 py-1 rounded text-sm">Setup in Progress</span>
+                        <span class="text-gray-400 text-sm">Created: 2024-10-12</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-4">New Test</h3>
+                    <p class="text-gray-600">No description</p>
+                </div>
+
+                <!-- Test Card -->
+                <div class="bg-white shadow-lg rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-green-200 text-green-600 px-2 py-1 rounded text-sm">Active</span>
+                        <span class="text-gray-400 text-sm">Created: 2024-10-04</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-4">Aptitude Test (Design)</h3>
+                    <p class="text-gray-600">No description</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-sm text-gray-500">7% avg. score</span>
+                        <span class="text-sm text-gray-500">Results (5)</span>
+                    </div>
+                </div>
+
+                <!-- Test Card -->
+                <div class="bg-white shadow-lg rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-green-200 text-green-600 px-2 py-1 rounded text-sm">Active</span>
+                        <span class="text-gray-400 text-sm">Created: 2024-10-04</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-4">Aptitude Test (Management)</h3>
+                    <p class="text-gray-600">No description</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-sm text-gray-500">No data</span>
+                        <span class="text-sm text-gray-500">Results (1)</span>
+                    </div>
+                </div>
+
+                <!-- Test Card -->
+                <div class="bg-white shadow-lg rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-green-200 text-green-600 px-2 py-1 rounded text-sm">Active</span>
+                        <span class="text-gray-400 text-sm">Created: 2024-10-04</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-4">Aptitude Test (Web Development)</h3>
+                    <p class="text-gray-600">No description</p>
+                </div>
+            </div>
         </div>
-        <ul class="list-none">
-            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">My tests</li>
-            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">Respondents</li>
-            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">Results database</li>
-            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">My account</li>
-            <li class="my-6 cursor-pointer text-gray-600 hover:text-black">Help</li>
-            <li class="mt-auto cursor-pointer text-gray-600 hover:text-black">Sign out</li>
-        </ul>
-        <div class="toggle-btn" id="hideBtn">➔</div> <!-- Arrow Button -->
     </div>
 
-    <div class="main-content flex-1 p-5">
-        <div class="top-bar flex justify-between items-center mb-5">
-            <h3 class="text-lg">My tests<span class="text-gray-500"> (4)</span></h3>
-            <div>
-                <button class="btn btn-purple mr-2">Generate Questions</button>
-                <button class="btn btn-green">New Test</button>
-            </div>
-        </div>
+<script>
+    function generateTest(){
+        window.location.href="{%url 'newtest' %}";
+    }
+</script>
 
-        <div class="mb-5">
-            <input type="text" placeholder="Search Your Test Here" class="input w-2/3 border-3 border-gray-300 rounded-lg p-2 mb-5">
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-            <div class="test-card bg-white p-4 rounded-lg shadow-md">
-                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
-                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
-                <h3 class="text-xl my-2 font-serif">Example Quiz for Restaurant Staff</h3>
-                <p class="text-lg text-gray-600">(no description)</p>
-            </div>
-
-            <div class="test-card bg-white p-4 rounded-lg shadow-md">
-                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
-                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
-                <h3 class="text-xl my-2 font-serif">Example: Customer Care Periodic Test</h3>
-                <p class="text-lg text-gray-600">(no description)</p>
-            </div>
-
-            <div class="test-card bg-white p-4 rounded-lg shadow-md">
-                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
-                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
-                <h3 class="text-xl my-2 font-serif">Example Product Knowledge Test for Sales</h3>
-                <p class="text-lg text-gray-600">(no description)</p>
-            </div>
-
-            <div class="test-card bg-white p-4 rounded-lg shadow-md active">
-                <span class="status inline-block mr-2 text-purple-600 font-bold border border-purple-400 rounded px-2 py-1">SETUP IN PROGRESS</span>
-                <span class="date inline-block text-gray-500 font-bold">Created: 2024-10-15</span>
-                <h3 class="text-xl my-2 font-serif">Example Reasoning Test</h3>
-                <p class="text-lg text-gray-600">(no description)</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const hideBtn = document.getElementById('hideBtn');
-
-        let isHidden = false; // Track the visibility state
-
-        hideBtn.addEventListener('click', () => {
-            isHidden = !isHidden; // Toggle visibility state
-            if (isHidden) {
-                sidebar.classList.add('hidden'); // Add class to hide
-                hideBtn.innerHTML = '➔'; // Change button to indicate expanding
-            } else {
-                sidebar.classList.remove('hidden'); // Remove class to show
-                hideBtn.innerHTML = '←'; // Change button to indicate collapsing
-            }
-        });
-    </script>
 </body>
-
 </html>

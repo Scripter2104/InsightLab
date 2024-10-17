@@ -21,7 +21,7 @@ from loginApp.views import signup_view
 from homeApp.views import home_view,newtest_view
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
     path('', login_view, name='login'),
     path('signup/', signup_view, name='signup'),
     path('home/', home_view, name='home'),

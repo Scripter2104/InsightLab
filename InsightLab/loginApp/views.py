@@ -32,3 +32,23 @@ def login_view(request, *args, **kwargs):
             return render(request, 'login_page.html', {'error': 'Invalid username or password.'})
 
     return render(request, 'login_page.html', {})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,40 @@
+<aside class="w-1/4 bg-white p-5 shadow-lg">
+    <h2 class="text-xl font-semibold mb-6 flex items-center">
+        <i class="fas fa-sliders-h text-green-600 mr-2"></i> Test configuration
+    </h2>
+    <ul>
+        <li class="mb-3 flex items-center">
+            <i class="fas fa-cogs text-600 mr-2" id="basic_setting_i"></i>
+            <a href="{% url 'newtest' %}" class="block w-full px-3 py-2 rounded hover:bg-gray-200" onclick="focus(event, this)">Basic Settings</a>
+        </li>
+        <li class="mb-3 flex items-center">
+            <i class="fas fa-question-circle mr-2"></i>
+            <a href="#" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Questions manager</a>
+        </li>
+        <li class="mb-3 flex items-center">
+            <i class="fas fa-play-circle mr-2"></i>
+            <a href="{% url 'test_start_page' %}" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Test start page</a>
+        </li>
+        <li class="mb-3 flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <a href="#" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Grading & summary</a>
+        </li>
+        <li class="mb-3 flex items-center">
+            <i class="fas fa-clock mr-2"></i>
+            <a href="#" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Time settings</a>
+        </li>
+    </ul>
+</aside>
+
+<script>
+    function focus(event, a) {
+        event.preventDefault();
+
+        if (a.textContent.includes("Basic Settings")) {
+            var icon = document.getElementById('basic_setting_i');
+            icon.classList.add('fas', 'fa-cogs', 'text-green-600'); // Add classes individually
+            console.log("hello");
+            window.location.href = "{% url 'newtest' %}"; // Navigate after executing the code
+        }
+    }
+</script>

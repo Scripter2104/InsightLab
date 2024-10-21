@@ -28,6 +28,13 @@
 
 <script>
     const basicSettingBtn = document.getElementById("basicSettingbtn");
+    const visitedTestStartPage=0;
+    const visitedQuestionManager=0;
+    const visitedGradingAndSummary=0;
+    const visitedTimeSetting=0;
+
+
+
     const buttons = [
         {
             button: document.getElementById("questionsManagerBtn"),
@@ -51,6 +58,29 @@
     basicSettingbtn.addEventListener("click",()=>{
         window.location.href="{% url 'newtest' %}"
     });
+
+
+    function disablingTestStartPage(){
+        buttons[1].icon.classList.remove("text-gray-300");
+        buttons[1].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
+    };
+
+    function disablingQuestionManager(){
+        buttons[0].icon.classList.remove("text-gray-300");
+        buttons[0].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
+    };
+
+    function disablingGradingAndSummary(){
+        buttons[2].icon.classList.remove("text-gray-300");
+        buttons[2].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
+    };
+
+    function disablingTimeSetting(){
+        buttons[3].icon.classList.remove("text-gray-300");
+        buttons[3].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
+    };
+
+
 
 
 

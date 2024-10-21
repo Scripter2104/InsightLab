@@ -228,15 +228,14 @@
         }
 
         window.onload = function () {
+
             localStorage.removeItem('selectedFields');
             const storedFields = JSON.parse(localStorage.getItem('selectedFields'));
             const existingFields = Array.from(document.querySelectorAll('#table-body tr')).map(row => row.children[0].innerText);
+            disablingTestStartPage();
+            visitedTestStartPage=1;
         };
 
-
-
-        buttons[1].icon.classList.remove("text-gray-300");
-        buttons[1].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
 
     </script>
 

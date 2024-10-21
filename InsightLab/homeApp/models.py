@@ -25,7 +25,7 @@ class Questions(models.Model):
 
 
 class Answer(models.Model):
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name='amswers')
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name='answers')
     user_answer = models.TextField()
     correct = models.BooleanField(default=False)
 

@@ -15,14 +15,14 @@
 
         }
 
-        .main-content {
-            overflow-y: auto;
-            max-height: calc(100vh - 64px);
-        }
+<!--        .main-content {-->
+<!--            overflow-y: auto;-->
+<!--            max-height: calc(100vh - 64px);-->
+<!--        }-->
     </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 overflow-hidden">
 
     {% include 'horizontal_navbar.html' %}
 
@@ -31,7 +31,7 @@
         {% include 'vertical_navbar.html' %}
 
         <!-- Main Content -->
-        <main class="w-3/4 bg-gray-100 p-6 main-content">
+        <main class="w-3/4 bg-gray-100 p-6 main-content overflow-auto max-h-[calc(100vh-64px)]">
             <div id="question-container">
                 <div class="question-block">
                     <div class="mb-6 flex items-center">

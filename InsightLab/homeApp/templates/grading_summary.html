@@ -21,7 +21,7 @@
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 overflow-hidden">
     <!-- Horizontal Navbar -->
     {% include 'horizontal_navbar.html' %}
 
@@ -30,7 +30,7 @@
         {% include 'vertical_navbar.html' %}
 
         <!-- Main Content Area -->
-        <main class="w-3/4 bg-gray-100 p-6 main-content">
+        <main class="w-3/4 bg-gray-100 p-6 main-content overflow-auto max-h-[calc(100vh-64px)]">
 
             <div class="mb-6">
                 <h1 class="text-2xl font-semibold text-gray-700">Grading & Summary</h1>

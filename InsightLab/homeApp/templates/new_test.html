@@ -18,7 +18,6 @@
         <!-- Vertical Sidebar -->
         {% include 'vertical_navbar.html' %}
 
-
         <!-- Main Content -->
         <main class="flex-grow p-8 bg-gray-50">
             <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -30,7 +29,7 @@
                         <label class="block text-sm font-medium text-gray-700">Test name</label>
                         <input type="text"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
-                            placeholder="New test">
+                            placeholder="New test" id="testName">
                     </div>
 
                     <!-- Test language -->
@@ -45,13 +44,15 @@
                     <!-- Buttons -->
                     <div class="flex space-x-4">
                         <button
-                            class="bg-green-500 text-white text-sm px-3 py-1.5 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="bg-green-500 text-white text-sm px-3 py-1.5 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onclick="createTest(event)" id="createBtn">
                             Create
                         </button>
 
                         <button
-                            class="bg-red-500 text-white text-sm px-3 py-1.5 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                            Cancel
+                            class="bg-green-500 text-white text-sm px-3 py-1.5 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 hidden"
+                            onclick="nextConfig(event)" id="nextBtn">
+                            Next
                         </button>
                     </div>
                 </form>
@@ -80,7 +81,8 @@
                         <button id="backToHomeBtn"
                             class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Home</button>
                         <button id="continueEditingBtn"
-                            class="bg-gray-400 hover:bg-gray-500 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Continue Editing</button>
+                            class="bg-gray-400 hover:bg-gray-500 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Continue
+                            Editing</button>
                     </div>
                 </div>
             </div>
@@ -115,6 +117,31 @@
                 modalBackdrop.classList.add('hidden');
             });
         }
+
+        function createTest(event) {
+            event.preventDefault();
+            const nextBtn = document.getElementById('nextBtn');
+            const createBtn = document.getElementById("createBtn");
+            const testName = document.getElementById("testName").value.trim();
+
+            if (testName !== "") {
+                localStorage.setItem("testName", testName);
+                createBtn.textContent = "Next"; // Change the text of the Create button
+                nextBtn.classList.remove('hidden'); // Show the Next button
+                createBtn.classList.add('hidden'); // Hide the Create button
+            } else {
+                alert("Please enter a test name!");
+            }
+        }
+
+        function nextConfig() {
+            event.preventDefault();
+            window.location.href="{% url 'test_start_page' %}"
+        }
+
+         window.onload = function () {
+            localStorage.removeItem('testName');
+        };
     </script>
 
 </body>

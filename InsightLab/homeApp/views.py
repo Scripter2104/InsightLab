@@ -1,5 +1,6 @@
 from django.shortcuts import render
-
+from .models import Test
+from django.urls import reverse
 
 # Create your views here.
 
@@ -13,3 +14,15 @@ def newtest_view(request, *args, **kwargs):
 
 def test_start_page_config(request, *args, **kwargs):
     return render(request, 'test_start_page.html', {})
+
+
+def start_test(request, *args, **kwargs):
+    return render(request, 'start_test.html', {})
+def activate_test(request, test_id):
+    test = Test.objects.get(id=test_id)
+
+    if not test.name:
+        return render(request,'time_setting.html',{"message":"All field are nor filled!"})
+
+    test.is_active=True
+    test.link=request.build_absolute_uri(reverse('test_start_pa'))

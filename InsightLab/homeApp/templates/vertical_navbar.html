@@ -4,37 +4,56 @@
     </h2>
     <ul>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-cogs text-600 mr-2" id="basic_setting_i"></i>
-            <a href="{% url 'newtest' %}" class="block w-full px-3 py-2 rounded hover:bg-gray-200" onclick="focus(event, this)">Basic Settings</a>
+            <i class="fas fa-cogs text-gray-300 mr-2" id="basic_setting_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left" id="basicSettingbtn">Basic Settings</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-question-circle mr-2"></i>
-            <a href="#" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Questions manager</a>
+            <i class="fas fa-question-circle mr-2 text-gray-300" id="questions_manager_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="questionsManagerBtn" disabled>Questions manager</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-play-circle mr-2"></i>
-            <a href="{% url 'test_start_page' %}" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Test start page</a>
+            <i class="fas fa-play-circle mr-2 text-gray-300" id="test_start_page_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="testStartPageBtn" disabled>Test start page</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-check-circle mr-2"></i>
-            <a href="#" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Grading & summary</a>
+            <i class="fas fa-check-circle mr-2 text-gray-300" id="grading_summary_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="gradingSummaryBtn" disabled>Grading & summary</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-clock mr-2"></i>
-            <a href="#" class="block w-full px-3 py-2 rounded hover:bg-gray-200">Time settings</a>
+            <i class="fas fa-clock mr-2 text-gray-300" id="time_settings_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="timeSettingsBtn" disabled>Time settings</button>
         </li>
     </ul>
 </aside>
 
 <script>
-    function focus(event, a) {
-        event.preventDefault();
+    const basicSettingBtn = document.getElementById("basicSettingbtn");
+    const buttons = [
+        {
+            button: document.getElementById("questionsManagerBtn"),
+            icon: document.getElementById("questions_manager_i"),
+        },
+        {
+            button: document.getElementById("testStartPageBtn"),
+            icon: document.getElementById("test_start_page_i"),
+        },
+        {
+            button: document.getElementById("gradingSummaryBtn"),
+            icon: document.getElementById("grading_summary_i"),
+        },
+        {
+            button: document.getElementById("timeSettingsBtn"),
+            icon: document.getElementById("time_settings_i"),
+        },
+    ];
 
-        if (a.textContent.includes("Basic Settings")) {
-            var icon = document.getElementById('basic_setting_i');
-            icon.classList.add('fas', 'fa-cogs', 'text-green-600'); // Add classes individually
-            console.log("hello");
-            window.location.href = "{% url 'newtest' %}"; // Navigate after executing the code
-        }
-    }
+    const basicSettingbtn=document.getElementById("basicSettingbtn");
+    basicSettingbtn.addEventListener("click",()=>{
+        window.location.href="{% url 'newtest' %}"
+    });
+
+
+
+
+
 </script>

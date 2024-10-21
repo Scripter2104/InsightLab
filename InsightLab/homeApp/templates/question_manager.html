@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Configuration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f7fafc;
+
+        }
+
+        .main-content {
+            overflow-y: auto;
+            max-height: calc(100vh - 64px);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    {% include 'horizontal_navbar.html' %}
+
+    <div class="flex min-h-screen">
+        <!-- Vertical Sidebar -->
+        {% include 'vertical_navbar.html' %}
+
+        <!-- Main Content -->
+        <main class="w-3/4 bg-gray-100 p-6 main-content">
+            <div id="question-container">
+                <div class="question-block">
+                    <div class="mb-6 flex items-center">
+                        <button id="back-btn"
+                            class="text-gray-600 hover:text-gray-800 transition-colors duration-300 mr-2">
+                            <i class="fas fa-arrow-left fa-lg"></i>
+                        </button>
+                        <h2 id="question-number" class="text-xl font-bold text-gray-800">Question 1</h2>
+                    </div>
+                    <div class="mb-6">
+                        <label for="question-input" class="block text-gray-700 font-bold mb-2">Question</label>
+                        <input type="text" id="question-input" placeholder="Enter your question"
+                            class="w-full p-3 border border-gray-300 rounded-lg">
+                    </div>
+                    <div class="mb-6">
+                        <label for="answer-type" class="block text-gray-700 font-bold mb-2">Answer Type</label>
+                        <select id="answer-type" class="w-full p-3 border border-gray-300 rounded-lg">
+                            <option value="single-choice">Single choice</option>
+                            <option value="multiple-choice">Multiple choice</option>
+                            <option value="true-false">True/False</option>
+                        </select>
+                    </div>
+
+                    <div id="answers-container"></div>
+                    <button id="add-answer-btn" class="bg-green-500 text-white px-4 py-2 rounded">Add Options</button>
+
+                    <div class="flex space-x-6 mb-6">
+                        <div class="w-1/2">
+                            <label for="correct-score" class="block text-gray-700 font-bold mb-2">Points for correct
+                                answer</label>
+                            <input type="number" id="correct-score" value="1"
+                                class="w-full p-3 border border-gray-300 rounded-lg">
+                        </div>
+                        <div class="w-1/2">
+                            <label for="incorrect-score" class="block text-gray-700 font-bold mb-2">Points for incorrect
+                                answer</label>
+                            <input type="number" id="incorrect-score" value="0"
+                                class="w-full p-3 border border-gray-300 rounded-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <button id="save-next-btn" class="bg-blue-400 text-white px-4 py-2 rounded">Save & Next</button>
+                <button id="cancel-btn" class="bg-red-600 text-white px-4 py-2 rounded">Cancel</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const questions = []; // Array to store questions
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let questionIndex = 0; // Current question index
+
+
+            questions.push({
+                question: '',
+                answerType: 'single-choice',
+                correctScore: 1,
+                incorrectScore: 0,
+                answers: ['', '', ''], // Default 3 empty answers for the first question
+                correctAnswers: [] // Array to store correct answers based on answer type
+            });
+
+            displayQuestion(questionIndex);
+
+            function displayQuestion(index) {
+                const questionData = questions[index]; // Get the current question data
+
+                document.getElementById('question-number').textContent = `Question ${index + 1}`;
+                document.getElementById('question-input').value = questionData.question || '';
+                document.getElementById('answer-type').value = questionData.answerType;
+                document.getElementById('correct-score').value = questionData.correctScore;
+                document.getElementById('incorrect-score').value = questionData.incorrectScore;
+
+                document.getElementById('back-btn').style.display = (index > 0) ? 'block' : 'none';
+
+                updateAnswerOptions(index);
+            }
+
+            function updateAnswerOptions(index) {
+                const answerType = document.getElementById('answer-type').value;
+                const answersContainer = document.getElementById('answers-container');
+                const questionData = questions[index];
+                answersContainer.innerHTML = '';
+
+                // Add answer options based on the answer type
+                if (answerType === 'true-false') {
+                    addTrueFalseOptions(questionData.correctAnswers);
+                } else {
+                    questionData.answers.forEach((answer, i) => {
+                        addAnswerOption(answerType, i, answer, questionData.correctAnswers.includes(i));
+                    });
+                }
+
+                if (answerType === 'multiple-choice' || answerType === 'single-choice') {
+                    document.getElementById('add-answer-btn').style.display = 'block';
+                } else {
+                    document.getElementById('add-answer-btn').style.display = 'none';
+                }
+            }
+
+
+            // Function to dynamically add answer options for multiple/single choice
+            function addAnswerOption(answerType, index, value = '', isChecked = false) {
+                const answersContainer = document.getElementById('answers-container');
+                const checkedAttr = isChecked ? 'checked' : '';
+
+                if (answerType === 'multiple-choice') {
+                    answersContainer.insertAdjacentHTML('beforeend', `
+                <div class="mb-6 flex items-center space-x-3">
+                    <input type="checkbox" class="answer-checkbox" ${checkedAttr} data-index="${index}">
+                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter option ${index + 1}">${value}</textarea>
+                </div>
+            `);
+                } else if (answerType === 'single-choice') {
+                    answersContainer.insertAdjacentHTML('beforeend', `
+                <div class="mb-6 flex items-center space-x-3">
+                    <input type="radio" name="answer-radio" class="answer-radio" ${checkedAttr} data-index="${index}">
+                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter answer ${index + 1}">${value}</textarea>
+                </div>
+            `);
+                }
+            }
+
+            // Add True/False options
+            function addTrueFalseOptions(correctAnswers) {
+                const answersContainer = document.getElementById('answers-container');
+                const trueChecked = correctAnswers.includes(0) ? 'checked' : '';
+                const falseChecked = correctAnswers.includes(1) ? 'checked' : '';
+
+                answersContainer.innerHTML = `
+            <div class="mb-6 flex items-center space-x-3">
+                <input type="radio" name="answer-radio" class="answer-radio" ${trueChecked} data-index="0">
+                <label>True</label>
+            </div>
+            <div class="mb-6 flex items-center space-x-3">
+                <input type="radio" name="answer-radio" class="answer-radio" ${falseChecked} data-index="1">
+                <label>False</label>
+            </div>
+        `;
+            }
+
+            document.getElementById('save-next-btn').addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const currentQuestion = {
+                    question: document.getElementById('question-input').value,
+                    answerType: document.getElementById('answer-type').value,
+                    correctScore: parseInt(document.getElementById('correct-score').value, 10),
+                    incorrectScore: parseInt(document.getElementById('incorrect-score').value, 10),
+                    answers: [],
+                    correctAnswers: []
+                };
+
+                // Corrected query selector for answer textareas and inputs
+                const answerTexts = Array.from(document.querySelectorAll('#answers-container textarea')).map(textarea => textarea.value);
+                currentQuestion.answers = answerTexts;
+
+                const checkboxesOrRadios = Array.from(document.querySelectorAll('#answers-container input'));
+                checkboxesOrRadios.forEach(input => {
+                    if (input.checked) {
+                        currentQuestion.correctAnswers.push(parseInt(input.getAttribute('data-index')));
+                    }
+                });
+
+                if (questions[questionIndex]) {
+                    questions[questionIndex] = currentQuestion;
+                } else {
+                    questions.push(currentQuestion);
+                }
+
+                questionIndex++;
+                if (!questions[questionIndex]) {
+                    questions.push({
+                        question: '',
+                        answerType: 'single-choice',
+                        correctScore: 1,
+                        incorrectScore: 0,
+                        answers: ['', '', ''], // Default 3 empty answers
+                        correctAnswers: []
+                    });
+                }
+                displayQuestion(questionIndex);
+            });
+
+
+            document.getElementById('back-btn').addEventListener('click', function (event) {
+                event.preventDefault();
+                if (questionIndex > 0) {
+                    questionIndex--; // Go to previous question
+                    displayQuestion(questionIndex); // Show the current question
+                }
+            });
+
+            document.getElementById('answer-type').addEventListener('change', function () {
+                const answerType = this.value;
+                const currentQuestion = questions[questionIndex];
+
+                if (answerType === 'true-false') {
+                    currentQuestion.answers = ['True', 'False']; // Set default True/False answers
+                } else if (!currentQuestion.answers.length) {
+                    currentQuestion.answers = ['', '', '']; // Default 3 answers for other types
+                }
+
+                updateAnswerOptions(questionIndex);
+            });
+
+            document.getElementById('add-answer-btn').addEventListener('click', function () {
+                const answerType = document.getElementById('answer-type').value;
+                const currentQuestion = questions[questionIndex];
+                const newAnswerIndex = currentQuestion.answers.length;
+
+                currentQuestion.answers.push(''); // Add new empty answer
+                addAnswerOption(answerType, newAnswerIndex);
+            });
+
+        });
+    </script>
+
+
+</body>
+
+</html>

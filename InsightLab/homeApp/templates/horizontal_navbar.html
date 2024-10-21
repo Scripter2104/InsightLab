@@ -1,0 +1,74 @@
+<header class="bg-white shadow-lg">
+
+            <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center ">
+                        <a href="#" class="text-2xl font-bold text-green-600">InsightLab</a>
+                    </div>
+                    <div class="flex items-center space-x-8">
+                        <a class="text-gray-700 hover:text-green-600"
+                            onclick="homeConfirmationMessage()"><i class="fas fa-home"></i> Home</a>
+                        <a href="#" class="text-gray-700 hover:text-green-600"><i class="fas fa-cog"></i> Settings</a>
+                        <a class="text-gray-700 hover:text-green-600" onclick="confirmationMessage()"><i
+                                class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+<!-- Logout Modal -->
+            <div id="modalBackdrop"
+                class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-50 transition-opacity duration-300 ease-in-out">
+                <div class="bg-white p-8 rounded-xl shadow-xl max-w-sm w-full relative">
+                    <h2 class="text-xl font-bold mb-6 text-gray-800">Are you sure you want to log out?</h2>
+                    <div class="flex justify-end space-x-4">
+                        <button id="confirmLogoutBtn"
+                            class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Yes</button>
+                        <button id="cancelLogoutBtn"
+                            class="bg-gray-400 hover:bg-gray-500 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Home Confirmation Modal -->
+            <div id="modalBackdrop2"
+                class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-50 transition-opacity duration-300 ease-in-out">
+                <div class="bg-white p-8 rounded-xl shadow-xl max-w-sm w-full relative">
+                    <h2 class="text-xl font-bold mb-6 text-gray-800">Do you want to exit to home?</h2>
+                    <div class="flex justify-end space-x-4">
+                        <button id="backToHomeBtn"
+                            class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Home</button>
+                        <button id="continueEditingBtn"
+                            class="bg-gray-400 hover:bg-gray-500 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Continue Editing</button>
+                    </div>
+                </div>
+            </div>
+
+<script>
+    function confirmationMessage() {
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            modalBackdrop.classList.remove('hidden');
+
+            document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
+                modalBackdrop.classList.add('hidden');
+                window.location.href = "{% url 'login' %}";
+            });
+
+            document.getElementById('cancelLogoutBtn').addEventListener('click', function () {
+                modalBackdrop.classList.add('hidden');
+            });
+        }
+
+        function homeConfirmationMessage() {
+            const modalBackdrop = document.getElementById('modalBackdrop2');
+            modalBackdrop.classList.remove('hidden');
+
+            document.getElementById('backToHomeBtn').addEventListener('click', () => {
+                window.location.href = "{% url 'home' %}";
+            });
+
+            document.getElementById('continueEditingBtn').addEventListener('click', () => {
+                modalBackdrop.classList.add('hidden');
+            });
+        }
+</script>

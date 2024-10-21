@@ -232,8 +232,7 @@
             localStorage.removeItem('selectedFields');
             const storedFields = JSON.parse(localStorage.getItem('selectedFields'));
             const existingFields = Array.from(document.querySelectorAll('#table-body tr')).map(row => row.children[0].innerText);
-            disablingTestStartPage();
-            visitedTestStartPage=1;
+
         };
 
 

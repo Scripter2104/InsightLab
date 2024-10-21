@@ -4,86 +4,43 @@
     </h2>
     <ul>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-cogs text-gray-300 mr-2" id="basic_setting_i"></i>
+            <i class="fas fa-cogs text-green-300 mr-2" id="basic_setting_i"></i>
             <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left" id="basicSettingbtn">Basic Settings</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-question-circle mr-2 text-gray-300" id="questions_manager_i"></i>
-            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="questionsManagerBtn" disabled>Questions manager</button>
+            <i class="fas fa-question-circle mr-2" id="questions_manager_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left" id="questionsManagerBtn" onclick="questionManager()">Questions manager</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-play-circle mr-2 text-gray-300" id="test_start_page_i"></i>
-            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="testStartPageBtn" disabled>Test start page</button>
+            <i class="fas fa-play-circle mr-2" id="test_start_page_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left" id="testStartPageBtn" onclick="testStartPage()">Test start page</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-check-circle mr-2 text-gray-300" id="grading_summary_i"></i>
-            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="gradingSummaryBtn" disabled>Grading & summary</button>
+            <i class="fas fa-check-circle mr-2" id="grading_summary_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left" id="gradingSummaryBtn" onclick="gradingAndSummary()">Grading & summary</button>
         </li>
         <li class="mb-3 flex items-center">
-            <i class="fas fa-clock mr-2 text-gray-300" id="time_settings_i"></i>
-            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left disabled:bg-gray-200 disabled:cursor-not-allowed text-gray-600" id="timeSettingsBtn" disabled>Time settings</button>
+            <i class="fas fa-clock mr-2" id="time_settings_i"></i>
+            <button class="block w-full px-3 py-2 rounded hover:bg-gray-200 text-left" id="timeSettingsBtn">Time settings</button>
         </li>
     </ul>
 </aside>
 
 <script>
     const basicSettingBtn = document.getElementById("basicSettingbtn");
-    const visitedTestStartPage=0;
-    const visitedQuestionManager=0;
-    const visitedGradingAndSummary=0;
-    const visitedTimeSetting=0;
 
-
-
-    const buttons = [
-        {
-            button: document.getElementById("questionsManagerBtn"),
-            icon: document.getElementById("questions_manager_i"),
-        },
-        {
-            button: document.getElementById("testStartPageBtn"),
-            icon: document.getElementById("test_start_page_i"),
-        },
-        {
-            button: document.getElementById("gradingSummaryBtn"),
-            icon: document.getElementById("grading_summary_i"),
-        },
-        {
-            button: document.getElementById("timeSettingsBtn"),
-            icon: document.getElementById("time_settings_i"),
-        },
-    ];
-
-    const basicSettingbtn=document.getElementById("basicSettingbtn");
-    basicSettingbtn.addEventListener("click",()=>{
-        window.location.href="{% url 'newtest' %}"
+    basicSettingBtn.addEventListener("click", () => {
+        window.location.href = "{% url 'newtest' %}";
     });
 
+    function questionManager() {
+        window.location.href = "{% url 'question_manager' %}";
+    }
+     function testStartPage() {
+        window.location.href = "{% url 'test_start_page' %}";
+    }
 
-    function disablingTestStartPage(){
-        buttons[1].icon.classList.remove("text-gray-300");
-        buttons[1].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
-    };
-
-    function disablingQuestionManager(){
-        buttons[0].icon.classList.remove("text-gray-300");
-        buttons[0].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
-    };
-
-    function disablingGradingAndSummary(){
-        buttons[2].icon.classList.remove("text-gray-300");
-        buttons[2].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
-    };
-
-    function disablingTimeSetting(){
-        buttons[3].icon.classList.remove("text-gray-300");
-        buttons[3].button.classList.remove("text-gray-600", "disabled", "disabled:bg-gray-200");
-    };
-
-
-
-
-
-
-
+     function gradingAndSummary() {
+        window.location.href = "{% url 'grading_and_summary' %}";
+    }
 </script>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quill Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto rounded-sm">
+    <div class="bg-white p-4 rounded-sm shadow-sm">
+
+        <div id="toolbar" class="flex flex-wrap justify-start items-center mb-4 space-x-2">
+        <button class="ql-bold bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Bold</button>
+        <button class="ql-italic bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Italic</button>
+        <button class="ql-underline bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Underline</button>
+        <button class="ql-list bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded" value="ordered">Ordered List</button>
+        <button class="ql-list bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded" value="bullet">Bullet List</button>
+        <button class="ql-blockquote bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Blockquote</button>
+        <button class="ql-code-block bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Code Block</button>
+        <button class="ql-link bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Link</button>
+        <button class="ql-image bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Image</button>
+      </div>
+      <div id="editor" class="bg-gray-50 p-4 rounded-lg shadow-inner h-28 overflow-y-auto focus:outline-none"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script>
+    var quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: '#toolbar'
+      }
+    });
+
+    console.log(quill);
+  </script>
+</body>
+</html>

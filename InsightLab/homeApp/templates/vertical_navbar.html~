@@ -72,7 +72,7 @@ document.getElementById('gradingSummaryBtn').addEventListener('click', () => {
 function setActiveIcon() {
     const currentPath = window.location.pathname;
     for (const [urlName, iconId] of Object.entries(urlToIconMap)) {
-        if (currentPath.includes(urlName)) {
+        if (currentPath.includes(urlName.replace(/_/g,"%20"))) {
             console.log(currentPath+" has "+urlName);
             document.getElementById(iconId).classList.add('text-green-500');
             break;

@@ -127,7 +127,7 @@
       console.log(testName);
 
       if (quill.getText().trim() !== "") {
-        localStorage.setItem("testName", testName);
+        sessionStorage.setItem("testName", testName);
         window.location.href="{% url 'question_manager' %}"
       } else {
         const alertModal = document.getElementById("alertModal");
@@ -142,14 +142,14 @@
 
     window.onload = function () {
 
-      let name = localStorage.getItem('testName');
+      let name = sessionStorage.getItem('testName');
       if (name === null) {
 
-        localStorage.removeItem('testName');
+        sessionStorage.removeItem('testName');
       }
       else {
 
-        quill.root.innerHTML = localStorage.getItem('testName');
+        quill.root.innerHTML = sessionStorage.getItem('testName');
       }
     };
     var quill = new Quill('#testName', {
@@ -159,7 +159,7 @@
       }
     });
 
-    console.log(localStorage.getItem('testName'));
+    console.log(sessionStorage.getItem('testName'));
 
   </script>
 

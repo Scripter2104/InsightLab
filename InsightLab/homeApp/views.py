@@ -30,7 +30,7 @@ def grading_summary_view(request, *args, **kwargs):
 
 
 def time_setting_view(request,*args,**kwargs):
-    return render(request,'time_setting.html',{});
+    return render(request,'time_setting.html',{})
 
 def activate_test(request, test_id):
     test = Test.objects.get(id=test_id)

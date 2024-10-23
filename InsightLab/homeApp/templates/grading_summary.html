@@ -236,10 +236,10 @@
       let passMarks = document.getElementById('pass-mark-value').value;
       let passMarksUnit = document.getElementById('pass-mark-unit').value;
       let maxMarks = document.getElementById('max-mark-value').value;
-      localStorage.setItem("endMessage", message);
-      localStorage.setItem("passMarks", passMarks);
-      localStorage.setItem("passMarksUnit", passMarksUnit);
-      localStorage.setItem("maxMarks", maxMarks);
+      sessionStorage.setItem("endMessage", message);
+      sessionStorage.setItem("passMarks", passMarks);
+      sessionStorage.setItem("passMarksUnit", passMarksUnit);
+      sessionStorage.setItem("maxMarks", maxMarks);
       window.location.href = "{% url 'time_setting' %}"
     }
 
@@ -273,10 +273,10 @@
     });
 
     window.onload = function () {
-      quill.root.innerHTML = localStorage.getItem("endMessage");
-      document.getElementById('pass-mark-value').value = localStorage.getItem("passMarks");
-      document.getElementById('pass-mark-unit').value = localStorage.getItem("passMarksUnit");
-      document.getElementById('max-mark-value').value = localStorage.getItem("maxMarks");
+      quill.root.innerHTML = sessionStorage.getItem("endMessage");
+      document.getElementById('pass-mark-value').value = sessionStorage.getItem("passMarks");
+      document.getElementById('pass-mark-unit').value = sessionStorage.getItem("passMarksUnit");
+      document.getElementById('max-mark-value').value = sessionStorage.getItem("maxMarks");
     };
 
 

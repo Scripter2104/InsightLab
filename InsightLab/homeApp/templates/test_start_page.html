@@ -159,9 +159,9 @@
     `;
       tableBody.appendChild(newRow);
 
-      // Add field to selectedFields array and save to localStorage
+      // Add field to selectedFields array and save to sessionStorage
       selectedFields.push(field);
-      localStorage.setItem('selectedFields', JSON.stringify(selectedFields));
+      sessionStorage.setItem('selectedFields', JSON.stringify(selectedFields));
     }
 
     function deleteRow(button) {
@@ -169,11 +169,11 @@
       const fieldName = row.children[0].innerText; // Get the field name
       row.remove(); // Remove the row
 
-      // Remove the field from the selectedFields array and update localStorage
+      // Remove the field from the selectedFields array and update sessionStorage
       const index = selectedFields.indexOf(fieldName);
       if (index > -1) {
         selectedFields.splice(index, 1);
-        localStorage.setItem('selectedFields', JSON.stringify(selectedFields));
+        sessionStorage.setItem('selectedFields', JSON.stringify(selectedFields));
       }
 
       // If no more rows, add the "no data" row back
@@ -198,18 +198,18 @@
     selectedFields.push("First name"); // Add the default "First name" back
     addField("First name"); // Re-add "First name" to the table
 
-    localStorage.setItem('selectedFields', JSON.stringify(selectedFields)); // Update localStorage
+    sessionStorage.setItem('selectedFields', JSON.stringify(selectedFields)); // Update sessionStorage
 }
 
     function confirmFields() {
-      localStorage.setItem('selectedFields', JSON.stringify(selectedFields)); // Save selected fields to localStorage
+      sessionStorage.setItem('selectedFields', JSON.stringify(selectedFields)); // Save selected fields to sessionStorage
       document.getElementById('message').innerText = "Fields have been successfully saved."; // Display message
       window.location.href="{% url 'grading_and_summary' %}"
     }
 
-    // Load fields from localStorage on page load
+    // Load fields from sessionStorage on page load
     window.onload = function () {
-      const savedFields = JSON.parse(localStorage.getItem('selectedFields') || '[]');
+      const savedFields = JSON.parse(sessionStorage.getItem('selectedFields') || '[]');
       savedFields.forEach((field) => {
         if (field !== "First name") { // Avoid duplicating the default field
           addField(field);

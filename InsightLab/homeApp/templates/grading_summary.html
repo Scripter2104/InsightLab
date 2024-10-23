@@ -232,6 +232,9 @@
             console.log("Saved Content:", quillContent);
             messageDiv.textContent = "All information has been added.";
             messageDiv.classList.remove('hidden');
+            let message=quill.root.innerHTML;
+            localStorage.setItem("endMessage",message);
+            window.location.href="{% url 'time_setting' %}"
         }
 
         function cancelInfo() {
@@ -262,6 +265,14 @@
                 }
             });
         });
+
+        window.onload=function(){
+             quill.root.innerHTML=localStorage.getItem("endMessage");
+        };
+
+
+
+
 
     </script>
 

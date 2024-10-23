@@ -67,6 +67,10 @@ document.getElementById('gradingSummaryBtn').addEventListener('click', () => {
     handleNavigation("{% url 'grading_and_summary' %}", 'grading_summary_i');
 });
 
+document.getElementById('timeSettingsBtn').addEventListener('click', () => {
+    handleNavigation("{% url 'time_setting' %}", 'time_settings_i');
+});
+
 
 // Function to highlight the current page's icon on page load
 function setActiveIcon() {

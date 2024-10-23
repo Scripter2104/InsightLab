@@ -2,268 +2,288 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Start Form</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <style>
-        /* Hide dropdown initially */
-        #dropdown-menu {
-            display: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Configuration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <style>
+    /* Hide dropdown initially */
+    #dropdown-menu {
+      display: none;
+    }
 
-        /* Flex-grow for content area */
-        .flex-grow {
-            flex-grow: 1;
-        }
-    </style>
+    /* Flex-grow for content area */
+    .flex-grow {
+      flex-grow: 1;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-50 overflow-hidden">
-    <!-- Horizontal Navbar -->
-    {% include 'horizontal_navbar.html' %}
+  <!-- Horizontal Navbar -->
+  {% include 'horizontal_navbar.html' %}
 
-    <div class="flex min-h-screen">
-        <!-- Vertical Sidebar -->
-        {% include 'vertical_navbar.html' %}
+  <div class="flex min-h-screen">
+    <!-- Vertical Sidebar -->
+    {% include 'vertical_navbar.html' %}
 
-        <!-- Main Content Area -->
-        <main class="w-3/4 bg-gray-100 p-6 main-content overflow-auto max-h-[calc(100vh-64px)]">
+    <!-- Main Content Area -->
+    <main class="w-3/4 bg-gray-100 p-6 main-content overflow-auto max-h-[calc(100vh-64px)]">
 
-            <div class="mb-6">
-                <h1 class="text-2xl font-semibold text-gray-700">Grading & Summary</h1>
-            </div>
+      <div class="mb-6">
+        <h1 class="text-2xl font-semibold text-gray-700">Grading & Summary</h1>
+      </div>
 
-            <!-- Test End Message Section -->
-            <div class="mb-4">
-                <h2 class="text-lg font-semibold text-gray-700">TEST END MESSAGE AND REDIRECTION</h2>
-                <p class="text-gray-600">Configure a message to be displayed to all respondents at the end of the test,
-                    regardless of its results.</p>
-            </div>
+      <!-- Test End Message Section -->
+      <div class="mb-4">
+        <h2 class="text-lg font-semibold text-gray-700">TEST END MESSAGE AND REDIRECTION</h2>
+        <p class="text-gray-600">Configure a message to be displayed to all respondents at the end of the test,
+          regardless of its results.</p>
+      </div>
 
-            <!-- Quill Editor Section -->
-            <div class="bg-gray-50 p-4 border border-gray-300 rounded-md mb-6">
-                <div id="toolbar" class="flex flex-wrap justify-start items-center mb-4 space-x-2">
-                    <button class="ql-bold bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Bold</button>
-                    <button class="ql-italic bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Italic</button>
-                    <button class="ql-underline bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Underline</button>
-                    <button class="ql-list bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded" value="ordered">Ordered
-                        List</button>
-                    <button class="ql-list bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded" value="bullet">Bullet
-                        List</button>
-                    <button class="ql-blockquote bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Blockquote</button>
-                    <button class="ql-code-block bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Code Block</button>
-                    <button class="ql-link bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Link</button>
-                    <button class="ql-image bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Image</button>
-                </div>
-                <div id="editor" class="bg-gray-50 p-4 rounded-lg shadow-inner h-28 overflow-y-auto focus:outline-none">
-                </div>
-            </div>
+      <!-- Quill Editor Section -->
+      <div class="bg-gray-50 p-4 border border-gray-300 rounded-md mb-6">
+        <div id="toolbar" class="flex flex-wrap justify-start items-center mb-4 space-x-2">
+          <button class="ql-bold bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Bold</button>
+          <button class="ql-italic bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Italic</button>
+          <button class="ql-underline bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Underline</button>
+          <button class="ql-list bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded" value="ordered">Ordered
+            List</button>
+          <button class="ql-list bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded" value="bullet">Bullet
+            List</button>
+          <button class="ql-blockquote bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Blockquote</button>
+          <button class="ql-code-block bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Code Block</button>
+          <button class="ql-link bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Link</button>
+          <button class="ql-image bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Image</button>
+        </div>
+        <div id="editor" class="bg-gray-50 p-4 rounded-lg shadow-inner h-28 overflow-y-auto focus:outline-none">
+        </div>
+      </div>
 
-            <!-- Grading Criteria Section -->
-            <div class="bg-white p-6 rounded-lg mb-6">
-                <!-- Grading Criteria Title -->
-                <div class="border-b pb-4 mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">GRADING CRITERIA</h2>
-                </div>
+      <!-- Grading Criteria Section -->
+      <div class="bg-white p-6 rounded-lg mb-6">
+        <!-- Grading Criteria Title -->
+        <div class="border-b pb-4 mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">GRADING CRITERIA</h2>
+        </div>
 
-                <!-- Maximum Possible Score -->
-                <div class="mb-4">
-                    <label class="block text-gray-600 mb-2">Maximum possible score (100):</label>
-                    <div class="flex items-center space-x-4">
-                        <textarea
-                            class="flex-1 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
-                            placeholder="Enter maximum possible score..."></textarea>
-                        <select id="max-mark-unit"
-                            class="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
-                            onchange="syncUnits('max')">
-                            <option value="%">%</option>
-                            <option value="Points">Points</option>
-                        </select>
-                    </div>
-                </div>
+        <!-- Maximum Possible Score -->
+        <!-- Maximum Possible Score -->
+        <div class="mb-4">
+          <label class="block text-gray-600 mb-2">Maximum possible score (100):</label>
+          <div class="flex items-center space-x-4">
+            <textarea id="max-mark-value"
+              class="flex-1 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
+              placeholder="Enter maximum possible score..."></textarea>
+            <select id="max-mark-unit"
+              class="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
+              onchange="syncUnits('max')">
+              <option value="%">%</option>
+              <option value="Points">Points</option>
+            </select>
+          </div>
+        </div>
 
-                <!-- Pass Mark Section -->
-                <div class="flex items-center justify-between mb-4">
-                    <label class="block text-gray-600">Pass mark</label>
-                    <input type="checkbox" class="toggle-checkbox ml-auto" checked onclick="togglePassMark(this)" />
-                </div>
 
-                <!-- Pass Mark Value Input -->
-                <div class="flex items-center space-x-4 mb-6">
-                    <div class="flex-1">
-                        <label class="block text-gray-600 mb-2">Value</label>
-                        <input type="number" id="pass-mark-value"
-                            class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
-                            value="50" />
-                    </div>
+        <!-- Pass Mark Section -->
+        <div class="flex items-center justify-between mb-4">
+          <label class="block text-gray-600">Pass mark</label>
+          <input type="checkbox" class="toggle-checkbox ml-auto" checked onclick="togglePassMark(this)" />
+        </div>
 
-                    <div class="flex-1">
-                        <label class="block text-gray-600 mb-2">Unit</label>
-                        <select id="pass-mark-unit"
-                            class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
-                            onchange="syncUnits('pass')">
-                            <option value="%">%</option>
-                            <option value="Points">Points</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+        <!-- Pass Mark Value Input -->
+        <div class="flex items-center space-x-4 mb-6">
+          <div class="flex-1">
+            <label class="block text-gray-600 mb-2">Value</label>
+            <input type="number" id="pass-mark-value"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
+              value="50" />
+          </div>
 
-            <!-- Information for Respondents Section -->
-            <div class="bg-white p-6 rounded-lg mb-6">
-                <!-- Information for Respondents Title -->
-                <div class="border-b pb-4 mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">INFORMATION FOR RESPONDENTS</h2>
-                </div>
+          <div class="flex-1">
+            <label class="block text-gray-600 mb-2">Unit</label>
+            <select id="pass-mark-unit"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
+              onchange="syncUnits('pass')">
+              <option value="%">%</option>
+              <option value="Points">Points</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-                <!-- Instructions Section -->
-                <div class="mb-6">
-                    <p class="text-gray-700">Choose what information to show to respondents at the end of the test.</p>
-                </div>
+      <!-- Information for Respondents Section -->
+      <div class="bg-white p-6 rounded-lg mb-6">
+        <!-- Information for Respondents Title -->
+        <div class="border-b pb-4 mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">INFORMATION FOR RESPONDENTS</h2>
+        </div>
 
-                <!-- Two-Phase Feedback -->
-                <div class="bg-gray-100 p-4 rounded-lg mb-6">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M9.243 2.828a3 3 0 014.243 0l3.686 3.686a3 3 0 010 4.243l-8.485 8.485a2.828 2.828 0 01-4-4l8.485-8.485a1 1 0 10-1.414-1.414L4.1 11.757a4.828 4.828 0 106.828 6.828l8.485-8.485a5 5 0 000-7.071L12.828.414a5 5 0 00-7.071 0L1.343 4.828a1 1 0 101.414 1.414l4.243-4.243z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <h3 class="text-lg font-semibold text-gray-700">Two-phase feedback</h3>
-                    </div>
-                    <p class="text-gray-600 ml-7 mt-2">The respondents will see their overall score first. Once you
-                        allow access, they will be able to see detailed feedback.</p>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" />
-                            <span class="ml-2 text-gray-700">Percentage Score</span>
-                        </label>
-                    </div>
+        <!-- Instructions Section -->
+        <div class="mb-6">
+          <p class="text-gray-700">Choose what information to show to respondents at the end of the test.</p>
+        </div>
 
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" />
-                            <span class="ml-2 text-gray-700">Points Score</span>
-                        </label>
-                    </div>
+        <!-- Two-Phase Feedback -->
+        <div class="bg-gray-100 p-4 rounded-lg mb-6">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20"
+              fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M9.243 2.828a3 3 0 014.243 0l3.686 3.686a3 3 0 010 4.243l-8.485 8.485a2.828 2.828 0 01-4-4l8.485-8.485a1 1 0 10-1.414-1.414L4.1 11.757a4.828 4.828 0 106.828 6.828l8.485-8.485a5 5 0 000-7.071L12.828.414a5 5 0 00-7.071 0L1.343 4.828a1 1 0 101.414 1.414l4.243-4.243z"
+                clip-rule="evenodd" />
+            </svg>
+            <h3 class="text-lg font-semibold text-gray-700">Two-phase feedback</h3>
+          </div>
+          <p class="text-gray-600 ml-7 mt-2">The respondents will see their overall score first. Once you
+            allow access, they will be able to see detailed feedback.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" />
+              <span class="ml-2 text-gray-700">Percentage Score</span>
+            </label>
+          </div>
 
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
-                            <span class="ml-2 text-gray-700">Grade</span>
-                        </label>
-                    </div>
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" />
+              <span class="ml-2 text-gray-700">Points Score</span>
+            </label>
+          </div>
 
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
-                            <span class="ml-2 text-gray-700">Descriptive Grade</span>
-                        </label>
-                    </div>
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
+              <span class="ml-2 text-gray-700">Grade</span>
+            </label>
+          </div>
 
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
-                            <span class="ml-2 text-gray-700">Correct Answers To Questions</span>
-                        </label>
-                    </div>
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
+              <span class="ml-2 text-gray-700">Descriptive Grade</span>
+            </label>
+          </div>
 
-                    <div>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
-                            <span class="ml-2 text-gray-700">Pass Or Fail Message</span>
-                        </label>
-                    </div>
-                </div>
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
+              <span class="ml-2 text-gray-700">Correct Answers To Questions</span>
+            </label>
+          </div>
 
-                <!-- Message Section -->
-                <div id="message" class="bg-green-100 p-4 rounded-md text-green-800 text-sm hidden mb-4">
-                    All information has been added.
-                </div>
+          <div>
+            <label class="inline-flex items-center">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-400" />
+              <span class="ml-2 text-gray-700">Pass Or Fail Message</span>
+            </label>
+          </div>
+        </div>
 
-                <!-- Save and Cancel Buttons -->
-                <div class="flex justify-end space-x-5 p-8">
-                    <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg"
-                        onclick="saveInfo()">
-                        Save
-                    </button>
-                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg"
-                        onclick="cancelInfo()">
-                        Cancel
-                    </button>
-                </div>
-            </div>
+        <!-- Message Section -->
+        <div id="message" class="bg-green-100 p-4 rounded-md text-green-800 text-sm hidden mb-4">
+          All information has been added.
+        </div>
 
-        </main>
-    </div>
+        <!-- Save and Cancel Buttons -->
+        <div class="flex justify-end space-x-5 p-8">
+          <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg" onclick="saveInfo()">
+            Save
+          </button>
+          <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" onclick="cancelInfo()">
+            Cancel
+          </button>
+        </div>
+      </div>
 
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    </main>
+  </div>
 
-    <script>
-        let quill;
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
-        function togglePassMark(checkbox) {
-            const valueInput = document.getElementById('pass-mark-value');
-            const unitSelect = document.getElementById('pass-mark-unit');
-            valueInput.disabled = !checkbox.checked;
-            unitSelect.disabled = !checkbox.checked;
+  <script>
+    let quill;
+
+    function togglePassMark(checkbox) {
+      const valueInput = document.getElementById('pass-mark-value');
+      const unitSelect = document.getElementById('pass-mark-unit');
+      valueInput.disabled = !checkbox.checked;
+      unitSelect.disabled = !checkbox.checked;
+    }
+
+    function syncUnits(source) {
+      const maxMarkUnit = document.getElementById('max-mark-unit');
+      const passMarkUnit = document.getElementById('pass-mark-unit');
+
+      if (source === 'max') {
+        passMarkUnit.value = maxMarkUnit.value;
+      } else {
+        maxMarkUnit.value = passMarkUnit.value;
+      }
+    }
+
+    function saveInfo() {
+      const messageDiv = document.getElementById('message');
+      const quillContent = quill.root.innerHTML; // Save content from Quill editor
+      console.log("Saved Content:", quillContent);
+      messageDiv.textContent = "All information has been added.";
+      messageDiv.classList.remove('hidden');
+      let message = quill.root.innerHTML;
+      let passMarks = document.getElementById('pass-mark-value').value;
+      let passMarksUnit = document.getElementById('pass-mark-unit').value;
+      let maxMarks = document.getElementById('max-mark-value').value;
+      localStorage.setItem("endMessage", message);
+      localStorage.setItem("passMarks", passMarks);
+      localStorage.setItem("passMarksUnit", passMarksUnit);
+      localStorage.setItem("maxMarks", maxMarks);
+      window.location.href = "{% url 'time_setting' %}"
+    }
+
+    function cancelInfo() {
+      quill.root.innerHTML = ''; // Clear Quill editor
+      document.getElementById('pass-mark-value').value = 50;
+      document.getElementById('pass-mark-unit').value = '%';
+      document.getElementById('max-mark-unit').value = '%';
+      document.getElementById('message').classList.add('hidden');
+      // Clear the maximum mark textarea
+      const maxMarkTextarea = document.querySelector('textarea'); // Assuming there's only one textarea
+      if (maxMarkTextarea) {
+        maxMarkTextarea.value = ''; // Clear the textarea
+      }
+
+      // Uncheck all checkboxes
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = false; // Uncheck the checkbox
+      });
+
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+          toolbar: '#toolbar'
         }
+      });
+    });
 
-        function syncUnits(source) {
-            const maxMarkUnit = document.getElementById('max-mark-unit');
-            const passMarkUnit = document.getElementById('pass-mark-unit');
+    window.onload = function () {
+      quill.root.innerHTML = localStorage.getItem("endMessage");
+      document.getElementById('pass-mark-value').value = localStorage.getItem("passMarks");
+      document.getElementById('pass-mark-unit').value = localStorage.getItem("passMarksUnit");
+      document.getElementById('max-mark-value').value = localStorage.getItem("maxMarks");
+    };
 
-            if (source === 'max') {
-                passMarkUnit.value = maxMarkUnit.value;
-            } else {
-                maxMarkUnit.value = passMarkUnit.value;
-            }
-        }
 
-        function saveInfo() {
-            const messageDiv = document.getElementById('message');
-            const quillContent = quill.root.innerHTML; // Save content from Quill editor
-            console.log("Saved Content:", quillContent);
-            messageDiv.textContent = "All information has been added.";
-            messageDiv.classList.remove('hidden');
-        }
 
-        function cancelInfo() {
-            quill.root.innerHTML = ''; // Clear Quill editor
-            document.getElementById('pass-mark-value').value = 50;
-            document.getElementById('pass-mark-unit').value = '%';
-            document.getElementById('max-mark-unit').value = '%';
-            document.getElementById('message').classList.add('hidden');
-            // Clear the maximum mark textarea
-            const maxMarkTextarea = document.querySelector('textarea'); // Assuming there's only one textarea
-            if (maxMarkTextarea) {
-                maxMarkTextarea.value = ''; // Clear the textarea
-            }
 
-            // Uncheck all checkboxes
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = false; // Uncheck the checkbox
-            });
 
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            quill = new Quill('#editor', {
-                theme: 'snow',
-                modules: {
-                    toolbar: '#toolbar'
-                }
-            });
-        });
-
-    </script>
+  </script>
 
 </body>
 

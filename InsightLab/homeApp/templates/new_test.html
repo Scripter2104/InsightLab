@@ -144,11 +144,9 @@
 
       let name = sessionStorage.getItem('testName');
       if (name === null) {
-
         sessionStorage.removeItem('testName');
       }
       else {
-
         quill.root.innerHTML = sessionStorage.getItem('testName');
       }
     };

@@ -2,32 +2,172 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Configuration</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Configuration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 overflow-hidden">
+<body class="bg-gray-100 overflow-hidden ">
 
-  {% include 'horizontal_navbar.html' %}
+    {% include 'horizontal_navbar.html' %}
 
-  <div class="flex min-h-screen">
-    <!-- Vertical Sidebar -->
-    {% include 'vertical_navbar.html' %}
+    <div class="flex min-h-screen ">
+        <!-- Vertical Sidebar -->
+        {% include 'vertical_navbar.html' %}
 
-    <!-- Main Content -->
+        <!-- Main Content -->
+        <main class="flex-grow p-8 bg-gray-50">
+            <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Time settings</h2>
+                <div class="border-t border-gray-300 pt-4">
+                    <h3 class="text-lg font-medium mb-2">Test Duration</h3>
+                    <form>
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-3">
+                                <input id="time-complete-radio" type="radio" name="duration"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                    onclick="toggleInputState()" />
+                                <span class="text-gray-700">Time to complete the test (hh:mm):</span>
+                            </label>
+                            <input id="time-complete-input" type="time"
+                                class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="00:00" onclick="toggleInputState()" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-3">
+                                <input id="time-per-question-radio" type="radio" name="duration"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" checked
+                                    onclick="toggleInputState()" />
+                                <span class="text-gray-700">Time limit for each test question (mm:ss):</span>
+                            </label>
+                            <input id="time-per-question-input" type="time"
+                                class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="00:00" />
+                        </div>
 
-  </div>
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                            role="alert" id="alertBox" hidden>
+                            <strong class="font-bold">Error!</strong>
+                            <span class="block sm:inline">Enter test time</span>
+                            <span class="absolute top-0 bottom-0 right-0 px-4 py-3"
+                                onclick="this.parentElement.remove()">
+                                <svg class="fill-current h-6 w-6 text-red-500" role="button"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path
+                                        d="M14.348 14.849a1 1 0 01-1.414 0L10 11.914l-2.935 2.935a1 1 0 01-1.414-1.414L8.586 10.5 5.651 7.565a1 1 0 111.414-1.414L10 8.586l2.935-2.935a1 1 0 011.414 1.414L11.414 10.5l2.935 2.935a1 1 0 010 1.414z" />
+                                </svg>
+                            </span>
+                        </div>
 
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
-  <script>
+                        <div class="flex justify-end space-x-4 mt-6">
+                            <button type="button" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md"
+                                onclick="cancelInfo()">Cancel</button>
+                            <button type="button"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-300"
+                                onclick="saveInfo()">Save</button>
+                            <button type="button"
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition duration-300"
+                                onclick="activateTest()">Activate
+                                Test</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+    </div>
+
+    </main>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script>
+
+        const timeCompleteRadio = document.getElementById('time-complete-radio');
+        const timePerQuestionRadio = document.getElementById('time-per-question-radio');
+        const timeCompleteInput = document.getElementById('time-complete-input');
+        const timePerQuestionInput = document.getElementById('time-per-question-input');
 
 
-  </script>
+        function toggleInputState() {
+
+            // Toggle the disabled state based on the selected radio button
+            if (timeCompleteRadio.checked) {
+                timeCompleteInput.disabled = false;
+                timePerQuestionInput.disabled = true;
+                timePerQuestionInput.value = "";
+
+            } else if (timePerQuestionRadio.checked) {
+                timeCompleteInput.disabled = true;
+                timePerQuestionInput.disabled = false;
+                timeCompleteInput.value = "";
+
+            }
+        }
+
+        // Initialize the input state on page load
+        window.onload = function () {
+            toggleInputState();
+        }
+
+        function saveInfo() {
+            let alertBox = document.getElementById('alertBox');
+
+
+            if (timeCompleteRadio.checked && timeCompleteInput.value === "") {
+                alertBox.hidden = false;
+                return;
+            } else if (timePerQuestionRadio.checked && timePerQuestionInput.value === "") {
+                alertBox.hidden = false;
+                return;
+            }
+
+
+            if (timeCompleteRadio.checked) {
+                console.log("hello");
+                sessionStorage.setItem("timeComplete", timeCompleteInput.value);
+                sessionStorage.removeItem("timePerQuestion");
+            }
+            if (timePerQuestionRadio.checked) {
+                console.log("hello");
+                sessionStorage.setItem("timePerQuestion", timePerQuestionInput.value);
+                sessionStorage.removeItem("timeComplete");
+            }
+        }
+
+        function activateTest() {
+            saveInfo();
+        }
+
+        function cancelInfo() {
+            sessionStorage.removeItem("timeComplete");
+            sessionStorage.removeItem("timePerQuestion");
+            timeCompleteInput.value = "";
+            timePerQuestionInput.value = "";
+        }
+
+        window.onload = function () {
+
+            if (sessionStorage.getItem("timeComplete")) {
+                timeCompleteInput.value = sessionStorage.getItem("timeComplete");
+                timeCompleteRadio.checked = true;
+                timePerQuestionInput.value = "";
+                timePerQuestionRadio.checked = false;
+            }
+            else {
+                timeCompleteInput.value = "";
+                timePerQuestionInput.value = sessionStorage.getItem("timePerQuestion");
+                timePerQuestionRadio.checked = true;
+                timeCompleteRadio.checked = false;
+
+            }
+        }
+
+    </script>
 
 </body>
 

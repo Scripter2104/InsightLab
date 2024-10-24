@@ -140,17 +140,26 @@
                     answersContainer.insertAdjacentHTML('beforeend', `
                 <div class="mb-6 flex items-center space-x-3">
                     <input type="checkbox" class="answer-checkbox" ${checkedAttr} data-index="${index}">
-                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter option ${index + 1}">${value}</textarea>
+                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg overflow-hidden resize-none" placeholder="Enter option ${index + 1}">${value}</textarea>
                 </div>
             `);
                 } else if (answerType === 'single-choice') {
                     answersContainer.insertAdjacentHTML('beforeend', `
                 <div class="mb-6 flex items-center space-x-3">
                     <input type="radio" name="answer-radio" class="answer-radio" ${checkedAttr} data-index="${index}">
-                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg" placeholder="Enter answer ${index + 1}">${value}</textarea>
+                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg overflow-hidden resize-none" placeholder="Enter answer ${index + 1}">${value}</textarea>
                 </div>
             `);
                 }
+
+                // Update the height of the textarea
+                document.querySelectorAll('.answer').forEach(textarea => {
+                  textarea.style.height = `${textarea.scrollHeight}px`; // Set initial height
+                  textarea.addEventListener('input', () => {
+                    textarea.style.height = 'auto'; // Reset height
+                    textarea.style.height = `${textarea.scrollHeight}px`; // Adjust height based on content
+                  });
+                });
             }
 
             // Add True/False options

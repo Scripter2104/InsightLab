@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,19 +12,23 @@
         body {
             background-color: #f7fafc;
         }
-
+        .delete-icon {
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .delete-icon:hover {
+            color: #e53e3e;
+        }
     </style>
 </head>
 
 <body class="bg-gray-100 overflow-hidden">
-
     {% include 'horizontal_navbar.html' %}
 
     <div class="flex min-h-screen">
-        <!-- Vertical Sidebar -->
         {% include 'vertical_navbar.html' %}
 
-        <!-- Main Content -->
         <main class="w-3/4 bg-gray-100 p-6 main-content overflow-auto max-h-[calc(100vh-64px)]">
             <div id="question-container">
                 <div class="question-block">
@@ -77,34 +80,28 @@
     </div>
 
     <script>
-        const questions = []; // Array to store questions
-
+        const questions = [];
         document.addEventListener('DOMContentLoaded', () => {
-            let questionIndex = 0; // Current question index
+            let questionIndex = 0;
 
-
+            // Initialize first question
             questions.push({
                 question: '',
                 answerType: 'single-choice',
                 correctScore: 1,
                 incorrectScore: 0,
-                answers: ['', '', ''], // Default 3 empty answers for the first question
-                correctAnswers: [] // Array to store correct answers based on answer type
+                answers: ['', '', ''],
+                correctAnswers: []
             });
 
-            displayQuestion(questionIndex);
-
             function displayQuestion(index) {
-                const questionData = questions[index]; // Get the current question data
-
+                const questionData = questions[index];
                 document.getElementById('question-number').textContent = `Question ${index + 1}`;
                 document.getElementById('question-input').value = questionData.question || '';
                 document.getElementById('answer-type').value = questionData.answerType;
                 document.getElementById('correct-score').value = questionData.correctScore;
                 document.getElementById('incorrect-score').value = questionData.incorrectScore;
-
                 document.getElementById('back-btn').style.display = (index > 0) ? 'block' : 'none';
-
                 updateAnswerOptions(index);
             }
 
@@ -114,7 +111,12 @@
                 const questionData = questions[index];
                 answersContainer.innerHTML = '';
 
-                // Add answer options based on the answer type
+                // Remove any existing validation message
+                const existingAlert = document.querySelector('.validation-alert');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+
                 if (answerType === 'true-false') {
                     addTrueFalseOptions(questionData.correctAnswers);
                 } else {
@@ -123,92 +125,136 @@
                     });
                 }
 
-                if (answerType === 'multiple-choice' || answerType === 'single-choice') {
-                    document.getElementById('add-answer-btn').style.display = 'block';
-                } else {
-                    document.getElementById('add-answer-btn').style.display = 'none';
-                }
+                document.getElementById('add-answer-btn').style.display =
+                (answerType === 'multiple-choice' || answerType === 'single-choice') ? 'block' : 'none';
             }
 
-
-            // Function to dynamically add answer options for multiple/single choice
             function addAnswerOption(answerType, index, value = '', isChecked = false) {
                 const answersContainer = document.getElementById('answers-container');
                 const checkedAttr = isChecked ? 'checked' : '';
 
-                if (answerType === 'multiple-choice') {
-                    answersContainer.insertAdjacentHTML('beforeend', `
-                <div class="mb-6 flex items-center space-x-3">
-                    <input type="checkbox" class="answer-checkbox" ${checkedAttr} data-index="${index}">
-                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg overflow-hidden resize-none" placeholder="Enter option ${index + 1}">${value}</textarea>
-                </div>
-            `);
-                } else if (answerType === 'single-choice') {
-                    answersContainer.insertAdjacentHTML('beforeend', `
-                <div class="mb-6 flex items-center space-x-3">
-                    <input type="radio" name="answer-radio" class="answer-radio" ${checkedAttr} data-index="${index}">
-                    <textarea id="answer${index}" class="answer w-full p-3 border border-gray-300 rounded-lg overflow-hidden resize-none" placeholder="Enter answer ${index + 1}">${value}</textarea>
-                </div>
-            `);
-                }
+                const html = `
+                    <div class="mb-6 flex items-center space-x-3 answer-block" data-index="${index}">
+                        <input type="${answerType === 'multiple-choice' ? 'checkbox' : 'radio'}"
+                               class="${answerType === 'multiple-choice' ? 'answer-checkbox' : 'answer-radio'}"
+                               ${answerType === 'single-choice' ? 'name="answer-radio"' : ''}
+                               ${checkedAttr}
+                               data-index="${index}">
+                        <textarea id="answer${index}"
+                                class="answer w-full p-3 border border-gray-300 rounded-lg overflow-hidden resize-none"
+                                placeholder="Enter ${answerType === 'multiple-choice' ? 'option' : 'answer'} ${index + 1}">${value}</textarea>
+                        <i class="fas fa-trash delete-icon" data-index="${index}"></i>
+                    </div>
+                `;
+                answersContainer.insertAdjacentHTML('beforeend', html);
 
-                // Update the height of the textarea
-                document.querySelectorAll('.answer').forEach(textarea => {
-                  textarea.style.height = `${textarea.scrollHeight}px`; // Set initial height
-                  textarea.addEventListener('input', () => {
-                    textarea.style.height = 'auto'; // Reset height
-                    textarea.style.height = `${textarea.scrollHeight}px`; // Adjust height based on content
-                  });
+                // Update textarea heights
+                const textarea = document.getElementById(`answer${index}`);
+                textarea.style.height = `${textarea.scrollHeight}px`;
+                textarea.addEventListener('input', () => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = `${textarea.scrollHeight}px`;
                 });
             }
 
-            // Add True/False options
             function addTrueFalseOptions(correctAnswers) {
                 const answersContainer = document.getElementById('answers-container');
-                const trueChecked = correctAnswers.includes(0) ? 'checked' : '';
-                const falseChecked = correctAnswers.includes(1) ? 'checked' : '';
-
-                answersContainer.innerHTML = `
-            <div class="mb-6 flex items-center space-x-3">
-                <input type="radio" name="answer-radio" class="answer-radio" ${trueChecked} data-index="0">
-                <label>True</label>
-            </div>
-            <div class="mb-6 flex items-center space-x-3">
-                <input type="radio" name="answer-radio" class="answer-radio" ${falseChecked} data-index="1">
-                <label>False</label>
-            </div>
-        `;
+                const html = `
+                    <div class="mb-6 flex items-center space-x-3">
+                        <input type="radio" name="answer-radio" class="answer-radio" ${correctAnswers.includes(0) ? 'checked' : ''} data-index="0">
+                        <label>True</label>
+                    </div>
+                    <div class="mb-6 flex items-center space-x-3">
+                        <input type="radio" name="answer-radio" class="answer-radio" ${correctAnswers.includes(1) ? 'checked' : ''} data-index="1">
+                        <label>False</label>
+                    </div>
+                `;
+                answersContainer.innerHTML = html;
             }
 
-            document.getElementById('save-next-btn').addEventListener('click', function (event) {
-                event.preventDefault();
+            function deleteAnswer(element) {
+                const answerBlock = element.closest('.answer-block');
+                const index = parseInt(element.dataset.index);
+                const currentQuestion = questions[questionIndex];
+
+                // Remove the DOM element
+                answerBlock.remove();
+
+                // Update the data structure
+                currentQuestion.answers.splice(index, 1);
+
+                // Update correctAnswers array - adjust indices and remove invalid ones
+                currentQuestion.correctAnswers = currentQuestion.correctAnswers
+                    .map(i => (i > index ? i - 1 : i))
+                    .filter(i => i < currentQuestion.answers.length);
+
+                // Update data-index attributes for remaining elements
+                const remainingBlocks = document.querySelectorAll('.answer-block');
+                remainingBlocks.forEach((block, newIndex) => {
+                    block.dataset.index = newIndex;
+                    block.querySelector('input').dataset.index = newIndex;
+                    block.querySelector('.delete-icon').dataset.index = newIndex;
+                    const textarea = block.querySelector('textarea');
+                    textarea.id = `answer${newIndex}`;
+                });
+            }
+
+            // Event Listeners
+            document.getElementById('answers-container').addEventListener('click', (e) => {
+                if (e.target.classList.contains('delete-icon')) {
+                    deleteAnswer(e.target);
+                }
+            });
+
+            document.getElementById('save-next-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // Remove any existing validation message
+                const existingAlert = document.querySelector('.validation-alert');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+
+                const answerType = document.getElementById('answer-type').value;
+                if (answerType !== 'true-false') {
+                    const answerBlocks = document.querySelectorAll('.answer-block');
+                    if (answerBlocks.length < 2) {
+                        const alertHtml = `
+                            <div class="validation-alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                                Please add at least 2 answer options before proceeding.
+                                <i class="fas fa-times float-right" onclick="this.parentElement.remove()"></i>
+                            </div>
+                        `;
+                        document.getElementById('answers-container').insertAdjacentHTML('beforebegin', alertHtml);
+                        return;
+                    }
+                }
 
                 const currentQuestion = {
                     question: document.getElementById('question-input').value,
                     answerType: document.getElementById('answer-type').value,
                     correctScore: parseInt(document.getElementById('correct-score').value, 10),
                     incorrectScore: parseInt(document.getElementById('incorrect-score').value, 10),
-                    answers: [],
+                    answers: Array.from(document.querySelectorAll('#answers-container textarea')).map(textarea => textarea.value),
                     correctAnswers: []
                 };
 
-                // Corrected query selector for answer textareas and inputs
-                const answerTexts = Array.from(document.querySelectorAll('#answers-container textarea')).map(textarea => textarea.value);
-                currentQuestion.answers = answerTexts;
-
-                const checkboxesOrRadios = Array.from(document.querySelectorAll('#answers-container input'));
-                checkboxesOrRadios.forEach(input => {
+                // Collect correct answers
+                const inputs = document.querySelectorAll('#answers-container input[type="checkbox"], #answers-container input[type="radio"]');
+                inputs.forEach(input => {
                     if (input.checked) {
-                        currentQuestion.correctAnswers.push(parseInt(input.getAttribute('data-index')));
+                        currentQuestion.correctAnswers.push(parseInt(input.dataset.index));
                     }
                 });
 
+                // Update or add question
                 if (questions[questionIndex]) {
                     questions[questionIndex] = currentQuestion;
                 } else {
                     questions.push(currentQuestion);
                 }
 
+                // Move to next question
                 questionIndex++;
                 if (!questions[questionIndex]) {
                     questions.push({
@@ -216,48 +262,41 @@
                         answerType: 'single-choice',
                         correctScore: 1,
                         incorrectScore: 0,
-                        answers: ['', '', ''], // Default 3 empty answers
+                        answers: ['', '', ''],
                         correctAnswers: []
                     });
                 }
                 displayQuestion(questionIndex);
             });
 
-
-            document.getElementById('back-btn').addEventListener('click', function (event) {
-                event.preventDefault();
+            document.getElementById('back-btn').addEventListener('click', (e) => {
+                e.preventDefault();
                 if (questionIndex > 0) {
-                    questionIndex--; // Go to previous question
-                    displayQuestion(questionIndex); // Show the current question
+                    questionIndex--;
+                    displayQuestion(questionIndex);
                 }
             });
 
-            document.getElementById('answer-type').addEventListener('change', function () {
+            document.getElementById('answer-type').addEventListener('change', function() {
                 const answerType = this.value;
                 const currentQuestion = questions[questionIndex];
 
-                if (answerType === 'true-false') {
-                    currentQuestion.answers = ['True', 'False']; // Set default True/False answers
-                } else{
-                    currentQuestion.answers = ['', '', '']; // Default 3 answers for other types
-                }
+                currentQuestion.answers = answerType === 'true-false' ? ['True', 'False'] : ['', '', ''];
+                currentQuestion.correctAnswers = [];
 
                 updateAnswerOptions(questionIndex);
             });
 
-            document.getElementById('add-answer-btn').addEventListener('click', function () {
-                const answerType = document.getElementById('answer-type').value;
+            document.getElementById('add-answer-btn').addEventListener('click', () => {
                 const currentQuestion = questions[questionIndex];
                 const newAnswerIndex = currentQuestion.answers.length;
-
-                currentQuestion.answers.push(''); // Add new empty answer
-                addAnswerOption(answerType, newAnswerIndex);
+                currentQuestion.answers.push('');
+                addAnswerOption(currentQuestion.answerType, newAnswerIndex);
             });
 
+            // Initial display
+            displayQuestion(questionIndex);
         });
     </script>
-
-
 </body>
-
 </html>

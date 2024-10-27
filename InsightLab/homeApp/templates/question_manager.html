@@ -395,12 +395,13 @@
             });
 
             document.getElementById('answer-type').addEventListener('change', function() {
+                const currentAnswers = Array.from(document.querySelectorAll('#answers-container textarea')).map(textarea => textarea.value);
                 const answerType = this.value;
                 const currentQuestion = questions[questionIndex];
 
                 // Retain answer text between single and multiple-type WORKS ONLY IF SAVED
                 if (['single-choice', 'multiple-choice'].includes(currentQuestion.answerType) && ['single-choice', 'multiple-choice'].includes(answerType)) {
-                    // Retain the answers array
+                    currentQuestion.answers = currentAnswers;
                 } else {
                     currentQuestion.answers = answerType === 'true-false' ? ['True', 'False'] : ['', '', ''];
                 }

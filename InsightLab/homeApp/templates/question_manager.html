@@ -398,9 +398,15 @@
                 const answerType = this.value;
                 const currentQuestion = questions[questionIndex];
 
-                currentQuestion.answers = answerType === 'true-false' ? ['True', 'False'] : ['', '', ''];
-                currentQuestion.correctAnswers = [];
+                // Retain answer text between single and multiple-type WORKS ONLY IF SAVED
+                if (['single-choice', 'multiple-choice'].includes(currentQuestion.answerType) && ['single-choice', 'multiple-choice'].includes(answerType)) {
+                    // Retain the answers array
+                } else {
+                    currentQuestion.answers = answerType === 'true-false' ? ['True', 'False'] : ['', '', ''];
+                }
 
+                currentQuestion.correctAnswers = [];
+                currentQuestion.answerType = answerType;
                 updateAnswerOptions(questionIndex);
                 saveQuestionsToStorage();
             });

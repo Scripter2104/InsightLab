@@ -51,7 +51,7 @@
                         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
                             role="alert" id="alertBox" hidden>
                             <strong class="font-bold">Error!</strong>
-                            <span class="block sm:inline">Enter test time</span>
+                            <span class="block sm:inline" id="errorMessage">Enter test time</span>
                             <span class="absolute top-0 bottom-0 right-0 px-4 py-3"
                                 onclick="this.parentElement.remove()">
                                 <svg class="fill-current h-6 w-6 text-red-500" role="button"
@@ -61,6 +61,10 @@
                                         d="M14.348 14.849a1 1 0 01-1.414 0L10 11.914l-2.935 2.935a1 1 0 01-1.414-1.414L8.586 10.5 5.651 7.565a1 1 0 111.414-1.414L10 8.586l2.935-2.935a1 1 0 011.414 1.414L11.414 10.5l2.935 2.935a1 1 0 010 1.414z" />
                                 </svg>
                             </span>
+                        </div>
+
+                        <div id="message" class="bg-green-100 p-4 rounded-md text-green-800 text-sm  mb-4" hidden>
+                            Time has been added.
                         </div>
 
 
@@ -116,7 +120,7 @@
 
         function saveInfo() {
             let alertBox = document.getElementById('alertBox');
-
+            let message_div = document.getElementById('message');
 
             if (timeCompleteRadio.checked && timeCompleteInput.value === "") {
                 alertBox.hidden = false;
@@ -127,21 +131,142 @@
             }
 
 
+
             if (timeCompleteRadio.checked) {
                 console.log("hello");
                 sessionStorage.setItem("timeComplete", timeCompleteInput.value);
                 sessionStorage.removeItem("timePerQuestion");
+                console.log("bye");
             }
             if (timePerQuestionRadio.checked) {
                 console.log("hello");
                 sessionStorage.setItem("timePerQuestion", timePerQuestionInput.value);
                 sessionStorage.removeItem("timeComplete");
+                console.log("bye");
+            }
+            message_div.hidden = false;
+
+        }
+
+        function toggleInputState() {
+            if (timeCompleteRadio.checked) {
+                timeCompleteInput.disabled = false;
+                timePerQuestionInput.disabled = true;
+                timePerQuestionInput.value = "";
+            } else if (timePerQuestionRadio.checked) {
+                timeCompleteInput.disabled = true;
+                timePerQuestionInput.disabled = false;
+                timeCompleteInput.value = "";
             }
         }
 
-        function activateTest() {
-            saveInfo();
+        window.onload = function () {
+            toggleInputState();
         }
+
+        function saveInfo() {
+            let alertBox = document.getElementById('alertBox');
+            let message_div = document.getElementById('message');
+
+
+            if (timeCompleteRadio.checked && timeCompleteInput.value === "") {
+                alertBox.hidden = false;
+                return;
+            } else if (timePerQuestionRadio.checked && timePerQuestionInput.value === "") {
+                alertBox.hidden = false;
+                return;
+            }
+
+            if (timeCompleteRadio.checked) {
+                sessionStorage.setItem("timeComplete", timeCompleteInput.value);
+                sessionStorage.removeItem("timePerQuestion");
+            }
+            if (timePerQuestionRadio.checked) {
+                sessionStorage.setItem("timePerQuestion", timePerQuestionInput.value);
+                sessionStorage.removeItem("timeComplete");
+            }
+
+            message_div.hidden = false;
+        }
+
+
+        function activateTest() {
+            console.log("jbdkagckuau");
+            saveInfo();
+            let alertBox = document.getElementById('alertBox');
+            let errorMessage = document.getElementById('errorMessage');
+            alertBox.hidden = true;
+
+            const testName = sessionStorage.getItem("testName");
+            const timeComplete = sessionStorage.getItem("timeComplete");
+            const timePerQuestion = sessionStorage.getItem("timePerQuestion");
+            const questions = sessionStorage.getItem("questions");
+            const passMarks = sessionStorage.getItem("passMarks");
+            const maxMarks = sessionStorage.getItem("maxMarks");
+            const selectedFields = sessionStorage.getItem("selectedFields");
+            const summaryMessage = sessionStorage.getItem("summaryMessage");
+
+            if (!testName) {
+                alertBox.hidden = false;
+                errorMessage.innerHTML = "Please enter test name";
+                return;
+            } else if (!timeComplete && !timePerQuestion) {
+                alertBox.hidden = false;
+                errorMessage.innerHTML = "Please enter test time";
+                return;
+            } else if (!questions) {
+                alertBox.hidden = false;
+                errorMessage.innerHTML = "Please add questions";
+                return;
+            } else if (!passMarks) {
+                alertBox.hidden = false;
+                errorMessage.innerHTML = "Please enter pass marks";
+                return;
+            } else if (!maxMarks) {
+                alertBox.hidden = false;
+                errorMessage.innerHTML = "Please enter max marks";
+                return;
+            } else if (!selectedFields) {
+                alertBox.hidden = false;
+                errorMessage.innerHTML = "Please select fields";
+                return;
+            }
+
+            let testData = {
+                "testName": testName,
+                "timeComplete": timeComplete,
+                "timePerQuestion": timePerQuestion,
+                "questions": JSON.parse(questions),
+                "passMarks": passMarks,
+                "maxMarks": maxMarks,
+                "selectedFields": selectedFields,
+                "summaryMessage": summaryMessage
+            };
+
+            console.log("byeeeeeeee" + testData);
+            const csrftoken = getCookie('csrftoken');
+            fetch('activate_test/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(testData)
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.error) {
+                        alert('Pages says Error!');
+                    }
+                    else {
+                        alert('Test Activated! visit home page');
+                    }
+
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
 
         function cancelInfo() {
             sessionStorage.removeItem("timeComplete");
@@ -166,6 +291,24 @@
 
             }
         }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
 
     </script>
 

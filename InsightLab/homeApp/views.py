@@ -48,8 +48,6 @@ def activate_test(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-
-            # Extracting data from the received JSON
             test_name = data.get("testName")
             time_complete = data.get("timeComplete")
             time_per_question = data.get("timePerQuestion")
@@ -63,9 +61,11 @@ def activate_test(request):
                 time=time_complete.split(":")
                 time_complete=(int(time[0])*60)+(int(time[1]))*60
 
+
             if  time_per_question!=None:
                 time=time_per_question.split(":")
                 time_per_question=(int(time[0])*60)+(int(time[1]))
+
 
 
 
@@ -84,11 +84,45 @@ def activate_test(request):
             )
 
 
+            test.link=request.build_absolute_uri(test.generate_test_link())
             test.is_active = True
-            test.time_limit = time_complete if time_complete else time_per_question * len(questions)
-            test.time_per_question = time_per_question if time_per_question else 0
+            test.time_limit = time_complete if time_complete!=None else time_per_question * len(questions)
+            test.time_per_question = time_per_question if time_per_question!=None else 0
             test.summary_message = summary_message if summary_message is not None else "Thank you for taking the test!"
+            #test.save()
 
+
+            for questions_data in questions:
+                question_text=questions_data.get('question')
+                question_type=questions_data.get('answerType')
+                correct_point=questions_data.get('correctScore')
+                incorrect_points=questions_data.get('incorrectScore')
+                answers=questions_data.get('answers')
+                correctAnswer=questions_data.get('correctAnswers')
+
+
+                question=Question(
+                    test=test,
+                    question_text=question_text,
+                    question_type=question_type,
+                    correct_points=correct_point,
+                    incorrect_points=incorrect_points
+                )
+                #question.save()
+
+                for index,option_text in enumerate(answers):
+                        is_correct=index in correctAnswer
+                        option=Option(
+                            question=question,
+                            option_text=option_text,
+                            is_correct=is_correct
+                        )
+                        #option.save()
+
+                testConfiguration=TestConfiguration(
+                    test=test,
+                )
+                #testConfiguration.save()
 
             return JsonResponse({'message': 'Test activated successfully', 'test_id': test.id})
 

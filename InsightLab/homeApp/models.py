@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 from django.urls import reverse
+from django.utils.http import urlencode
+
 
 
 class Test(models.Model):
@@ -24,9 +26,11 @@ class Test(models.Model):
         super().save(*args, **kwargs)
 
     def generate_test_link(self):
-        return reverse('InsightLab', kwargs={'test_id': str(self.unique_id)})
+        path = reverse('InsightLab', kwargs={'test_id': str(self.unique_id)})
+        return path
 
-
+    class Meta:
+        unique_together = ('user', 'name', 'unique_id')
 
 
 class Question(models.Model):
@@ -53,5 +57,3 @@ class TestConfiguration(models.Model):  # New model for test configuration
     test = models.OneToOneField(Test, on_delete=models.CASCADE, related_name='configuration')
     require_name = models.BooleanField(default=True)
     additional_fields = models.JSONField(default=dict)
-
-

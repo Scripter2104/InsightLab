@@ -281,17 +281,21 @@
             }
             else {
                 let message = quill.root.innerHTML;
+                if(quill.getText().trim()!==""){
+                    sessionStorage.setItem("endMessage",message);
+                }
+                else{
+                    sessionStorage.setItem("endMessage","Thank you for taking the test");
+                }
                 messageDiv.textContent = "All information has been added.";
                 messageDiv.classList.remove('hidden');
-
-                sessionStorage.setItem("endMessage", message);
                 sessionStorage.setItem("passMarks", passMarks);
                 sessionStorage.setItem("passMarksUnit", passMarksUnit);
                 sessionStorage.setItem("maxMarks", maxMarks);
 
 
 
-                window.location.href = "{% url 'time_setting' %}"
+               // window.location.href = "{% url 'time_setting' %}"
             }
         }
 

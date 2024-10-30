@@ -21,7 +21,7 @@ from loginApp.views import signup_view
 from homeApp.views import home_view, newtest_view, test_start_page_config, question_manager_view, grading_summary_view, start_test_view, time_setting_view, activate_test
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', login_view, name='login'),
     path('signup/', signup_view, name='signup'),
     path('home/', home_view, name='home'),

@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from .models import Test, TestConfiguration, Option, Question
 
 
+
 # Create your views here.
 
 def home_view(request, *ags, **kwargs):
@@ -46,6 +47,7 @@ def start_test_view(request, *ags, **kwargs):
 @login_required
 def activate_test(request):
     if request.method == 'POST':
+
         try:
             data = json.loads(request.body)
             test_name = data.get("testName")
@@ -54,19 +56,16 @@ def activate_test(request):
             questions = data.get("questions")
             pass_marks = data.get("passMarks")
             max_marks = data.get("maxMarks")
-            selected_fields = data.get("selectedFields")
+            selected_fields = json.loads(data.get("selectedFields"))
             summary_message = data.get("summaryMessage")
 
             if time_complete!=None:
                 time=time_complete.split(":")
                 time_complete=(int(time[0])*60)+(int(time[1]))*60
 
-
             if  time_per_question!=None:
                 time=time_per_question.split(":")
                 time_per_question=(int(time[0])*60)+(int(time[1]))
-
-
 
 
             # Validation
@@ -88,8 +87,8 @@ def activate_test(request):
             test.is_active = True
             test.time_limit = time_complete if time_complete!=None else time_per_question * len(questions)
             test.time_per_question = time_per_question if time_per_question!=None else 0
-            test.summary_message = summary_message if summary_message is not None else "Thank you for taking the test!"
-            #test.save()
+            test.summary_message = summary_message if summary_message!=None or summary_message!='' else "Thank you for taking the test!"
+            test.save()
 
 
             for questions_data in questions:
@@ -100,7 +99,6 @@ def activate_test(request):
                 answers=questions_data.get('answers')
                 correctAnswer=questions_data.get('correctAnswers')
 
-
                 question=Question(
                     test=test,
                     question_text=question_text,
@@ -108,21 +106,28 @@ def activate_test(request):
                     correct_points=correct_point,
                     incorrect_points=incorrect_points
                 )
-                #question.save()
+                question.save()
 
+                print(correctAnswer,answers,end='\n')
                 for index,option_text in enumerate(answers):
                         is_correct=index in correctAnswer
+                        print(index,option_text,correctAnswer,is_correct,end='\n')
                         option=Option(
                             question=question,
                             option_text=option_text,
                             is_correct=is_correct
                         )
-                        #option.save()
+                        option.save()
 
-                testConfiguration=TestConfiguration(
-                    test=test,
-                )
-                #testConfiguration.save()
+
+            selected_fields=selected_fields[1:-1]
+            selected_fields=selected_fields.split(",")
+            selected_fields=[fields[1:-1] for fields in selected_fields]
+            testConfiguration=TestConfiguration(
+                test=test,
+                additional_fields=selected_fields
+            )
+            testConfiguration.save()
 
             return JsonResponse({'message': 'Test activated successfully', 'test_id': test.id})
 

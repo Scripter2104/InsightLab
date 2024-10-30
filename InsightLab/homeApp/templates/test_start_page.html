@@ -49,7 +49,7 @@
                             <!-- Pre-added First name-text field -->
                             <tr class="border-t">
                                 <td class="px-4 py-2">
-                                    <span>First name-text field</span>
+                                    <span>First-Name</span>
                                 </td>
                                 <td class="px-4 py-2 text-center">
                                     <input type="checkbox" class="form-checkbox text-green-500 h-5 w-5" checked
@@ -88,19 +88,19 @@
                     <div id="dropdown-menu"
                         class="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                         <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            onclick="addField('Last name-text field')">Last name-text field</a>
+                            onclick="addField('Last-Name')">Last-Name</a>
                         <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            onclick="addField('Age-number')">Age-number</a>
+                            onclick="addField('Age')">Age</a>
                         <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            onclick="addField('City-text field')">City-text field</a>
+                            onclick="addField('City')">City</a>
                         <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            onclick="addField('Email Address-email')">Email Address-email</a>
+                            onclick="addField('Email-Address')">Email-Address</a>
                         <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            onclick="addField('ID-text field')">ID-text field</a>
+                            onclick="addField('ID')">ID</a>
                         <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            onclick="addField('Gender-single choice')">Gender-single choice</a>
+                            onclick="addField('Gender')">Gender</a>
                         <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            onclick="addField('Phone-text field')">Phone-text field</a>
+                            onclick="addField('Phone')">Phone</a>
                     </div>
                 </div>
 
@@ -120,7 +120,6 @@
 
     <script>
         const selectedFields = [];
-        selectedFields.push("First name"); // Default field
 
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
@@ -200,9 +199,6 @@
 
             // Re-add the "First name" field as default
             selectedFields.length = 0; // Clear the selected fields array
-            selectedFields.push("First name"); // Add the default "First name" back
-            addField("First name"); // Re-add "First name" to the table
-
             sessionStorage.setItem('selectedFields', JSON.stringify(selectedFields)); // Update sessionStorage
         }
 
@@ -215,11 +211,7 @@
         // Load fields from sessionStorage on page load
         window.onload = function () {
             const savedFields = JSON.parse(sessionStorage.getItem('selectedFields') || '[]');
-            savedFields.forEach((field) => {
-                if (field !== "First name") { // Avoid duplicating the default field
-                    addField(field);
-                }
-            });
+
         }
 
     </script>

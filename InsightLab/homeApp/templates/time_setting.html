@@ -53,7 +53,7 @@
                             <strong class="font-bold">Error!</strong>
                             <span class="block sm:inline" id="errorMessage">Enter test time</span>
                             <span class="absolute top-0 bottom-0 right-0 px-4 py-3"
-                                onclick="this.parentElement.remove()">
+                                onclick="removeAlert()">
                                 <svg class="fill-current h-6 w-6 text-red-500" role="button"
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <title>Close</title>
@@ -75,7 +75,7 @@
                                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-300"
                                 onclick="saveInfo()">Save</button>
                             <button type="button"
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition duration-300"
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition duration-300 disabled:bg-gray-600" id="activateButton"
                                 onclick="activateTest()">Activate
                                 Test</button>
                         </div>
@@ -189,9 +189,14 @@
             message_div.hidden = false;
         }
 
+        function removeAlert(){
+         let alertBox = document.getElementById('alertBox');
+         alertBox.hidden=true;
+        }
+
 
         function activateTest() {
-            console.log("jbdkagckuau");
+            const activateButton=document.getElementById('activateButton');
             saveInfo();
             let alertBox = document.getElementById('alertBox');
             let errorMessage = document.getElementById('errorMessage');
@@ -222,15 +227,13 @@
                 alertBox.hidden = false;
                 errorMessage.innerHTML = "Please enter pass marks";
                 return;
-            } else if (!maxMarks) {
+            } else{
                 alertBox.hidden = false;
                 errorMessage.innerHTML = "Please enter max marks";
                 return;
-            } else if (!selectedFields) {
-                alertBox.hidden = false;
-                errorMessage.innerHTML = "Please select fields";
-                return;
             }
+
+
 
             let testData = {
                 "testName": testName,
@@ -239,11 +242,13 @@
                 "questions": JSON.parse(questions),
                 "passMarks": passMarks,
                 "maxMarks": maxMarks,
-                "selectedFields": selectedFields,
+                "selectedFields": JSON.stringify(selectedFields),
                 "summaryMessage": summaryMessage
             };
 
-            console.log("byeeeeeeee" + testData);
+
+            activateButton.disabled=true;
+
             const csrftoken = getCookie('csrftoken');
             fetch('activate_test/', {
                 method: 'POST',
@@ -257,14 +262,18 @@
                 .then(data => {
 
                     if (data.error) {
-                        alert('Pages says Error!');
+                        alert('Pages says Error!'+" "+data.error);
                     }
                     else {
                         alert('Test Activated! visit home page');
+                        sessionStorage.clear();
+                        window.location.href="{% url 'home' %}"
                     }
 
                 })
                 .catch(error => console.error('Error:', error));
+
+
         }
 
 

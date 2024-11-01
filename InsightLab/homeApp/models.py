@@ -33,7 +33,7 @@ class Test(models.Model):
         return str(self.unique_id)
 
     class Meta:
-        unique_together = ('user', 'name', 'unique_id')
+        unique_together = ('user', 'name')
 
 
 class Question(models.Model):

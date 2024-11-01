@@ -37,56 +37,60 @@
     <div class="flex min-h-screen">
         {% include 'vertical_navbar.html' %}
 
-        <main class="w-3/4 bg-gray-100 p-6 main-content overflow-auto max-h-[calc(100vh-64px)]">
-            <div id="question-container">
-                <div class="question-block">
-                    <div class="mb-6 flex items-center">
-                        <button id="back-btn"
-                            class="text-gray-600 hover:text-gray-800 transition-colors duration-300 mr-2">
-                            <i class="fas fa-arrow-left fa-lg"></i>
-                        </button>
-                        <h2 id="question-number" class="text-xl font-bold text-gray-800">Question 1</h2>
-                    </div>
-                    <div class="mb-6">
-                        <label for="question-input" class="block text-gray-700 font-bold mb-2">Question</label>
-                        <input type="text" id="question-input" placeholder="Enter your question"
-                            class="w-full p-3 border border-gray-300 rounded-lg">
-                        <div id="question-error" class="error-text hidden">Question text cannot be empty</div>
-                    </div>
-                    <div class="mb-6">
-                        <label for="answer-type" class="block text-gray-700 font-bold mb-2">Answer Type</label>
-                        <select id="answer-type" class="w-full p-3 border border-gray-300 rounded-lg">
-                            <option value="single-choice">Single choice</option>
-                            <option value="multiple-choice">Multiple choice</option>
-                            <option value="true-false">True/False</option>
-                        </select>
-                    </div>
-
-                    <div id="answers-container"></div>
-                    <button id="add-answer-btn" class="bg-green-500 text-white px-4 py-2 rounded">Add Options</button>
-
-                    <div class="flex space-x-6 mb-6">
-                        <div class="w-1/2">
-                            <label for="correct-score" class="block text-gray-700 font-bold mb-2">Points for correct
-                                answer</label>
-                            <input type="number" id="correct-score" value="1"
-                                class="w-full p-3 border border-gray-300 rounded-lg">
-                            <div id="correct-score-error" class="error-text hidden">Points must be between 0 and 1000</div>
+        <main class="w-3/4 bg-gray-50 p-8 main-content overflow-auto max-h-[calc(100vh-64px)]">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div id="question-container">
+                    <div class="question-block">
+                        <div class="mb-6 flex items-center">
+                            <button id="back-btn"
+                                class="text-gray-600 hover:text-gray-800 transition-colors duration-300 mr-2">
+                                <i class="fas fa-arrow-left fa-lg"></i>
+                            </button>
+                            <h2 id="question-number" class="text-xl font-bold text-gray-800">Question 1</h2>
+    <!--                        <span id="saved-indicator" class="text-green-500 text-xs border rounded-md border-green-500 mt-1 ml-2 px-1 hidden"> Saved </span>-->
+    <!--                        <span id="unsaved-indicator" class="text-red-500 text-xs border rounded-md border-red-500 mt-1 ml-2 px-1"> Unsaved </span>-->
                         </div>
-                        <div class="w-1/2">
-                            <label for="incorrect-score" class="block text-gray-700 font-bold mb-2">Points for incorrect
-                                answer</label>
-                            <input type="number" id="incorrect-score" value="0"
+                        <div class="mb-6">
+                            <label for="question-input" class="block text-gray-700 font-bold mb-2">Question</label>
+                            <input type="text" id="question-input" placeholder="Enter your question"
                                 class="w-full p-3 border border-gray-300 rounded-lg">
-                            <div id="incorrect-score-error" class="error-text hidden">Points must be between -999 and 0</div>
+                            <div id="question-error" class="error-text hidden">Question text cannot be empty</div>
+                        </div>
+                        <div class="mb-6">
+                            <label for="answer-type" class="block text-gray-700 font-bold mb-2">Answer Type</label>
+                            <select id="answer-type" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="single-choice">Single choice</option>
+                                <option value="multiple-choice">Multiple choice</option>
+                                <option value="true-false">True/False</option>
+                            </select>
+                        </div>
+
+                        <div id="answers-container"></div>
+                        <button id="add-answer-btn" class="bg-green-500 text-white px-4 py-2 rounded">Add Options</button>
+
+                        <div class="flex space-x-6 mb-6">
+                            <div class="w-1/2">
+                                <label for="correct-score" class="block text-gray-700 font-bold mb-2">Points for correct
+                                    answer</label>
+                                <input type="number" id="correct-score" value="1"
+                                    class="w-full p-3 border border-gray-300 rounded-lg">
+                                <div id="correct-score-error" class="error-text hidden">Points must be between 0 and 1000</div>
+                            </div>
+                            <div class="w-1/2">
+                                <label for="incorrect-score" class="block text-gray-700 font-bold mb-2">Points for incorrect
+                                    answer</label>
+                                <input type="number" id="incorrect-score" value="0"
+                                    class="w-full p-3 border border-gray-300 rounded-lg">
+                                <div id="incorrect-score-error" class="error-text hidden">Points must be between -999 and 0</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex space-x-4">
-                <button id="save-next-btn" class="bg-blue-400 text-white px-4 py-2 rounded">Save & Next</button>
-                <button id="save-btn" class="bg-green-600 text-white px-4 py-2 rounded">Save</button>
-                <button id="cancel-btn" class="bg-red-600 text-white px-4 py-2 rounded">Cancel</button>
+                <div class="flex space-x-4">
+                    <button id="save-next-btn" class="bg-blue-400 text-white px-4 py-2 rounded">Save & Next</button>
+                    <button id="save-btn" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+                    <button id="cancel-btn" class="bg-red-500 text-white px-4 py-2 rounded">Cancel</button>
+                </div>
             </div>
         </main>
     </div>
@@ -94,7 +98,7 @@
     <script>
         let questions = [];
         document.addEventListener('DOMContentLoaded', () => {
-            let questionIndex = 0;
+        let questionIndex = 0;
 
             // Load questions from sessionStorage if they exist
             function loadQuestionsFromStorage() {
@@ -103,9 +107,6 @@
 
                 if (storedQuestions) {
                     questions = JSON.parse(storedQuestions);
-                    if (questions.length === 0) {
-                        initializeDefaultQuestion();
-                    }
                 } else {
                     initializeDefaultQuestion();
                 }
@@ -127,7 +128,7 @@
                     answers: ['', '', ''],
                     correctAnswers: []
                 }];
-                saveQuestionsToStorage();
+//                saveQuestionsToStorage();
             }
 
             function saveQuestionsToStorage() {
@@ -245,7 +246,7 @@
                     errorDiv.id = `answer-error-${newIndex}`;
                 });
 
-                saveQuestionsToStorage();
+//                saveQuestionsToStorage();
             }
 
             function validateQuestion() {
@@ -379,7 +380,7 @@
                             answers: ['', '', ''],
                             correctAnswers: []
                         });
-                        saveQuestionsToStorage();
+//                        saveQuestionsToStorage();
                     }
                     displayQuestion(questionIndex);
                 }
@@ -410,15 +411,13 @@
 
                 // Retain answer text between single and multiple-type WORKS ONLY IF SAVED
                 if (['single-choice', 'multiple-choice'].includes(newAnswerType)) {
-                    currentQuestion.answers = currentAnswers;
-                } else if (newAnswerType === 'true-false') {
-                    currentQuestion.answers = ['True', 'False'];
+                    currentQuestion.answers = currentAnswers
                 }
 
                 currentQuestion.correctAnswers = [];
                 currentQuestion.answerType = newAnswerType;
                 updateAnswerOptions(questionIndex);
-                saveQuestionsToStorage();
+//                saveQuestionsToStorage();
             });
 
             document.getElementById('add-answer-btn').addEventListener('click', () => {
@@ -426,7 +425,7 @@
                 const newAnswerIndex = currentQuestion.answers.length;
                 currentQuestion.answers.push('');
                 addAnswerOption(currentQuestion.answerType, newAnswerIndex);
-                saveQuestionsToStorage();
+//                saveQuestionsToStorage();
             });
 
 //            document.getElementById('cancel-btn').addEventListener('click', () => {

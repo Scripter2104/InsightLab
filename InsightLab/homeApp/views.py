@@ -41,7 +41,12 @@ def time_setting_view(request, *args, **kwargs):
 
 
 def start_test_view(request, *ags, **kwargs):
-    return render(request, 'start_test.html', {})
+    test = Test.objects.get(unique_id=kwargs['test_id'])
+    testName = test.name
+    testConfig = TestConfiguration.objects.get(test=test)
+    print(testConfig)
+    fields = testConfig.additional_fields
+    return render(request, 'start_test.html', {"testConfig": testConfig, "fields": fields, "testName": testName})
 
 
 @login_required

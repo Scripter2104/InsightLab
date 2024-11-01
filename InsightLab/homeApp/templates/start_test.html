@@ -1,13 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    {% comment %} <link rel="stylesheet" href="{% static 'output.css' %}"> {% endcomment %}
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto p-4">
+        <div class="bg-white p-4 rounded shadow-sm mb-4">
+            <h1 class="text-xl font-semibold">{{testName|safe}}</h1>
+        </div>
+        <div class="bg-white p-6 rounded shadow-sm">
+            <h2 class="text-sm font-semibold mb-2">TEST START FORM</h2>
+            <h3 class="text-lg font-semibold mb-4">Start the test</h3>
+            <p class="mb-4">Fill in the form before starting the test.</p>
+            <form>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1" for="first-name">First name</label>
+                    <input type="text" id="first-name" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                {% if 'Last-Name' in fields %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1" for="last-name">Last name</label>
+                    <input type="text" id="last-name" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                {% endif %}
+                {% if 'Age' in fields %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1" for="age">Age</label>
+                    <input type="text" id="age" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                {% endif %}
+                {% if 'City' in fields %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1" for="city">City</label>
+                    <input type="text" id="city" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                {% endif %}
+                {% if 'Email-Address' in fields %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1" for="email">E-mail address</label>
+                    <input type="email" id="email" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                {% endif %}
+                {% if 'ID' in fields %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1" for="id">ID Number</label>
+                    <input type="text" id="id" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                {% endif %}
+                {% if 'Gender' in fields %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Gender:</label>
+                    <div class="flex items-center">
+                        <label class="mr-2">
+                            <input type="radio" name="gender" required> Female
+                        </label>
+                        <label class="ml-4 mr-2">
+                            <input type="radio" name="gender" required> Male
+                        </label>
+                    </div>
+                </div>
+                {% endif %}
+                {% if 'Phone' in fields %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1" for="phone">Phone</label>
+                    <input type="tel" id="phone" class="w-full border border-gray-300 rounded p-2" required>
+                </div>
+                {% endif %}
+                <div>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Start test</button>
+                </div>
+            </form>
+        </div>
+        <div class="text-center mt-4 text-gray-500">
+            <p>Powered by <span class="font-semibold text-green-500">InsightLab</span></p>
+        </div>
+    </div>
 
-
-
+    <script>
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', function(e) {
+            const phoneNumber = e.target.value;
+            const validPhoneNumber = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+            if (!validPhoneNumber.test(phoneNumber)) {
+                phoneInput.setCustomValidity('Please enter a valid phone number');
+            } else {
+                phoneInput.setCustomValidity('');
+            }
+        });
+    </script>
 </body>
 </html>

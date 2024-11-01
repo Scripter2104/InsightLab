@@ -82,7 +82,7 @@
                     </form>
                 </div>
             </div>
-
+        </main>
     </div>
 
     </main>
@@ -227,7 +227,7 @@
                 alertBox.hidden = false;
                 errorMessage.innerHTML = "Please enter pass marks";
                 return;
-            } else{
+            } else if(!maxMarks){
                 alertBox.hidden = false;
                 errorMessage.innerHTML = "Please enter max marks";
                 return;

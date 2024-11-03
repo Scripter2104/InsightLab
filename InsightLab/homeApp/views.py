@@ -28,8 +28,7 @@ def question_manager_view(request, *args, **kwargs):
     return render(request, 'question_manager.html', {})
 
 
-def start_test(request, *args, **kwargs):
-    return render(request, 'start_test.html', {})
+
 
 
 def grading_summary_view(request, *args, **kwargs):
@@ -39,14 +38,6 @@ def grading_summary_view(request, *args, **kwargs):
 def time_setting_view(request, *args, **kwargs):
     return render(request, 'time_setting.html', {})
 
-
-def start_test_view(request, *ags, **kwargs):
-    test = Test.objects.get(unique_id=kwargs['test_id'])
-    testName = test.name
-    testConfig = TestConfiguration.objects.get(test=test)
-    print(testConfig)
-    fields = testConfig.additional_fields
-    return render(request, 'start_test.html', {"testConfig": testConfig, "fields": fields, "testName": testName})
 
 
 @login_required

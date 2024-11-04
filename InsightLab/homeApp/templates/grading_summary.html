@@ -71,16 +71,15 @@
                 </div>
 
                 <!-- Grading Criteria Section -->
-                <div class="bg-white p-6 rounded-lg mb-6">
+                <div class="bg-white p-6 rounded-lg">
                     <!-- Grading Criteria Title -->
                     <div class="border-b pb-4 mb-4">
                         <h2 class="text-xl font-semibold text-gray-800">GRADING CRITERIA</h2>
                     </div>
 
                     <!-- Maximum Possible Score -->
-                    <!-- Maximum Possible Score -->
-                    <div class="mb-4">
-                        <label class="block text-gray-600 mb-2">Maximum possible score (100):</label>
+                    <div class="mb-6">
+                        <label class="block text-gray-600 mb-2">Maximum possible score</label>
                         <div class="flex items-center space-x-4">
                             <textarea id="max-mark-value"
                                 class="flex-1 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-green-400"
@@ -96,9 +95,9 @@
 
 
                     <!-- Pass Mark Section -->
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-2">
                         <label class="block text-gray-600">Pass mark</label>
-                        <input type="checkbox" class="toggle-checkbox ml-auto" checked onclick="togglePassMark(this)" />
+<!--                        <input type="checkbox" class="toggle-checkbox ml-auto" checked onclick="togglePassMark(this)" />-->
                     </div>
 
                     <!-- Pass Mark Value Input -->
@@ -248,12 +247,12 @@
     <script>
         let quill;
 
-        function togglePassMark(checkbox) {
-            const valueInput = document.getElementById('pass-mark-value');
-            const unitSelect = document.getElementById('pass-mark-unit');
-            valueInput.disabled = !checkbox.checked;
-            unitSelect.disabled = !checkbox.checked;
-        }
+//        function togglePassMark(checkbox) {
+//            const valueInput = document.getElementById('pass-mark-value');
+//            const unitSelect = document.getElementById('pass-mark-unit');
+//            valueInput.disabled = !checkbox.checked;
+//            unitSelect.disabled = !checkbox.checked;
+//        }
 
         function syncUnits(source) {
             const maxMarkUnit = document.getElementById('max-mark-unit');

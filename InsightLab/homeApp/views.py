@@ -13,7 +13,12 @@ from .models import Test, TestConfiguration, Option, Question
 # Create your views here.
 
 def home_view(request, *ags, **kwargs):
-    return render(request, 'home_page.html', {})
+    user = request.user
+    if user.is_authenticated:
+        tests = Test.objects.filter(user=user).order_by('-created_at')
+        return render(request, 'home_page.html', {'tests': tests})
+    else:
+        redirect('login')
 
 
 def newtest_view(request, *args, **kwargs):
@@ -28,16 +33,12 @@ def question_manager_view(request, *args, **kwargs):
     return render(request, 'question_manager.html', {})
 
 
-
-
-
 def grading_summary_view(request, *args, **kwargs):
     return render(request, 'grading_summary.html', {})
 
 
 def time_setting_view(request, *args, **kwargs):
     return render(request, 'time_setting.html', {})
-
 
 
 @login_required

@@ -48,12 +48,12 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 text-gray-800 overflow-hidden">
 
     <div class="flex min-h-screen">
     
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-lg">
+        <aside class="h-dvh w-64 bg-white shadow-lg">
             <div class="p-6">
                 <h2 class="text-2xl font-bold text-green-600">InsightLab</h2>
             </div>
@@ -84,18 +84,18 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 p-6">
+        <div class="flex-1 p-6 max-h-screen overflow-y-auto ">
             <!-- Header -->
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-semibold">My Tests</h1>
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
+                <h1 class="text-2xl font-semibold">My Tests</h1>
                 <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="generateTest()">New Test</button>
             </div>
 
             <!-- Test List -->
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- Test Card -->
                 {% for test in tests %}
-                <div class="card-wrapper bg-white shadow-lg rounded-lg p-4">
+                <div class="card-wrapper flex flex-col justify-between bg-white shadow-lg rounded-lg h-44 p-4">
                     <div class="flex justify-between items-center">
                         {% if test.is_active %}
                         <span class="bg-green-200 text-green-600 px-2 py-1 rounded text-sm">Active</span>
@@ -104,12 +104,12 @@
                         {% endif %}
                         <span class="text-gray-400 text-sm">Created: {{test.created_at}}</span>
                     </div>
-                    <h1 class="text-xl font-bold mt-4">{{test.name|striptags}}</h1>
+                    <h1 class="overflow-hidden text-xl font-semibold mt-2">{{test.name|striptags}}</h1>
                     <p class="text-gray-600">No description</p>
-                    {% comment %} <div class="flex justify-between items-center mt-4">
+                    <div class="flex justify-between items-center mt-4">
                         <span class="text-sm text-gray-500">7% avg. score</span>
                         <span class="text-sm text-gray-500">Results (5)</span>
-                    </div> {% endcomment %}
+                    </div>
                 </div>
                 {% endfor %}
 
@@ -119,27 +119,29 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const cardWrappers = document.getElementsByClassName('card-wrapper');
+        if (window.innerWidth > 1024) {
+            const cardWrappers = document.getElementsByClassName('card-wrapper');
 
-        Array.from(cardWrappers).forEach(wrapper => {
-            wrapper.addEventListener('mousemove', (event) => {
-                const rect = wrapper.getBoundingClientRect();
-                const x = event.clientX - rect.left; // X coordinate inside the card wrapper
-                const y = event.clientY - rect.top;  // Y coordinate inside the card wrapper
+            Array.from(cardWrappers).forEach(wrapper => {
+                wrapper.addEventListener('mousemove', (event) => {
+                    const rect = wrapper.getBoundingClientRect();
+                    const x = event.clientX - rect.left; // X coordinate inside the card wrapper
+                    const y = event.clientY - rect.top;  // Y coordinate inside the card wrapper
 
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
 
-                const rotateX = (y - centerY) / centerY * 10;
-                const rotateY = (x - centerX) / centerX * -10;
+                    const rotateX = (y - centerY) / centerY * 10;
+                    const rotateY = (x - centerX) / centerX * -10;
 
-                wrapper.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    wrapper.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+
+                wrapper.addEventListener('mouseleave', () => {
+                    wrapper.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+                });
             });
-
-            wrapper.addEventListener('mouseleave', () => {
-                wrapper.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-            });
-        });
+        }
     });
 
     function generateTest(){

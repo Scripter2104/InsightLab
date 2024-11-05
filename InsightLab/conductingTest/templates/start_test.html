@@ -17,7 +17,7 @@
 <body class="bg-gray-100">
     <div class="max-w-4xl mx-auto p-4">
         <div class="bg-white p-4 rounded shadow-sm mb-4">
-            <h1 class="text-xl font-semibold">{{testName|safe}}</h1>
+            <div id="text" class="text-xl font-semibold">{{testName|safe}}</div>
         </div>
         <div class="bg-white p-6 rounded shadow-sm">
             <h2 class="text-sm font-semibold mb-2">TEST START FORM</h2>
@@ -92,24 +92,31 @@
     </div>
 
     <script>
-        const phoneInput = document.getElementById('phone');
-        phoneInput.addEventListener('input', function (e) {
-            const phoneNumber = e.target.value;
-            const validPhoneNumber = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
-            if (!validPhoneNumber.test(phoneNumber)) {
-                phoneInput.setCustomValidity('Please enter a valid phone number');
-            } else {
-                phoneInput.setCustomValidity('');
-            }
-        });
+        document.addEventListener('DOMContentLoaded', function() {
 
-        const emailInput = document.getElementById('email');
-        emailInput.addEventListener('input', () => {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(emailInput.value)) {
-                emailInput.setCustomValidity('Please enter a valid email address');
-            } else {
-                emailInput.setCustomValidity('');
+            const phoneInput = document.getElementById('phone');
+            if(phoneInput){
+                phoneInput.addEventListener('input', function(e) {
+                    const phoneNumber = e.target.value;
+                    const validPhoneNumber = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+                    if (!validPhoneNumber.test(phoneNumber)) {
+                        phoneInput.setCustomValidity('Please enter a valid phone number');
+                    } else {
+                        phoneInput.setCustomValidity('');
+                    }
+                });
+            }
+
+            const emailInput = document.getElementById('email');
+            if(emailInput){
+                emailInput.addEventListener('input',()=>{
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(emailInput.value)) {
+                        emailInput.setCustomValidity('Please enter a valid email address');
+                    } else {
+                        emailInput.setCustomValidity('');
+                    }
+                });
             }
         });
     </script>

@@ -18,7 +18,7 @@ def home_view(request, *ags, **kwargs):
         tests = Test.objects.filter(user=user).order_by('-created_at')
         return render(request, 'home_page.html', {'tests': tests})
     else:
-        redirect('login')
+        return redirect('login')
 
 
 def newtest_view(request, *args, **kwargs):

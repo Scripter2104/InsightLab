@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'loginApp',
     'homeApp',
     'conductingTest',
-
 ]
 
 MIDDLEWARE = [

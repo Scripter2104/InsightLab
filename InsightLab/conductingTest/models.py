@@ -1,12 +1,12 @@
 import uuid
-
 from django.db import models
+from homeApp.models import Test
 
 
 # Create your models here.
 
 class RespondentData(models.Model):
-    test_id = models.UUIDField()
+    test_id = models.ForeignKey(Test, on_delete=models.CASCADE)
     respondent_id = models.UUIDField(default=uuid.uuid1, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100, blank=True, null=True)

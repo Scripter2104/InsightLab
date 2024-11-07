@@ -75,7 +75,6 @@
                         </svg>
                     </span>
                 </div>
-
           <br>
 
           <!-- Buttons -->
@@ -85,7 +84,6 @@
               onclick="createTest(event)" id="createBtn">
               Save
             </button>
-
 
           </div>
         </form>
@@ -101,32 +99,7 @@
   <script>
     let alertBox=document.getElementById('alertBox');
     console.log(alertBox);
-    function confirmationMessage() {
-      const modalBackdrop = document.getElementById('modalBackdrop');
-
-
-      document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
-        modalBackdrop.classList.add('hidden');
-        window.location.href = "{% url 'login' %}";
-      });
-
-      document.getElementById('cancelLogoutBtn').addEventListener('click', function () {
-
-      });
-    }
-
-    function homeConfirmationMessage() {
-      const modalBackdrop = document.getElementById('modalBackdrop2');
-
-
-      document.getElementById('backToHomeBtn').addEventListener('click', () => {
-        window.location.href = "{% url 'home' %}";
-      });
-
-      document.getElementById('continueEditingBtn').addEventListener('click', () => {
-
-      });
-    }
+   
 
     function createTest(event) {
       event.preventDefault();

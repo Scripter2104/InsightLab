@@ -14,37 +14,47 @@
     <div class="flex flex-col items-center min-h-screen py-10">
 
         <!-- Header -->
-        <div class="flex items-center justify-between w-2/3 px-6 bg-white h-16 rounded-md ">
+        <div class="flex items-center justify-between w-2/3 px-6 bg-white h-16 rounded-md">
             <div class="flex items-center space-x-2">
-                <div class="text-green-500 text-2xl font-semibold"></div>
                 <span class="text-gray-900 text-xl font-semibold">InsightLab</span>
             </div>
-            <span class="text-gray-700 text-lg">Test name</span>
-            <span class="text-green-500 text-sm font-semibold">Time to answer: <span class="text-green-600">0 h 1 min. 33 sec.</span></span>
+            <div class="flex items-center space-x-2 ml-32">
+                <span class="text-black-500 text-2xl font-semibold">{{ test_name|safe }}</span>
+            </div>
+
+            <div class="text-gray-700 text-lg" id="testName"></div>
+            <span class="text-green-500 text-sm font-semibold">Time to answer: <span class="text-green-600">0 h 1
+                    min. 33 sec.</span></span>
         </div>
 
         <!-- Quiz Card -->
         <div class="bg-white rounded-lg shadow-lg p-8 mt-8 w-2/3">
-            <h2 class="text-gray-900 text-xl font-semibold mb-4 ml-7">Question {{question_number}}/{{total_questions}}</h2>
-            <p class="text-gray-700 mb-6 ml-7 text-lg">{{question}}</p>
+            <h2 class="text-gray-900 text-xl font-semibold mb-4 ml-7">Question
+                {{ question_number }}/{{ total_questions }}</h2>
+            <p class="text-gray-700 mb-6 ml-7 text-lg">{{ question }}</p>
 
             <!-- Options -->
-            <form class="ml-10">
+            <form class="ml-10" method="POST">
+                {% csrf_token %}
                 <div class="space-y-6 mb-6">
                     <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option1" class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
+                        <input type="checkbox" id="option1"
+                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
                         <label for="option1" class="text-gray-700">Wheat flour</label>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option2" class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
+                        <input type="checkbox" id="option2"
+                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
                         <label for="option2" class="text-gray-700">Mozzarella di Bufala Campana</label>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option3" class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
+                        <input type="checkbox" id="option3"
+                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
                         <label for="option3" class="text-gray-700">Mushrooms</label>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option4" class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
+                        <input type="checkbox" id="option4"
+                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
                         <label for="option4" class="text-gray-700">San Marzano tomatoes</label>
                     </div>
                 </div>
@@ -61,6 +71,10 @@
             Powered by <span class="text-green-500 font-semibold">InsightLab</span>
         </div>
     </div>
+
+    <script>
+
+    </script>
 
 </body>
 

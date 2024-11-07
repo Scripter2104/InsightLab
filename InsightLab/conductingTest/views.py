@@ -31,29 +31,30 @@ def test_start_view(request, *ags, **kwargs):
         respondent_data = RespondentData(**form_data)
         respondent_data.save()
         request.session['respondent_id'] = str(respondent_data.respondent_id)
-        return redirect(reverse('question_page'))
+        return redirect('question_page')
 
     return render(request, 'start_test.html', {"testConfig": testConfig, "fields": fields, "testName": testName})
 
 
 def question_page_view(request, *args, **kwargs):
+    # Get the respondent and associated test
     respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
     test_obj = Test.objects.get(unique_id=respondent.test_id)
     questions = list(Question.objects.filter(test=test_obj))
-    question_count = Question.objects.filter(test=test_obj).count()
-    print(questions[0])
+    question_count = len(questions)
+    time_per_question = test_obj.time_per_question
 
     if 'current_question_index' not in request.session:
         request.session['current_question_index'] = 0
 
     current_index = request.session['current_question_index']
 
-    if current_index < question_count:
-        current_question_id = questions[current_index]
-        print(current_question_id)
-        current_question = Question.objects.get(unique_id=uuid.UUID(str(current_question_id)))
-    else:
-        redirect('test_end_page')
+    if current_index >= question_count:
+        request.session['current_question_index'] = 0
+        return redirect('test_end_page')
+
+    current_question_id = questions[current_index]
+    current_question = Question.objects.get(unique_id=uuid.UUID(str(current_question_id)))
 
     if request.method == 'POST':
         request.session['current_question_index'] += 1
@@ -63,9 +64,13 @@ def question_page_view(request, *args, **kwargs):
     request.session["pass_marks"] = test_obj.pass_marks
     request.session["summary_message"] = test_obj.summary_message
 
-    return render(request, 'question_page.html', {'question': current_question.question_text,
-                                                  'question_number': current_index + 1,
-                                                  'total_questions': question_count})
+    return render(request, 'question_page.html', {
+        'question': current_question.question_text,
+        'question_number': current_index + 1,
+        'total_questions': question_count,
+        'test_name': test_obj.name,
+        'time_per_question': time_per_question
+    })
 
 
 def test_end_page_view(request, *args, **kwargs):

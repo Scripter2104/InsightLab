@@ -43,6 +43,7 @@ def question_page_view(request, *args, **kwargs):
     questions = list(Question.objects.filter(test=test_obj))
     question_count = len(questions)
     time_per_question = test_obj.time_per_question
+    time_limit = test_obj.time_limit
 
     if 'current_question_index' not in request.session:
         request.session['current_question_index'] = 0
@@ -64,14 +65,32 @@ def question_page_view(request, *args, **kwargs):
     request.session["pass_marks"] = test_obj.pass_marks
     request.session["summary_message"] = test_obj.summary_message
 
-    return render(request, 'question_page.html', {
-        'question': current_question.question_text,
-        'question_number': current_index + 1,
-        'total_questions': question_count,
-        'test_name': test_obj.name,
-        'time_per_question': time_per_question
-    })
+    if time_per_question != 0:
+        minutes = int(time_per_question / 60)
+        seconds = int(((time_per_question / 60) % 1) * 60)
+        return render(request, 'question_page.html', {
+            'question': current_question.question_text,
+            'question_number': current_index + 1,
+            'total_questions': question_count,
+            'test_name': test_obj.name,
+            'time_per_question': [0, minutes, seconds],
+        })
+    else:
+        print("in else")
+        hour = int(time_limit / 60)
+        minutes = int(((time_limit / 60) % 1) * 60)
+        if minutes == 0:
+            minutes = 60
+            hour = hour - 1
+        return render(request, 'question_page.html', {
+            'question': current_question.question_text,
+            'question_number': current_index + 1,
+            'total_questions': question_count,
+            'test_name': test_obj.name,
+            'time_limit': [hour, minutes - 1, 59]
+        })
 
 
 def test_end_page_view(request, *args, **kwargs):
-    return render(request, 'test_end_page.html', {})
+    summary_message = request.session['summary_message']
+    return render(request, 'test_end_page.html', {'summary_message': summary_message})

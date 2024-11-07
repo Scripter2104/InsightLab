@@ -23,8 +23,35 @@
             </div>
 
             <div class="text-gray-700 text-lg" id="testName"></div>
-            <span class="text-green-500 text-sm font-semibold">Time to answer: <span class="text-green-600">0 h 1
-                    min. 33 sec.</span></span>
+            {% if time_per_question %}
+                <span class="text-green-500 text-sm font-semibold">Time to answer:
+                    <span class="text-green-600">
+                        {% for time in time_per_question %}
+                            {% if forloop.counter == 1 %}
+                                 {{ time }}:
+                            {% elif forloop.counter == 2 %}
+                                 {{ time }}:
+                            {% elif forloop.counter == 3 %}
+                                 {{ time }}
+                             {% endif %}
+                        {% endfor %}
+                    </span>
+                </span>
+            {% elif time_limit %}
+                <span class="text-green-500 text-sm font-semibold">Time to answer:
+                    <span class="text-green-600">
+                        {% for time in time_limit %}
+                            {% if forloop.counter == 1 %}
+                                 {{ time }}:
+                            {% elif forloop.counter == 2 %}
+                                 {{ time }}:
+                            {% elif forloop.counter == 3 %}
+                                 {{ time }}
+                             {% endif %}
+                        {% endfor %}
+                    </span>
+                </span>
+            {% endif %}
         </div>
 
         <!-- Quiz Card -->

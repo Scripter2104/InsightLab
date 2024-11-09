@@ -10,32 +10,41 @@
         .card-wrapper {
             position: relative;
             display: inline-block;
-            transition: transform 0.1s;
-            border-radius: 10px;
+            transition: transform 0.1s linear;
+            transform-style: preserve-3d;
+            box-shadow:  10px 10px 15px #dbdcdd,  -10px -10px 15px #ffffff;
             /* Add transition for smooth tilt */
+        }
+
+        .card-wrapper:hover {
+            transition: transform 0.1s linear;
+            box-shadow:inset 10px 10px 15px #dbdcdd,inset -10px -10px 15px #ffffff;
+            transform: scale(1.02);
+        }
+
+        .card-wrapper:active {
+            box-shadow:  10px 10px 15px #dbdcdd,  -10px -10px 15px #ffffff;
         }
 
         .card-wrapper::after {
             content: '';
             position: absolute;
-            inset: 0px;
+            top: 0px;
+            bottom: 0px;
+            left: 1px;
             width: 5px;
             background: linear-gradient(to bottom, #84fab0, #8fd3f4, #84fab0);
             /* background: linear-gradient(to bottom, #43e97b, #38f9d7  , #43e97b); */
             /* background: linear-gradient(to bottom, #37ecba, #72afd3  , #37ecba); */
             background-size: 100% 200%;
             animation: gradientMove 4s ease infinite;
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
             opacity: 0;
         }
 
         .card-wrapper:hover::after {
             opacity: 1;
-        }
-
-        .card-wrapper:hover {
-            box-shadow: 0 0px 20px rgba(0, 0, 0, 0.2);
         }
 
         @keyframes gradientMove {
@@ -98,7 +107,7 @@
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- Test Card -->
                 {% for test in tests %}
-                <div class="card-wrapper flex flex-col justify-between bg-white shadow-lg rounded-lg h-44 p-4"
+                <div class="card-wrapper flex flex-col justify-between bg-gray-100 rounded-xl h-44 p-4"
                     onclick="goToTest(event)"
                     test_link={{test.link}}
                     test_id="{{test.unique_id}}"
@@ -149,12 +158,12 @@
                         wrapper.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                     });
 
-                    wrapper.addEventListener('mouseleave', () => {
-                        wrapper.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-                    });
+                wrapper.addEventListener('mouseleave', () => {
+                    wrapper.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
                 });
-            }
-        });
+            });
+        }
+    });
 
         function generateTest() {
             window.location.href = "{% url 'newtest' %}";

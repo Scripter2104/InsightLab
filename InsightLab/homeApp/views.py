@@ -46,6 +46,7 @@ def activate_test(request):
     if request.method == 'POST':
 
         try:
+            # Throws error if not json
             data = json.loads(request.body)
             test_name = data.get("testName")
             time_complete = data.get("timeComplete")
@@ -128,7 +129,7 @@ def activate_test(request):
 
             return JsonResponse({'message': 'Test activated successfully', 'test_id': test.id})
 
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': 'Invalid JSON \n' + str(type(e)) + ' ' + str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)

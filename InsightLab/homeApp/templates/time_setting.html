@@ -85,8 +85,6 @@
         </main>
     </div>
 
-    </main>
-
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
     <script>
@@ -98,18 +96,15 @@
 
 
         function toggleInputState() {
-
-            // Toggle the disabled state based on the selected radio button
+        // Toggle the disabled state based on the selected radio button
             if (timeCompleteRadio.checked) {
                 timeCompleteInput.disabled = false;
                 timePerQuestionInput.disabled = true;
                 timePerQuestionInput.value = "";
-
             } else if (timePerQuestionRadio.checked) {
                 timeCompleteInput.disabled = true;
                 timePerQuestionInput.disabled = false;
                 timeCompleteInput.value = "";
-
             }
         }
 
@@ -118,56 +113,10 @@
             toggleInputState();
         }
 
+        // Save the entered time and remove the other time option from session storage
         function saveInfo() {
             let alertBox = document.getElementById('alertBox');
             let message_div = document.getElementById('message');
-
-            if (timeCompleteRadio.checked && timeCompleteInput.value === "") {
-                alertBox.hidden = false;
-                return;
-            } else if (timePerQuestionRadio.checked && timePerQuestionInput.value === "") {
-                alertBox.hidden = false;
-                return;
-            }
-
-
-
-            if (timeCompleteRadio.checked) {
-                console.log("hello");
-                sessionStorage.setItem("timeComplete", timeCompleteInput.value);
-                sessionStorage.removeItem("timePerQuestion");
-                console.log("bye");
-            }
-            if (timePerQuestionRadio.checked) {
-                console.log("hello");
-                sessionStorage.setItem("timePerQuestion", timePerQuestionInput.value);
-                sessionStorage.removeItem("timeComplete");
-                console.log("bye");
-            }
-            message_div.hidden = false;
-
-        }
-
-        function toggleInputState() {
-            if (timeCompleteRadio.checked) {
-                timeCompleteInput.disabled = false;
-                timePerQuestionInput.disabled = true;
-                timePerQuestionInput.value = "";
-            } else if (timePerQuestionRadio.checked) {
-                timeCompleteInput.disabled = true;
-                timePerQuestionInput.disabled = false;
-                timeCompleteInput.value = "";
-            }
-        }
-
-        window.onload = function () {
-            toggleInputState();
-        }
-
-        function saveInfo() {
-            let alertBox = document.getElementById('alertBox');
-            let message_div = document.getElementById('message');
-
 
             if (timeCompleteRadio.checked && timeCompleteInput.value === "") {
                 alertBox.hidden = false;
@@ -262,10 +211,10 @@
                 .then(data => {
 
                     if (data.error) {
-                        alert('Pages says Error!'+" "+data.error);
+                        alert('Pages says Error! '+data.error);
                     }
                     else {
-                        alert('Test Activated! visit home page');
+                        alert(data.message+'! visit home page');
                         sessionStorage.clear();
                         window.location.href="{% url 'home' %}"
                     }

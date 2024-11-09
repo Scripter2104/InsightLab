@@ -1,108 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>InsightLab</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
+    <style>
+      html {
+        height: 100%;
+      }
+    </style>
+  </head>
 
-<body class="bg-gray-100 text-gray-800">
-
-    <!-- Main Container -->
-    <div class="flex flex-col items-center min-h-screen py-10">
-
-        <!-- Header -->
-        <div class="flex items-center justify-between w-2/3 px-6 bg-white h-16 rounded-md">
-            <div class="flex items-center space-x-2">
-                <span class="text-gray-900 text-xl font-semibold">InsightLab</span>
-            </div>
-            <div class="flex items-center space-x-2 ml-32">
-                <span class="text-black-500 text-2xl font-semibold">{{ test_name|safe }}</span>
-            </div>
-
-            <div class="text-gray-700 text-lg" id="testName"></div>
+  <body class="flex flex-col m-0 bg-gray-100">
+    <div class="flex flex-col items-center justify-around px-4 overflow-y-auto">
+      <!-- Header -->
+      <div
+        class="flex flex-col items-center justify-between w-full p-4 my-4 bg-white rounded-lg shadow-sm md:w-3/4 lg:w-2/3 md:flex-row"
+      >
+        <!-- Logo and title -->
+        <div class="flex items-center mb-2 md:mb-0">
+          <span class="text-xl font-bold text-green-500"> InsightLab </span>
+        </div>
+        <!-- Test title -->
+        <div class="text-lg font-medium md:mb-0">MyTest</div>
+        <!-- Time left -->
+        <div class="text-sm text-gray-600">
+          Time to answer:
+          <span class="font-semibold text-green-500">
             {% if time_per_question %}
-                <span class="text-green-500 text-sm font-semibold">Time to answer:
-                    <span class="text-green-600">
-                        {% for time in time_per_question %}
-                            {% if forloop.counter == 1 %}
-                                 {{ time }}:
-                            {% elif forloop.counter == 2 %}
-                                 {{ time }}:
-                            {% elif forloop.counter == 3 %}
-                                 {{ time }}
-                             {% endif %}
-                        {% endfor %}
-                    </span>
-                </span>
+            {{time_per_question.0}}:{{time_per_question.1}}:{{time_per_question.2}}
             {% elif time_limit %}
-                <span class="text-green-500 text-sm font-semibold">Time to answer:
-                    <span class="text-green-600">
-                        {% for time in time_limit %}
-                            {% if forloop.counter == 1 %}
-                                 {{ time }}:
-                            {% elif forloop.counter == 2 %}
-                                 {{ time }}:
-                            {% elif forloop.counter == 3 %}
-                                 {{ time }}
-                             {% endif %}
-                        {% endfor %}
-                    </span>
-                </span>
+            {{time_limit.0}}:{{time_limit.1}}:{{time_limit.2}} {% endif %}
+          </span>
+        </div>
+      </div>
+
+      <!-- Quiz Card -->
+      <div
+        class="w-full p-4 bg-white rounded-lg shadow-md md:p-8 md:w-3/4 lg:w-2/3"
+      >
+        <!-- Question -->
+        <h2 class="mb-4 text-xl font-semibold">
+          Question {{ question_number }}/{{ total_questions }}
+        </h2>
+        <p class="mb-4">{{ question }}</p>
+        <!-- Options -->
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-4">
+            {% if question_type == 'single-choice' %} 
+            {% for option in options %}
+            <label class="flex items-center mb-2">
+              <input
+                class="mr-2"
+                name="answer"
+                type="radio"
+              />{{option.option_text}}
+            </label>
+            {% endfor %} 
+            {% elif question_type == 'multiple-choice' %} 
+            {% for option in options %}
+            <label class="flex items-center mb-2">
+              <input
+                class="mr-2"
+                name="answer"
+                type="checkbox"
+              />{{option.option_text}}
+            </label>
+            {% endfor %} 
+            {% else %}
+            <label class="flex items-center mb-2">
+              <input class="mr-2" name="answer" type="radio" />True
+            </label>
+            <label class="flex items-center mb-2">
+              <input class="mr-2" name="answer" type="radio" />False
+            </label>
             {% endif %}
-        </div>
-
-        <!-- Quiz Card -->
-        <div class="bg-white rounded-lg shadow-lg p-8 mt-8 w-2/3">
-            <h2 class="text-gray-900 text-xl font-semibold mb-4 ml-7">Question
-                {{ question_number }}/{{ total_questions }}</h2>
-            <p class="text-gray-700 mb-6 ml-7 text-lg">{{ question }}</p>
-
-            <!-- Options -->
-            <form class="ml-10" method="POST">
-                {% csrf_token %}
-                <div class="space-y-6 mb-6">
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option1"
-                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
-                        <label for="option1" class="text-gray-700">Wheat flour</label>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option2"
-                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
-                        <label for="option2" class="text-gray-700">Mozzarella di Bufala Campana</label>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option3"
-                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
-                        <label for="option3" class="text-gray-700">Mushrooms</label>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="option4"
-                               class="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-400">
-                        <label for="option4" class="text-gray-700">San Marzano tomatoes</label>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                    Submit answer
-                </button>
-            </form>
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-8 text-gray-500 text-sm">
-            Powered by <span class="text-green-500 font-semibold">InsightLab</span>
-        </div>
+          </div>
+          <!-- Submit button -->
+          <button
+            class="px-4 py-2 text-green-500 transition duration-300 bg-white border border-green-600 rounded-md hover:bg-green-600 hover:text-white"
+            type="submit"
+          >
+            Submit answer
+          </button>
+        </form>
+      </div>
+      <!-- Footer -->
+      <div class="flex items-center justify-center p-4">
+        <span class="text-gray-600">Powered by</span>
+        <span class="ml-1 font-semibold text-green-500">InsightLab</span>
+      </div>
     </div>
 
     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const devtools = {
+          isOpen: false,
+          orientation: undefined,
+        };
 
+        const threshold = 170;
+
+        const emitEvent = (isOpen, orientation) => {
+          window.dispatchEvent(
+            new CustomEvent("devtoolschange", {
+              detail: {
+                isOpen,
+                orientation,
+              },
+            })
+          );
+        };
+
+        const main = ({ emitEvents = true } = {}) => {
+          const widthThreshold =
+            window.outerWidth - window.innerWidth > threshold;
+          const heightThreshold =
+            window.outerHeight - window.innerHeight > threshold;
+          const orientation = widthThreshold ? "vertical" : "horizontal";
+
+          if (
+            !(heightThreshold && widthThreshold) &&
+            ((window.Firebug &&
+              window.Firebug.chrome &&
+              window.Firebug.chrome.isInitialized) ||
+              widthThreshold ||
+              heightThreshold)
+          ) {
+            if (
+              (!devtools.isOpen || devtools.orientation !== orientation) &&
+              emitEvents
+            ) {
+              emitEvent(true, orientation);
+            }
+
+            devtools.isOpen = true;
+            devtools.orientation = orientation;
+          } else {
+            if (devtools.isOpen && emitEvents) {
+              emitEvent(false, undefined);
+            }
+
+            devtools.isOpen = false;
+            devtools.orientation = undefined;
+          }
+        };
+
+        main({ emitEvents: false });
+        setInterval(main, 500);
+
+        if (devtools.isOpen) {
+          console.log("DevTools is open");
+          // Handle the detection, e.g., send a warning or log the event
+        } else {
+          console.log("DevTools is closed");
+        }
+
+        window.addEventListener("devtoolschange", (event) => {
+          console.log("DevTools status changed:", event.detail.isOpen);
+          if (event.detail.isOpen) {
+            // Handle the detection, e.g., send a warning or log the event
+          }
+        });
+      });
     </script>
-
-</body>
-
+  </body>
 </html>

@@ -1,8 +1,10 @@
 import uuid
 
 from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponse
 from homeApp.models import Test, TestConfiguration, Question, Option
-from .models import RespondentData
+from .models import RespondentData, RespondentAnswers
+from django.utils import timezone
 import math
 
 
@@ -38,63 +40,105 @@ def test_start_view(request, *ags, **kwargs):
 
 
 def question_page_view(request, *args, **kwargs):
-    # Get the respondent and associated test
-    respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
-    test_obj = Test.objects.get(unique_id=respondent.test_id.unique_id)
-    questions = list(Question.objects.filter(test=test_obj))
-    question_count = len(questions)
-    time_per_question = test_obj.time_per_question
-    time_limit = test_obj.time_limit
+    # Store common test data in session
+    if 'test_data' not in request.session:
+        respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
+        test_obj = respondent.test_id
+        questions = list(Question.objects.filter(test=test_obj).values('id', 'question_text', 'question_type', 'correct_points', 'incorrect_points'))
 
-    if 'current_question_index' not in request.session:
-        request.session['current_question_index'] = 0
+        request.session['test_data'] = {
+            "respondent_id": str(respondent.respondent_id),  # Store respondent_id instead of the full object
+            "test_id": test_obj.id,  # Store test id only
+            "questions": questions,  # Store question data as a list of dictionaries
+            "question_count": len(questions),
+            "time_per_question": test_obj.time_per_question,
+            "time_limit": test_obj.time_limit,
+            "current_question_index": 0,
+            "start_time": timezone.now().timestamp()
+        }
 
-    current_index = request.session['current_question_index']
+    # Get session data
+    test_data = request.session['test_data']
+    respondent_id = test_data['respondent_id']
+    test_id = test_data['test_id']
+    questions = test_data['questions']
+    question_count = test_data['question_count']
+    time_per_question = test_data['time_per_question']
+    time_limit = test_data['time_limit']
+    current_index = test_data['current_question_index']
 
+    # Retrieve respondent and test objects
+    respondent = RespondentData.objects.get(respondent_id=respondent_id)
+    test_obj = Test.objects.get(id=test_id)
+
+    # Check if test is active
+    if not test_obj.is_active:
+        return HttpResponse(
+            """
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                <h1 style="font-family: Arial, sans-serif; color: #16A34A; text-align: center;">
+                    Test is not active
+                </h1>
+            </div>
+            """
+        )
+
+    # Check if test is complete
     if current_index >= question_count:
-        request.session['current_question_index'] = 0
+        request.session.pop('test_data', None)
         return redirect('test_end_page')
 
-    current_question_id = questions[current_index]
-    current_question = Question.objects.get(unique_id=uuid.UUID(str(current_question_id)))
+    # Get current question data
+    current_question = questions[current_index]
+    options = list(Option.objects.filter(question_id=current_question['id']))
 
-    options = [op for op in Option.objects.filter(question=current_question)]
-
+    # On POST method
     if request.method == 'POST':
-        request.session['current_question_index'] += 1
+        correct_answers = [opt.option_text for opt in options if opt.is_correct]
+
+        if current_question['question_type'] == 'multiple-choice':
+            respondent_answers = request.POST.getlist('answer')
+        else:
+            respondent_answers = [request.POST.get('answer')] if request.POST.get('answer') else []
+
+        is_correct = sorted(respondent_answers) == sorted(correct_answers)
+        points = current_question['correct_points'] if is_correct else current_question['incorrect_points']
+        time_taken = timezone.now().timestamp() - test_data['start_time']
+
+        # Create response record
+        RespondentAnswers.objects.create(
+            respondent_data=respondent,
+            question_id=current_question['id'],
+            correct_answer=correct_answers,
+            respondent_answer=respondent_answers,
+            is_correct=is_correct,
+            points=points,
+            time_taken=int(time_taken)
+        )
+
+        # Update session and redirect
+        test_data['current_question_index'] += 1
+        test_data['start_time'] = timezone.now().timestamp()
+        request.session['test_data'] = test_data
         return redirect('question_page')
 
+    render_context = {
+        'question': current_question['question_text'],
+        'question_number': current_index + 1,
+        'question_type': current_question['question_type'],
+        'total_questions': question_count,
+        'test_name': test_obj.name,
+        'test_obj': test_obj,
+        'options': options,
+    }
     if time_per_question != 0:
-        minutes = int(time_per_question / 60)
-        seconds = int(((time_per_question / 60) % 1) * 60)
-        return render(request, 'question_page.html', {
-            'question': current_question.question_text,
-            'question_number': current_index + 1,
-            'total_questions': question_count,
-            'test_name': test_obj.name,
-            'time_per_question': [0, minutes, seconds],
-            'test_obj': test_obj,
-            'options': options,
-            'question_type': current_question.question_type
-        })
+        render_context['time_per_question'] = time_per_question
     else:
-        hour = int(time_limit / 60)
-        minutes = int(((time_limit / 60) % 1) * 60)
-        if minutes == 0:
-            minutes = 60
-            hour = hour - 1
-        return render(request, 'question_page.html', {
-            'question': current_question.question_text,
-            'question_number': current_index + 1,
-            'total_questions': question_count,
-            'test_name': test_obj.name,
-            'time_limit': [hour, minutes - 1, 59],
-            'test_obj': test_obj,
-            'options': options,
-            'question_type': current_question.question_type
-        })
+        render_context['time_limit'] = time_limit
+
+    return render(request, 'question_page.html', render_context)
 
 
 def test_end_page_view(request, *args, **kwargs):
-    summary_message = request.session['summary_message']
-    return render(request, 'test_end_page.html', {'summary_message': summary_message})
+    summary_message = "<h1>Thank you for taking the test<h1>"
+    return render(request, 'test_end_page.html', {"summary_message": summary_message})

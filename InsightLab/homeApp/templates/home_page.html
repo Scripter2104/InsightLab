@@ -12,18 +12,18 @@
             display: inline-block;
             transition: transform 0.1s linear;
             transform-style: preserve-3d;
-            box-shadow:  10px 10px 15px #dbdcdd,  -10px -10px 15px #ffffff;
+            box-shadow: inset 10px 10px 15px #dbdcdd, inset -10px -10px 15px #ffffff;1
             /* Add transition for smooth tilt */
         }
 
         .card-wrapper:hover {
             transition: transform 0.1s linear;
-            box-shadow:inset 10px 10px 15px #dbdcdd,inset -10px -10px 15px #ffffff;
+            box-shadow: 10px 10px 15px #dbdcdd, -10px -10px 15px #ffffff;
             transform: scale(1.02);
         }
 
         .card-wrapper:active {
-            box-shadow:  10px 10px 15px #dbdcdd,  -10px -10px 15px #ffffff;
+            box-shadow: inset 10px 10px 15px #dbdcdd, inset -10px -10px 15px #ffffff;
         }
 
         .card-wrapper::after {
@@ -107,7 +107,7 @@
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- Test Card -->
                 {% for test in tests %}
-                <div class="card-wrapper flex flex-col justify-between bg-gray-100 rounded-xl h-44 p-4"
+                <div class="card-wrapper flex flex-col justify-between bg-gray-100 rounded-xl h-44 py-4 px-6"
                     onclick="goToTest(event)"
                     test_link={{test.link}}
                     test_id="{{test.unique_id}}"

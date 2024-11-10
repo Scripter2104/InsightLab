@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from homeApp.models import Test
+from homeApp.models import Test, Question
 
 
 # Create your models here.
@@ -23,8 +23,13 @@ class RespondentData(models.Model):
 
 class RespondentAnswers(models.Model):
     respondent_data = models.ForeignKey(RespondentData, on_delete=models.CASCADE, related_name="respondent")
-    question = models.TextField()
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="question")
     correct_answer = models.JSONField(default=list)
     respondent_answer = models.JSONField(default=list)
     is_correct = models.BooleanField(default=False)
     points = models.IntegerField(default=0)
+    time_taken = models.IntegerField(default=0)  # Time taken in seconds
+    
+    def __str__(self):
+        # String representation of the model in admin
+        return f"{self.respondent_data.respondent_id} - {self.question[:30]}"

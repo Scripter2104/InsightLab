@@ -36,7 +36,7 @@ def test_start_view(request, *ags, **kwargs):
         request.session['respondent_id'] = str(respondent_data.respondent_id)
         return redirect('question_page')
 
-    return render(request, 'start_test.html', {"testConfig": testConfig, "fields": fields, "testName": testName})
+    return render(request, 'start_test.html', {"fields": fields, "testName": testName})
 
 
 def question_page_view(request, *args, **kwargs):
@@ -44,6 +44,7 @@ def question_page_view(request, *args, **kwargs):
     if 'test_data' not in request.session:
         respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
         test_obj = respondent.test_id
+        # List of dictionaries containing per-question data
         questions = list(Question.objects.filter(test=test_obj).values('id', 'question_text', 'question_type', 'correct_points', 'incorrect_points'))
 
         request.session['test_data'] = {
@@ -89,7 +90,7 @@ def question_page_view(request, *args, **kwargs):
         return redirect('test_end_page')
 
     # Get current question data
-    current_question = questions[current_index]
+    current_question = questions[current_index] # "current_question" is a dictionary
     options = list(Option.objects.filter(question_id=current_question['id']))
 
     # On POST method
@@ -108,6 +109,9 @@ def question_page_view(request, *args, **kwargs):
         # Create response record
         RespondentAnswers.objects.create(
             respondent_data=respondent,
+            # "question_id=current_question['id']" works because Django interprets the _id suffix as an instruction to directly use the primary key (in this case, the id of the Question object)
+            # "question=current_question['id']" fails because Django expects question to be a Question instance
+            # to use "question" instead of "question_id", you would need to pass "question=Question.objects.get(id=current_question['id'])",
             question_id=current_question['id'],
             correct_answer=correct_answers,
             respondent_answer=respondent_answers,

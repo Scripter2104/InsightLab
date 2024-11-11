@@ -32,4 +32,4 @@ class RespondentAnswers(models.Model):
     
     def __str__(self):
         # String representation of the model in admin
-        return f"{self.respondent_data.respondent_id} - {self.question[:30]}"
+        return f"{self.respondent_data.respondent_id} - {self.question}"

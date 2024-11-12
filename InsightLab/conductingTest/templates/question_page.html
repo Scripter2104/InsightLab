@@ -94,18 +94,12 @@
       document.addEventListener("DOMContentLoaded", function () {
 
         // Time tracking
-        {% if time_per_question %}
-        const timeLimit = {{ time_per_question }};
-        {% else %}
-        const timeLimit = {{ time_limit }};
-        {% endif %}
-        
-        let timeLeft = timeLimit;
+        let timeLeft = {{ remaining_time }};
         
         const timer = setInterval(() => {
           timeLeft--;
           const hours = Math.floor(timeLeft / 3600);
-          const minutes = Math.floor(timeLeft / 60);
+          const minutes = Math.floor((timeLeft % 3600) / 60);
           const seconds = timeLeft % 60;
           document.getElementById('timerDisplay').textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
           

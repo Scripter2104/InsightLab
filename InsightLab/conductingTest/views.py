@@ -93,6 +93,14 @@ def question_page_view(request, *args, **kwargs):
     current_question = questions[current_index] # "current_question" is a dictionary
     options = list(Option.objects.filter(question_id=current_question['id']))
 
+    # Calculate remaining time
+    if time_per_question != 0:
+        elapsed_time = int(timezone.now().timestamp() - test_data['start_time'])
+        remaining_time = max(0, time_per_question - elapsed_time)
+    else:
+        elapsed_time = int(timezone.now().timestamp() - test_data['start_time'])
+        remaining_time = max(0, time_limit - elapsed_time)
+
     # On POST method
     if request.method == 'POST':
         correct_answers = [opt.option_text for opt in options if opt.is_correct]
@@ -121,8 +129,9 @@ def question_page_view(request, *args, **kwargs):
         )
 
         # Update session and redirect
+        if time_per_question != 0:
+            test_data['start_time'] = timezone.now().timestamp()
         test_data['current_question_index'] += 1
-        test_data['start_time'] = timezone.now().timestamp()
         request.session['test_data'] = test_data
         return redirect('question_page')
 
@@ -134,6 +143,7 @@ def question_page_view(request, *args, **kwargs):
         'test_name': test_obj.name,
         'test_obj': test_obj,
         'options': options,
+        'remaining_time': remaining_time,
     }
     if time_per_question != 0:
         render_context['time_per_question'] = time_per_question

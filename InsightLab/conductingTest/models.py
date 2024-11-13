@@ -23,7 +23,7 @@ class RespondentData(models.Model):
 
 class RespondentAnswers(models.Model):
     respondent_data = models.ForeignKey(RespondentData, on_delete=models.CASCADE, related_name="respondent")
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="question")
+    question_id = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="question")
     correct_answer = models.JSONField(default=list)
     respondent_answer = models.JSONField(default=list)
     is_correct = models.BooleanField(default=False)
@@ -32,4 +32,4 @@ class RespondentAnswers(models.Model):
     
     def __str__(self):
         # String representation of the model in admin
-        return f"{self.respondent_data.respondent_id} - {self.question[:30]}"
+        return f"{self.respondent_data.respondent_id}"

@@ -1,5 +1,4 @@
 import uuid
-
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from homeApp.models import Test, TestConfiguration, Question, Option
@@ -15,7 +14,6 @@ def test_start_view(request, *ags, **kwargs):
     testName = test.name
     testConfig = TestConfiguration.objects.get(test=test)
     fields = testConfig.additional_fields
-    print(test)
 
     if request.method == 'POST':
         form_data = {
@@ -28,27 +26,29 @@ def test_start_view(request, *ags, **kwargs):
             'id_number': request.POST.get('id') if 'ID' in fields else None,
             'gender': request.POST.get('gender') if 'Gender' in fields else None,
             'phone': request.POST.get('phone') if 'Phone' in fields else None,
-
         }
-
         respondent_data = RespondentData(**form_data)
         respondent_data.save()
-        request.session['respondent_id'] = str(respondent_data.respondent_id)
+        request.session['respondent_id'] = str(respondent_data.respondent_id)  # Convert to string
         return redirect('question_page')
 
     return render(request, 'start_test.html', {"testConfig": testConfig, "fields": fields, "testName": testName})
 
 
 def question_page_view(request, *args, **kwargs):
+    respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
     # Store common test data in session
     if 'test_data' not in request.session:
-        respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
         test_obj = respondent.test_id
-        questions = list(Question.objects.filter(test=test_obj).values('id', 'question_text', 'question_type', 'correct_points', 'incorrect_points'))
+        questions = list(Question.objects.filter(test=test_obj).values('unique_id', 'question_text', 'question_type',
+                                                                       'correct_points', 'incorrect_points'))
+
+        for question in questions:
+            question['unique_id'] = str(question['unique_id'])
 
         request.session['test_data'] = {
-            "respondent_id": str(respondent.respondent_id),  # Store respondent_id instead of the full object
-            "test_id": test_obj.id,  # Store test id only
+            "respondent_id": str(respondent.respondent_id),  # Store respondent_id as string
+            "test_id": str(test_obj.unique_id),  # Store test_id as string
             "questions": questions,  # Store question data as a list of dictionaries
             "question_count": len(questions),
             "time_per_question": test_obj.time_per_question,
@@ -67,11 +67,8 @@ def question_page_view(request, *args, **kwargs):
     time_limit = test_data['time_limit']
     current_index = test_data['current_question_index']
 
-    # Retrieve respondent and test objects
-    respondent = RespondentData.objects.get(respondent_id=respondent_id)
-    test_obj = Test.objects.get(id=test_id)
-
-    # Check if test is active
+    # Get test object and validate if it's active
+    test_obj = Test.objects.get(unique_id=test_id)
     if not test_obj.is_active:
         return HttpResponse(
             """
@@ -86,15 +83,18 @@ def question_page_view(request, *args, **kwargs):
     # Check if test is complete
     if current_index >= question_count:
         request.session.pop('test_data', None)
+        request.session['summary_message'] = test_obj.summary_message
         return redirect('test_end_page')
 
     # Get current question data
     current_question = questions[current_index]
-    options = list(Option.objects.filter(question_id=current_question['id']))
+    current_question_obj = Question.objects.get(unique_id=current_question['unique_id'])
+    options = Option.objects.filter(question=current_question_obj)
 
     # On POST method
     if request.method == 'POST':
         correct_answers = [opt.option_text for opt in options if opt.is_correct]
+        print(correct_answers, " \t\t\t\t\thello  ")
 
         if current_question['question_type'] == 'multiple-choice':
             respondent_answers = request.POST.getlist('answer')
@@ -105,16 +105,16 @@ def question_page_view(request, *args, **kwargs):
         points = current_question['correct_points'] if is_correct else current_question['incorrect_points']
         time_taken = timezone.now().timestamp() - test_data['start_time']
 
-        # Create response record
-        RespondentAnswers.objects.create(
-            respondent_data=respondent,
-            question_id=current_question['id'],
-            correct_answer=correct_answers,
-            respondent_answer=respondent_answers,
-            is_correct=is_correct,
-            points=points,
-            time_taken=int(time_taken)
-        )
+        respondent_answers_data = {"respondent_data": respondent,
+                                   "question_id": current_question_obj,
+                                   "correct_answer": correct_answers,
+                                   "respondent_answer": respondent_answers,
+                                   "is_correct":is_correct,
+                                   "points": points,
+                                   "time_taken": time_taken}
+
+        respondentAnswer = RespondentAnswers(**respondent_answers_data)
+        respondentAnswer.save()
 
         # Update session and redirect
         test_data['current_question_index'] += 1
@@ -140,5 +140,4 @@ def question_page_view(request, *args, **kwargs):
 
 
 def test_end_page_view(request, *args, **kwargs):
-    summary_message = "<h1>Thank you for taking the test<h1>"
-    return render(request, 'test_end_page.html', {"summary_message": summary_message})
+    return render(request, 'test_end_page.html', {"summary_message": request.session['summary_message']})

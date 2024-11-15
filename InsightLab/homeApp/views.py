@@ -59,7 +59,7 @@ def activate_test(request):
 
             if time_complete!=None:
                 time=time_complete.split(":")
-                time_complete=(int(time[0])*60)+(int(time[1]))*60
+                time_complete=(int(time[0])*60+int(time[1]))*60
 
             if  time_per_question!=None:
                 time=time_per_question.split(":")

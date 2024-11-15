@@ -15,7 +15,6 @@ def test_start_view(request, *ags, **kwargs):
     testName = test.name
     testConfig = TestConfiguration.objects.get(test=test)
     fields = testConfig.additional_fields
-    print(test)
 
     if request.method == 'POST':
         form_data = {

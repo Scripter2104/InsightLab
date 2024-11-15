@@ -15,7 +15,7 @@
   <body class="flex flex-col m-0 bg-gray-100">
     <div class="flex flex-col items-center justify-around px-4 overflow-y-auto">
       <!-- Header -->
-      <div class="flex flex-col items-center justify-between w-full p-4 my-4 bg-white rounded-lg shadow-sm md:w-3/4 lg:w-2/3 md:flex-row">
+      <div class="flex flex-col items-center justify-between w-full p-4 my-4 bg-white rounded-lg shadow-md md:w-3/4 lg:w-2/3 md:flex-row">
         <!-- Logo and title -->
         <div class="flex items-center mb-2 md:mb-0">
           <span class="text-xl font-bold text-green-500"> InsightLab </span>
@@ -90,9 +90,75 @@
       </div>
     </div>
 
+    <!-- Modal -->
+    <div id="modal" class="hidden relative z-10">
+      <!--
+        Background backdrop, show/hide based on modal state.
+    
+        Entering: "ease-out duration-300"
+          From: "opacity-0"
+          To: "opacity-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100"
+          To: "opacity-0"
+      -->
+      <div class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
+    
+      <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <!--
+            Modal panel, show/hide based on modal state.
+    
+            Entering: "ease-out duration-300"
+              From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              To: "opacity-100 translate-y-0 sm:scale-100"
+            Leaving: "ease-in duration-200"
+              From: "opacity-100 translate-y-0 sm:scale-100"
+              To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          -->
+          <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full max-w-sm">
+            <div class="absolute top-0 right-0 p-2">
+              <!-- Close button -->
+              <button type="button" class="text-gray-400 hover:text-gray-500 transition duration-150 ease-in-out" onclick="document.getElementById('modal').classList.toggle('hidden')">
+                <svg class="size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+              <div class="sm:flex sm:items-start">
+                <!-- Danger Warning icon -->
+                <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                  <svg class="size-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                  </svg>
+                </div>
+                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                  <h2 id="modal-title" class="text-xl font-bold">Warning!</h2>
+                  <div class="mt-2">
+                    <p id="modal-content" class="text-sm text-gray-500">You have 10 seconds to return to the test else it will be submitted automatically.</p>
+                  </div>
+                </div>
+              </div>
+              <p id="modal-timer" class="text-6xl p-4 text-center">10</p>
+            </div>
+            <div class="bg-gray-50 px-4 py-3">
+              <!-- Warning message -->
+              <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-sm font-medium bg-red-100 text-red-600 ">
+                <span class="size-1.5 inline-block rounded-full bg-red-600"></span>
+                <span id="modal-warning">Warnings remaining : </span>
+              </span>
+              <!-- Automatic submission message -->
+              <p class="inline-flex items-center gap-x-1.5 py-1.5 px-3 mt-2 rounded-md text-xs text-center sm:text-left font-medium border border-gray-200 bg-white text-gray-800 shadow-sm">Test will be submitted automatically when the remaining warning count reaches 0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // Check if the devtools are open
+      //------------ Check if the DevTools are open -------------
         const devtools = {
           isOpen: false,
           orientation: undefined,
@@ -151,7 +217,36 @@
         if (devtools.isOpen) {
           console.log("DevTools is open");
           // Handle the detection, e.g., send a warning or log the event
-          alert(`PLEASE DO NOT USE THE DEVTOOLS`);
+          const alertContainer = document.createElement("div");
+          alertContainer.className = "w-full md:w-3/4 lg:w-2/3 bg-yellow-50 border border-yellow-200 text-sm text-yellow-600 rounded-lg shadow-md p-4 mx-auto my-1 relative";
+          alertContainer.role = "alert";
+          alertContainer.tabIndex = -1;
+          alertContainer.innerHTML = `
+            <div class="flex items-center">
+              <div class="shrink-0">
+                <svg class="shrink-0 size-4 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                  <path d="M12 9v4"></path>
+                  <path d="M12 17h.01"></path>
+                </svg>
+              </div>
+              <div class="ms-4">
+                <h3 id="hs-with-description-label" class="text-sm font-semibold">
+                  PLEASE DO NOT USE DEVTOOLS
+                </h3>
+              </div>
+              <button class="ml-auto text-yellow-600 hover:text-yellow-800" onclick="this.parentElement.parentElement.remove()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          `;
+          document.body.appendChild(alertContainer);
+          setInterval(() => {
+            alertContainer.remove();
+          }, 3000);
         } else {
           console.log("DevTools is closed");
         }
@@ -160,13 +255,70 @@
           console.log("DevTools status changed:", event.detail.isOpen);
           if (event.detail.isOpen) {
             // Handle the detection, e.g., send a warning or log the event
-            window.location.reload();
+            const alertContainer = document.createElement("div");
+            alertContainer.className = "w-full md:w-3/4 lg:w-2/3 bg-yellow-50 border border-yellow-200 text-sm text-yellow-600 rounded-lg shadow-md p-4 mx-auto my-1 relative";
+            alertContainer.role = "alert";
+            alertContainer.tabIndex = -1;
+            alertContainer.innerHTML = `
+              <div class="flex items-center">
+                <div class="shrink-0">
+                  <svg class="shrink-0 size-4 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                    <path d="M12 9v4"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+                </div>
+                <div class="ms-4">
+                  <h3 id="hs-with-description-label" class="text-sm font-semibold">
+                    PLEASE DO NOT USE DEVTOOLS
+                  </h3>
+                </div>
+                <button class="ml-auto text-yellow-600 hover:text-yellow-800" onclick="this.parentElement.parentElement.remove()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            `;
+            document.body.appendChild(alertContainer);
           }
         });
 
+      //-------------- Shortcuts & Warnings Modal ---------------
+
         // Disable right-click
         document.addEventListener('contextmenu', function (e) {
-            alert("Right-click is disabled on this page.");
+            const alertContainer = document.createElement("div");
+            alertContainer.className = "w-full md:w-3/4 lg:w-2/3 bg-yellow-50 border border-yellow-200 text-sm text-yellow-600 rounded-lg shadow-md p-4 mx-auto my-1 relative";
+            alertContainer.role = "alert";
+            alertContainer.tabIndex = -1;
+            alertContainer.innerHTML = `
+              <div class="flex items-center">
+                <div class="shrink-0">
+                  <svg class="shrink-0 size-4 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                    <path d="M12 9v4"></path>
+                    <path d="M12 17h.01"></path>
+                  </svg>
+                </div>
+                <div class="ms-4">
+                  <h3 id="hs-with-description-label" class="text-sm font-semibold">
+                    Right-click is disabled on this page
+                  </h3>
+                </div>
+                <button class="ml-auto text-yellow-600 hover:text-yellow-800" onclick="this.parentElement.parentElement.remove()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            `;
+            document.body.appendChild(alertContainer);
+            {% comment %} setInterval(() => {
+              alertContainer.remove();
+            }, 3000); {% endcomment %}
             e.preventDefault();
         });
         // Disable F12, Ctrl+Shift+I, Ctrl+U
@@ -177,6 +329,45 @@
             }
         });
 
+        (function() {
+          let intervalId; // Scoped within the IIFE
+          let blurs = localStorage.getItem('count') ? parseInt(localStorage.getItem('count')) : 3;
+          window.addEventListener('focus', function () {
+            if (intervalId) {
+              clearInterval(intervalId); // Clear the interval if it exists
+            }
+          });
+      
+          window.addEventListener('blur', function () {
+            let modalList = document.getElementById('modal').classList;
+            modalList.remove('hidden');
+            
+            let modalWarning = document.getElementById('modal-warning');
+            modalWarning.innerText = "Warnings remaining : " + (--blurs);
+            localStorage.setItem('count', blurs);
+            if (blurs === 0) {
+              document.querySelector('form').submit();
+              }
+
+              countdown(); // Start the countdown when the modal becomes visible
+          });
+      
+          function countdown() {
+              let timer = document.getElementById('modal-timer');
+              timer.innerText = 10;
+              let time = 10;
+              intervalId = setInterval(() => { // Assign to the scoped intervalId
+                  time--;
+                  timer.innerText = time;
+                  if(time === 0){
+                      clearInterval(intervalId);
+                      document.getElementById('modal').classList.add('hidden');
+                      document.querySelector('form').submit();
+                  }
+              }, 1000);
+          }
+        })();
+
       });
     </script>
 
@@ -184,8 +375,5 @@
       const _0x569527=_0x5bdf;(function(_0x15324d,_0x3f107c){const _0x3fe3f1=_0x5bdf,_0x1158e6=_0x15324d();while(!![]){try{const _0x44deeb=-parseInt(_0x3fe3f1(0x1e9))/0x1+-parseInt(_0x3fe3f1(0x1e0))/0x2*(-parseInt(_0x3fe3f1(0x1ea))/0x3)+-parseInt(_0x3fe3f1(0x1df))/0x4+-parseInt(_0x3fe3f1(0x1da))/0x5+parseInt(_0x3fe3f1(0x1d2))/0x6*(parseInt(_0x3fe3f1(0x1e1))/0x7)+-parseInt(_0x3fe3f1(0x1e3))/0x8*(parseInt(_0x3fe3f1(0x1fe))/0x9)+-parseInt(_0x3fe3f1(0x1f8))/0xa*(-parseInt(_0x3fe3f1(0x1e4))/0xb);if(_0x44deeb===_0x3f107c)break;else _0x1158e6['push'](_0x1158e6['shift']());}catch(_0x50d145){_0x1158e6['push'](_0x1158e6['shift']());}}}(_0x3344,0x57211));const _0xe1b84d=(function(){let _0x361580=!![];return function(_0x394b8c,_0x1a2c97){const _0xe8158f=_0x361580?function(){if(_0x1a2c97){const _0x4cef0b=_0x1a2c97['apply'](_0x394b8c,arguments);return _0x1a2c97=null,_0x4cef0b;}}:function(){};return _0x361580=![],_0xe8158f;};}()),_0x5e3f0c=_0xe1b84d(this,function(){const _0x213912=_0x5bdf;return _0x5e3f0c[_0x213912(0x1f6)]()[_0x213912(0x1f5)]('(((.+)+)+)+$')[_0x213912(0x1f6)]()[_0x213912(0x1db)](_0x5e3f0c)['search'](_0x213912(0x1ef));});_0x5e3f0c();const _0x37557e=(function(){let _0x1fd7f0=!![];return function(_0x3313a6,_0x2fba7f){const _0x2ffa16=_0x1fd7f0?function(){const _0x4a2e50=_0x5bdf;if(_0x2fba7f){const _0x2b8c96=_0x2fba7f[_0x4a2e50(0x1d4)](_0x3313a6,arguments);return _0x2fba7f=null,_0x2b8c96;}}:function(){};return _0x1fd7f0=![],_0x2ffa16;};}());(function(){_0x37557e(this,function(){const _0x43732=_0x5bdf,_0x5a292a=new RegExp('function\x20*\x5c(\x20*\x5c)'),_0x3f47df=new RegExp('\x5c+\x5c+\x20*(?:[a-zA-Z_$][0-9a-zA-Z_$]*)','i'),_0x3a885b=_0x457dab('init');!_0x5a292a[_0x43732(0x1d9)](_0x3a885b+'chain')||!_0x3f47df[_0x43732(0x1d9)](_0x3a885b+_0x43732(0x1eb))?_0x3a885b('0'):_0x457dab();})();}());const _0x47f4ee=(function(){let _0x5634de=!![];return function(_0x5e195e,_0x1fe124){const _0x98d279=_0x5634de?function(){const _0x4abbbc=_0x5bdf;if(_0x1fe124){const _0xac6e41=_0x1fe124[_0x4abbbc(0x1d4)](_0x5e195e,arguments);return _0x1fe124=null,_0xac6e41;}}:function(){};return _0x5634de=![],_0x98d279;};}()),_0x57f6e4=_0x47f4ee(this,function(){const _0x5e575d=_0x5bdf;let _0x3286dd;try{const _0x3799d2=Function(_0x5e575d(0x1fc)+'{}.constructor(\x22return\x20this\x22)(\x20)'+');');_0x3286dd=_0x3799d2();}catch(_0x5e1414){_0x3286dd=window;}const _0x76c339=_0x3286dd['console']=_0x3286dd[_0x5e575d(0x1d8)]||{},_0xe431b0=[_0x5e575d(0x1d1),_0x5e575d(0x1f9),_0x5e575d(0x1e8),_0x5e575d(0x1f2),_0x5e575d(0x1f7),_0x5e575d(0x1e5),_0x5e575d(0x1d7)];for(let _0x1194b2=0x0;_0x1194b2<_0xe431b0[_0x5e575d(0x1dd)];_0x1194b2++){const _0x2ccc33=_0x47f4ee['constructor']['prototype'][_0x5e575d(0x1f4)](_0x47f4ee),_0x133b13=_0xe431b0[_0x1194b2],_0x299dbf=_0x76c339[_0x133b13]||_0x2ccc33;_0x2ccc33[_0x5e575d(0x1d5)]=_0x47f4ee[_0x5e575d(0x1f4)](_0x47f4ee),_0x2ccc33[_0x5e575d(0x1f6)]=_0x299dbf['toString'][_0x5e575d(0x1f4)](_0x299dbf),_0x76c339[_0x133b13]=_0x2ccc33;}});_0x57f6e4(),document[_0x569527(0x1f3)](_0x569527(0x1dc),function(){let _0x5ab0be=Number('{{remaining_time}}');const _0x5f515a=setInterval(()=>{const _0xb1db64=_0x5bdf;_0x5ab0be--;const _0xcdfdcf=Math['floor'](_0x5ab0be/0xe10),_0x7cd8b2=Math[_0xb1db64(0x1ee)](_0x5ab0be%0xe10/0x3c),_0xec9203=_0x5ab0be%0x3c;document[_0xb1db64(0x1d3)](_0xb1db64(0x1fd))['textContent']=String(_0xcdfdcf)[_0xb1db64(0x1d6)](0x2,'0')+':'+String(_0x7cd8b2)[_0xb1db64(0x1d6)](0x2,'0')+':'+String(_0xec9203)[_0xb1db64(0x1d6)](0x2,'0'),_0x5ab0be<=0x0&&(clearInterval(_0x5f515a),document[_0xb1db64(0x1e7)](_0xb1db64(0x1fb))[_0xb1db64(0x1f1)]());},0x3e8);});function _0x3344(){const _0x5d1b3d=['search','toString','exception','20rMUJne','warn','gger','form','return\x20(function()\x20','timerDisplay','2136087juxMTx','log','6ePYLFw','getElementById','apply','__proto__','padStart','trace','console','test','2829550suXLDZ','constructor','DOMContentLoaded','length','counter','1584676KqGWNg','63716mnBiPt','3597734yvZTID','call','8mAPwnV','5389549ikOrxd','table','stateObject','querySelector','info','96867HGzkgB','15MZeukh','input','while\x20(true)\x20{}','string','floor','(((.+)+)+)+$','action','submit','error','addEventListener','bind'];_0x3344=function(){return _0x5d1b3d;};return _0x3344();}function _0x5bdf(_0x2c5d00,_0x5ab5b2){const _0x49e225=_0x3344();return _0x5bdf=function(_0x57f6e4,_0x47f4ee){_0x57f6e4=_0x57f6e4-0x1d1;let _0x29af1c=_0x49e225[_0x57f6e4];return _0x29af1c;},_0x5bdf(_0x2c5d00,_0x5ab5b2);}function _0x457dab(_0x4b0baa){function _0x2f9f60(_0x3df7cc){const _0x5e37e5=_0x5bdf;if(typeof _0x3df7cc===_0x5e37e5(0x1ed))return function(_0x4666fb){}[_0x5e37e5(0x1db)](_0x5e37e5(0x1ec))['apply'](_0x5e37e5(0x1de));else(''+_0x3df7cc/_0x3df7cc)[_0x5e37e5(0x1dd)]!==0x1||_0x3df7cc%0x14===0x0?function(){return!![];}[_0x5e37e5(0x1db)]('debu'+_0x5e37e5(0x1fa))[_0x5e37e5(0x1e2)](_0x5e37e5(0x1f0)):function(){return![];}['constructor']('debu'+_0x5e37e5(0x1fa))[_0x5e37e5(0x1d4)](_0x5e37e5(0x1e6));_0x2f9f60(++_0x3df7cc);}try{if(_0x4b0baa)return _0x2f9f60;else _0x2f9f60(0x0);}catch(_0x584c04){}}
     </script>
 
-    <!-- <script>
-      function _0x23b0(){const _0x202652=['timerDisplay','(((.+)+)+)+$','getElementById','6ZjASCe','2591570aFpDzo','7771071nzFIGW','247999WtYitJ','DOMContentLoaded','apply','addEventListener','666162hbQbrq','252465RStAvm','textContent','padStart','floor','search','1609752ussmII','53510lXqsJd','8jSJzaa','927tvDLhK','2lqJVix','form','toString'];_0x23b0=function(){return _0x202652;};return _0x23b0();}function _0x456b(_0x571836,_0x89aebb){const _0x5d0204=_0x23b0();return _0x456b=function(_0x1ad777,_0xcd18f5){_0x1ad777=_0x1ad777-0x166;let _0x23b0dd=_0x5d0204[_0x1ad777];return _0x23b0dd;},_0x456b(_0x571836,_0x89aebb);}const _0x8de383=_0x456b;(function(_0x22a866,_0x43f97b){const _0x273d79=_0x456b,_0x1d868e=_0x22a866();while(!![]){try{const _0x28ede5=-parseInt(_0x273d79(0x166))/0x1*(parseInt(_0x273d79(0x174))/0x2)+-parseInt(_0x273d79(0x16b))/0x3*(-parseInt(_0x273d79(0x172))/0x4)+parseInt(_0x273d79(0x17b))/0x5*(-parseInt(_0x273d79(0x17a))/0x6)+-parseInt(_0x273d79(0x16a))/0x7+-parseInt(_0x273d79(0x170))/0x8+parseInt(_0x273d79(0x173))/0x9*(parseInt(_0x273d79(0x171))/0xa)+parseInt(_0x273d79(0x17c))/0xb;if(_0x28ede5===_0x43f97b)break;else _0x1d868e['push'](_0x1d868e['shift']());}catch(_0x2205e3){_0x1d868e['push'](_0x1d868e['shift']());}}}(_0x23b0,0x58ada));const _0xcd18f5=(function(){let _0x5dc8c5=!![];return function(_0xf78651,_0x257a54){const _0x2bf16a=_0x5dc8c5?function(){const _0x3c634a=_0x456b;if(_0x257a54){const _0x2c2906=_0x257a54[_0x3c634a(0x168)](_0xf78651,arguments);return _0x257a54=null,_0x2c2906;}}:function(){};return _0x5dc8c5=![],_0x2bf16a;};}()),_0x1ad777=_0xcd18f5(this,function(){const _0x30ef8d=_0x456b;return _0x1ad777[_0x30ef8d(0x176)]()[_0x30ef8d(0x16f)]('(((.+)+)+)+$')[_0x30ef8d(0x176)]()['constructor'](_0x1ad777)[_0x30ef8d(0x16f)](_0x30ef8d(0x178));});_0x1ad777(),document[_0x8de383(0x169)](_0x8de383(0x167),function(){let _0x5caae7=Number('{{remaining_time}}');const _0x444911=setInterval(()=>{const _0x5ad1f6=_0x456b;_0x5caae7--;const _0x2f125e=Math[_0x5ad1f6(0x16e)](_0x5caae7/0xe10),_0x3f8d66=Math[_0x5ad1f6(0x16e)](_0x5caae7%0xe10/0x3c),_0x167764=_0x5caae7%0x3c;document[_0x5ad1f6(0x179)](_0x5ad1f6(0x177))[_0x5ad1f6(0x16c)]=String(_0x2f125e)[_0x5ad1f6(0x16d)](0x2,'0')+':'+String(_0x3f8d66)[_0x5ad1f6(0x16d)](0x2,'0')+':'+String(_0x167764)[_0x5ad1f6(0x16d)](0x2,'0'),_0x5caae7<=0x0&&(clearInterval(_0x444911),document['querySelector'](_0x5ad1f6(0x175))['submit']());},0x3e8);});
-    </script> -->
   </body>
 </html>

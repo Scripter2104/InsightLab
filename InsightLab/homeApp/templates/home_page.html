@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InsightLab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .card-wrapper {
@@ -65,29 +66,33 @@
 
         <!-- Sidebar -->
         <aside class="h-dvh w-64 bg-white shadow-lg">
-            <div class="p-6">
+            <div class="px-4 sm:px-6 py-4">
                 <h2 class="text-2xl font-bold text-green-600">InsightLab</h2>
             </div>
-            <nav>
+            <nav class="p-5">
                 <ul>
-                    <li class="p-4 hover:bg-gray-200">
+                    <li class="mb-3 p-2 rounded hover:bg-gray-200">
                         <a href="#" class="flex items-center">
-                            <span class="ml-2 text-gray-700">My Tests</span>
+                            <i class="fa-solid fa-clipboard-list ml-1 mr-2"></i>
+                            <span class="pl-3">My Tests</span>
                         </a>
                     </li>
-                    <li class="p-4 hover:bg-gray-200">
+                    <li class="mb-3 p-2 rounded hover:bg-gray-200">
                         <a href="#" class="flex items-center">
-                            <span class="ml-2 text-gray-700">Respondents</span>
+                            <i class="fa-solid fa-users mr-1"></i>
+                            <span class="pl-3">Respondents</span>
                         </a>
                     </li>
-                    <li class="p-4 hover:bg-gray-200">
+                    <li class="mb-3 p-2 rounded hover:bg-gray-200">
                         <a href="#" class="flex items-center">
-                            <span class="ml-2 text-gray-700">Results Database</span>
+                            <i class="fa-solid fa-square-poll-vertical ml-1 mr-2"></i>
+                            <span class="pl-3">Results</span>
                         </a>
                     </li>
-                    <li class="p-4 hover:bg-gray-200">
+                    <li class="mb-3 p-2 rounded hover:bg-gray-200">
                         <a href="#" class="flex items-center">
-                            <span class="ml-2 text-gray-700">My Account</span>
+                            <i class="fa-solid fa-user ml-1 mr-2"></i>
+                            <span class="pl-3">My Account</span>
                         </a>
                     </li>
                 </ul>
@@ -95,7 +100,7 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 p-6 max-h-screen overflow-y-auto ">
+        <div class="flex-1 px-6 py-4 max-h-screen overflow-y-auto ">
             <!-- Header -->
             <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
                 <h1 class="text-2xl font-semibold">My Tests</h1>

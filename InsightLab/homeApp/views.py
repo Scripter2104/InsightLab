@@ -44,7 +44,6 @@ def time_setting_view(request, *args, **kwargs):
 @login_required
 def activate_test(request):
     if request.method == 'POST':
-
         try:
             # Throws error if not json
             data = json.loads(request.body)

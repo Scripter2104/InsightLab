@@ -1,10 +1,8 @@
-import uuid
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from homeApp.models import Test, TestConfiguration, Question, Option
 from .models import RespondentData, RespondentAnswers
 from django.utils import timezone
-import math
 
 
 # Create your views here.
@@ -37,9 +35,9 @@ def test_start_view(request, *ags, **kwargs):
 
 def question_page_view(request, *args, **kwargs):
     respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
+    test_obj = respondent.test_id
     # Store common test data in session
     if 'test_data' not in request.session:
-        test_obj = respondent.test_id
         questions = list(Question.objects.filter(test=test_obj).values('unique_id', 'question_text', 'question_type',
                                                                        'correct_points', 'incorrect_points'))
 
@@ -54,7 +52,8 @@ def question_page_view(request, *args, **kwargs):
             "time_per_question": test_obj.time_per_question,
             "time_limit": test_obj.time_limit,
             "current_question_index": 0,
-            "start_time": timezone.now().timestamp()
+            "start_time": timezone.now().timestamp(),
+            "total_marks": 0
         }
 
     # Get session data
@@ -66,6 +65,7 @@ def question_page_view(request, *args, **kwargs):
     time_per_question = test_data['time_per_question']
     time_limit = test_data['time_limit']
     current_index = test_data['current_question_index']
+    total_marks = test_data['total_marks']
 
     # Get test object and validate if it's active
     test_obj = Test.objects.get(unique_id=test_id)
@@ -82,8 +82,15 @@ def question_page_view(request, *args, **kwargs):
 
     # Check if test is complete
     if current_index >= question_count:
+        request.session['total_marks'] = test_data['total_marks']
+        request.session['max_marks'] = test_obj.max_marks
+        request.session['pass_marks'] = test_obj.pass_marks
+        request.session['test_name'] = test_obj.name
         request.session.pop('test_data', None)
+        request.session['first_name'] = respondent.first_name.capitalize()
+        request.session['initials'] = respondent.first_name.strip()[0].upper()
         request.session['summary_message'] = test_obj.summary_message
+
         return redirect('test_end_page')
 
     # Get current question data
@@ -91,10 +98,17 @@ def question_page_view(request, *args, **kwargs):
     current_question_obj = Question.objects.get(unique_id=current_question['unique_id'])
     options = Option.objects.filter(question=current_question_obj)
 
+    # Calculate remaining time
+    if time_per_question != 0:
+        elapsed_time = int(timezone.now().timestamp() - test_data['start_time'])
+        remaining_time = max(0, time_per_question - elapsed_time)
+    else:
+        elapsed_time = int(timezone.now().timestamp() - test_data['start_time'])
+        remaining_time = max(0, time_limit - elapsed_time)
+
     # On POST method
     if request.method == 'POST':
         correct_answers = [opt.option_text for opt in options if opt.is_correct]
-        print(correct_answers, " \t\t\t\t\thello  ")
 
         if current_question['question_type'] == 'multiple-choice':
             respondent_answers = request.POST.getlist('answer')
@@ -103,13 +117,15 @@ def question_page_view(request, *args, **kwargs):
 
         is_correct = sorted(respondent_answers) == sorted(correct_answers)
         points = current_question['correct_points'] if is_correct else current_question['incorrect_points']
+        if is_correct:
+            total_marks += int(points)
         time_taken = timezone.now().timestamp() - test_data['start_time']
 
         respondent_answers_data = {"respondent_data": respondent,
                                    "question_id": current_question_obj,
                                    "correct_answer": correct_answers,
                                    "respondent_answer": respondent_answers,
-                                   "is_correct":is_correct,
+                                   "is_correct": is_correct,
                                    "points": points,
                                    "time_taken": time_taken}
 
@@ -117,9 +133,12 @@ def question_page_view(request, *args, **kwargs):
         respondentAnswer.save()
 
         # Update session and redirect
+        if time_per_question != 0:
+            test_data['start_time'] = timezone.now().timestamp()
         test_data['current_question_index'] += 1
-        test_data['start_time'] = timezone.now().timestamp()
+        test_data['total_marks'] = total_marks
         request.session['test_data'] = test_data
+        print(total_marks)
         return redirect('question_page')
 
     render_context = {
@@ -130,6 +149,7 @@ def question_page_view(request, *args, **kwargs):
         'test_name': test_obj.name,
         'test_obj': test_obj,
         'options': options,
+        'remaining_time': remaining_time
     }
     if time_per_question != 0:
         render_context['time_per_question'] = time_per_question
@@ -140,4 +160,10 @@ def question_page_view(request, *args, **kwargs):
 
 
 def test_end_page_view(request, *args, **kwargs):
-    return render(request, 'test_end_page.html', {"summary_message": request.session['summary_message']})
+    return render(request, 'test_end_page.html', {"summary_message": request.session['summary_message'],
+                                                  "total_marks": request.session['total_marks'],
+                                                  "max_marks": request.session['max_marks'],
+                                                  "pass_marks": request.session['pass_marks'],
+                                                  "test_name":request.session["test_name"],
+                                                  "first_name":request.session["first_name"],
+                                                  "initials":request.session["initials"]})

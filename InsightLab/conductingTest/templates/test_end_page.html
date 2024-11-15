@@ -1,16 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testportal Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+
 </head>
-<body>
 
-<span id="endMessage">{{summary_message|safe}}</span>
+<body class="bg-gray-100 min-h-screen overflow-hidden">
 
-<script>
+    <!-- Header -->
+    <div
+        class="bg-white w-3/4 rounded-lg shadow-md p-6 mt-4 mb-4 ml-44 mr-32 flex items-center justify-between relative">
+        <div class="flex items-center">
+            <span class="text-xl font-bold text-green-500">InsightLab</span>
+        </div>
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <span class="text-lg font-bold text-black-500">{{test_name|safe}}</span>
+        </div>
+    </div>
 
-</script>
+    <div class="bg-white w-3/4 rounded-lg shadow-md p-6 ml-44 mr-32">
+        <!-- Respondent Section -->
+        <div class="mb-4">
+            <h2 class="text-gray-500 uppercase text-xs font-semibold">Respondent</h2>
+            <div class="flex items-center space-x-3 mt-1">
+                <div class="bg-gray-300 rounded-full h-10 w-10 flex items-center justify-center">
+                    <span class="text-white font-bold text-sm">{{initials}}</span>
+                </div>
+                <span class="text-gray-800 font-medium text-lg">{{first_name}}</span>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="mb-4">
+            <h2 class="text-gray-500 uppercase text-xs font-semibold">Summary</h2>
+            <p class="text-gray-800 mt-1">{{summary_message|safe}}</p>
+        </div>
+
+        <!-- Result Section -->
+        <div class="mb-4">
+            <h2 class="text-gray-500 uppercase text-xs font-semibold">Result</h2>
+            <div class="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
+                <div>
+                    <h3 class="text-gray-800 font-semibold">Test ended</h3>
+                    <p class="text-gray-600 text-sm">Your score is not available because the test contains not graded
+                        open-ended questions.</p>
+                    <p class="text-gray-600 text-sm mt-1">Save your test sheet for later. For further details, contact
+                        the test owner.</p>
+                </div>
+                <!-- Corrected Score Gauge -->
+                <div class="relative w-24 h-24">
+                    <svg class="rotate-[135deg] w-full h-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background Circle (Gauge) -->
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200"
+                            stroke-width="1.5" stroke-dasharray="75 100" stroke-linecap="round"></circle>
+
+                        <!-- Gauge Progress -->
+                        <circle id="progressCircle" cx="18" cy="18" r="16" fill="none"
+                            class="stroke-current text-blue-600" stroke-width="1.5" stroke-dasharray="37.5 100"
+                            stroke-linecap="round"></circle>
+                    </svg>
+
+                    <!-- Value Text -->
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                        <span class="text-lg font-bold text-blue-600">{{total_marks}}/{{max_marks}}</span>
+                        <span class="text-blue-600 block">Score</span>
+                    </div>
+                </div>
+                <!-- End Corrected Score Gauge -->
+            </div>
+        </div>
+
+        <!-- Timer Section -->
+        <div class="mb-4">
+            <h2 class="text-gray-500 uppercase text-xs font-semibold">Timer</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-800 font-semibold">Total time</span>
+                    <span class="text-gray-600">00:00:18 / 00:15:00</span>
+                </div>
+
+                <!-- Timer Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                    <div class="bg-purple-600 h-2.5 rounded-full dark:bg-purple-500" style="width: 45%"></div>
+                </div>
+
+                <div class="flex justify-between text-gray-600 text-sm">
+                    <div>
+                        <p><span class="font-semibold">Start time:</span> 14:23</p>
+                        <p><span class="font-semibold">Date:</span> 2024-11-14</p>
+                    </div>
+                    <p><span class="font-semibold">End time:</span> 14:23</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-center p-4">
+            <span class="text-gray-600">Powered by</span>
+            <span class="ml-1 font-semibold text-green-500">InsightLab</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const progressCircle = document.getElementById('progressCircle');
+            const score = "{{total_marks}}";
+            const maxScore = "{{max_marks}}";
+            const percentage = (parseInt(score) / parseInt(maxScore)) * 100;
+            const dashArrayValue = (percentage * 75) / 100;
+
+            let currentDashArray = 0;
+            const animationDuration = 2000;
+            const framerate = 1000 / 60;
+            const increment = dashArrayValue / (animationDuration / framerate);
+
+            function animateGauge() {
+
+                currentDashArray += increment;
+                if (currentDashArray <= dashArrayValue) {
+                    progressCircle.style.strokeDasharray = `${currentDashArray} 100`;
+                    requestAnimationFrame(animateGauge);
+                }
+                else {
+                    progressCircle.style.strokeDasharray = `${dashArrayValue} 100`;
+                }
+
+            }
+
+            animateGauge();
+        });
+    </script>
+
 
 </body>
+
 </html>

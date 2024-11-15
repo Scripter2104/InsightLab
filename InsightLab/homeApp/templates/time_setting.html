@@ -199,6 +199,7 @@
             activateButton.disabled=true;
 
             const csrftoken = getCookie('csrftoken');
+
             fetch('activate_test/', {
                 method: 'POST',
                 headers: {

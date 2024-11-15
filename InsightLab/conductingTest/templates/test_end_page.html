@@ -6,14 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testportal Result</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
-
 </head>
 
 <body class="bg-gray-100 min-h-screen overflow-hidden">
-
     <!-- Header -->
-    <div
-        class="bg-white w-3/4 rounded-lg shadow-md p-6 mt-4 mb-4 ml-44 mr-32 flex items-center justify-between relative">
+    <div class="bg-white w-3/4 rounded-lg shadow-md p-6 mt-4 mb-4 ml-44 mr-32 flex items-center justify-between relative">
         <div class="flex items-center">
             <span class="text-xl font-bold text-green-500">InsightLab</span>
         </div>
@@ -46,10 +43,8 @@
             <div class="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
                 <div>
                     <h3 class="text-gray-800 font-semibold">Test ended</h3>
-                    <p class="text-gray-600 text-sm">Your score is not available because the test contains not graded
-                        open-ended questions.</p>
-                    <p class="text-gray-600 text-sm mt-1">Save your test sheet for later. For further details, contact
-                        the test owner.</p>
+                    <br>
+                    <p class="text-gray-600 text-sm mt-1">{{result}}</p>
                 </div>
                 <!-- Corrected Score Gauge -->
                 <div class="relative w-24 h-24">
@@ -60,7 +55,7 @@
 
                         <!-- Gauge Progress -->
                         <circle id="progressCircle" cx="18" cy="18" r="16" fill="none"
-                            class="stroke-current text-blue-600" stroke-width="1.5" stroke-dasharray="37.5 100"
+                            class="stroke-current text-blue-600" stroke-width="1.5" stroke-dasharray="0 100"
                             stroke-linecap="round"></circle>
                     </svg>
 
@@ -80,20 +75,21 @@
             <div class="bg-gray-50 p-4 rounded-lg">
                 <div class="flex items-center justify-between">
                     <span class="text-gray-800 font-semibold">Total time</span>
-                    <span class="text-gray-600">00:00:18 / 00:15:00</span>
+                    <span class="text-gray-600">{{total_time_taken}} / {{total_time}}</span>
                 </div>
 
                 <!-- Timer Progress Bar -->
                 <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div class="bg-purple-600 h-2.5 rounded-full dark:bg-purple-500" style="width: 45%"></div>
+                    <div id="progressBar" class="bg-purple-600 h-2.5 rounded-full dark:bg-purple-500"
+                        style="width: 0%"></div>
                 </div>
 
                 <div class="flex justify-between text-gray-600 text-sm">
                     <div>
-                        <p><span class="font-semibold">Start time:</span> 14:23</p>
-                        <p><span class="font-semibold">Date:</span> 2024-11-14</p>
+                        <p><span class="font-semibold">Start time:</span> {{start_time}}</p>
+                        <p><span class="font-semibold">Date:</span> {{date}}</p>
                     </div>
-                    <p><span class="font-semibold">End time:</span> 14:23</p>
+                    <p><span class="font-semibold">End time:</span>{{end_time}} </p>
                 </div>
             </div>
         </div>
@@ -108,34 +104,56 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const progressCircle = document.getElementById('progressCircle');
+            const progressBar = document.getElementById('progressBar');
             const score = "{{total_marks}}";
             const maxScore = "{{max_marks}}";
             const percentage = (parseInt(score) / parseInt(maxScore)) * 100;
-            const dashArrayValue = (percentage * 75) / 100;
+            const dashArrayValue = (percentage * 75) / 100; // To calculate how much to fill the gauge
+            let total_time = "{{total_time}}";
+            let total_time_taken = "{{total_time_taken}}";
+            const framerate = 1000 / 60; // 60 frames per second (for smooth animation)
+
+
+            const [hours, minutes, seconds] = total_time.split(':').map(Number);
+            const [hours_taken, minutes_taken, seconds_taken] = total_time_taken.split(':').map(Number);
+
+            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            const totalSecondsTaken = hours_taken * 3600 + minutes_taken * 60 + seconds_taken;
+
+            const progressBarWidth = (totalSecondsTaken / totalSeconds) * 100;
 
             let currentDashArray = 0;
-            const animationDuration = 2000;
-            const framerate = 1000 / 60;
-            const increment = dashArrayValue / (animationDuration / framerate);
+            let currentWidth = 0;
+            const animationDuration2 = 5000;
+            const animationDuration1=2000;
+            const widthIncrement = progressBarWidth / (animationDuration2 / framerate);
+            const increment = dashArrayValue / (animationDuration1 / framerate);
 
             function animateGauge() {
-
                 currentDashArray += increment;
                 if (currentDashArray <= dashArrayValue) {
                     progressCircle.style.strokeDasharray = `${currentDashArray} 100`;
                     requestAnimationFrame(animateGauge);
-                }
-                else {
+                } else {
                     progressCircle.style.strokeDasharray = `${dashArrayValue} 100`;
                 }
-
             }
 
+            function animateProgressBar() {
+                currentWidth += widthIncrement;
+                if (currentWidth <= progressBarWidth) {
+                    progressBar.style.width = `${currentWidth}%`;
+                    requestAnimationFrame(animateProgressBar);
+                } else {
+                    progressBar.style.width = `${progressBarWidth}%`;
+                }
+            }
+
+            // Start both animations
             animateGauge();
+            animateProgressBar();
         });
     </script>
-
-
 </body>
 
 </html>

@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from homeApp.models import Test, TestConfiguration, Question, Option
 from .models import RespondentData, RespondentAnswers
 from django.utils import timezone
+import time
+import datetime
 
 
 # Create your views here.
@@ -53,7 +55,8 @@ def question_page_view(request, *args, **kwargs):
             "time_limit": test_obj.time_limit,
             "current_question_index": 0,
             "start_time": timezone.now().timestamp(),
-            "total_marks": 0
+            "total_marks": 0,
+            "total_time_taken": 0
         }
 
     # Get session data
@@ -66,6 +69,8 @@ def question_page_view(request, *args, **kwargs):
     time_limit = test_data['time_limit']
     current_index = test_data['current_question_index']
     total_marks = test_data['total_marks']
+
+    print(time_limit)
 
     # Get test object and validate if it's active
     test_obj = Test.objects.get(unique_id=test_id)
@@ -82,15 +87,29 @@ def question_page_view(request, *args, **kwargs):
 
     # Check if test is complete
     if current_index >= question_count:
-        request.session['total_marks'] = test_data['total_marks']
-        request.session['max_marks'] = test_obj.max_marks
-        request.session['pass_marks'] = test_obj.pass_marks
-        request.session['test_name'] = test_obj.name
-        request.session.pop('test_data', None)
-        request.session['first_name'] = respondent.first_name.capitalize()
-        request.session['initials'] = respondent.first_name.strip()[0].upper()
-        request.session['summary_message'] = test_obj.summary_message
 
+        if test_obj.time_per_question != 0:
+            total_time = time_per_question * len(questions)
+        else:
+            total_time = test_obj.time_limit
+        info = {
+            "total_marks": test_data['total_marks'],
+            "max_marks": test_obj.max_marks,
+            "pass_marks": test_obj.pass_marks,
+            "test_name": test_obj.name,
+            "ending_time": str(time.localtime().tm_hour) + ":" + str(time.localtime().tm_min),
+            "starting_time": str(time.localtime(test_data["start_time"]).tm_hour) + ":" + str(
+                time.localtime(test_data["start_time"]).tm_min),
+            "first_name": respondent.first_name.capitalize(),
+            "initials": respondent.first_name.strip()[0].upper(),
+            "summary_message": test_obj.summary_message,
+            "date": str(datetime.date.today()),
+            "total_time": str(datetime.timedelta(seconds=total_time)),
+            "total_time_taken": str(datetime.timedelta(seconds=int(test_data["total_time_taken"])))
+        }
+        request.session.pop("test_data", None)
+
+        request.session["info"] = info
         return redirect('test_end_page')
 
     # Get current question data
@@ -128,6 +147,7 @@ def question_page_view(request, *args, **kwargs):
                                    "is_correct": is_correct,
                                    "points": points,
                                    "time_taken": time_taken}
+        test_data["total_time_taken"] += time_taken
 
         respondentAnswer = RespondentAnswers(**respondent_answers_data)
         respondentAnswer.save()
@@ -138,7 +158,6 @@ def question_page_view(request, *args, **kwargs):
         test_data['current_question_index'] += 1
         test_data['total_marks'] = total_marks
         request.session['test_data'] = test_data
-        print(total_marks)
         return redirect('question_page')
 
     render_context = {
@@ -160,10 +179,21 @@ def question_page_view(request, *args, **kwargs):
 
 
 def test_end_page_view(request, *args, **kwargs):
-    return render(request, 'test_end_page.html', {"summary_message": request.session['summary_message'],
-                                                  "total_marks": request.session['total_marks'],
-                                                  "max_marks": request.session['max_marks'],
-                                                  "pass_marks": request.session['pass_marks'],
-                                                  "test_name":request.session["test_name"],
-                                                  "first_name":request.session["first_name"],
-                                                  "initials":request.session["initials"]})
+    info_from_session = request.session.get("info", {})
+    test_end_info = {
+        "summary_message": info_from_session.get("summary_message"),
+        "total_marks": info_from_session.get("total_marks"),
+        "max_marks": info_from_session.get("max_marks"),
+        "pass_marks": info_from_session.get("pass_marks"),
+        "test_name": info_from_session.get("test_name"),
+        "first_name": info_from_session.get("first_name"),
+        "initials": info_from_session.get("initials"),
+        "end_time": info_from_session.get("ending_time"),
+        "start_time": info_from_session.get("starting_time"),
+        "date": info_from_session.get("date"),
+        "total_time": info_from_session.get("total_time"),
+        "total_time_taken": info_from_session.get("total_time_taken"),
+        "result": "Pass" if info_from_session.get("total_marks") >= info_from_session.get("pass_marks") else "Fail"
+    }
+
+    return render(request, 'test_end_page.html', {**test_end_info})

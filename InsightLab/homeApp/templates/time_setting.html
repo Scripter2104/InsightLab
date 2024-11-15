@@ -19,8 +19,8 @@
         {% include 'vertical_navbar.html' %}
 
         <!-- Main Content -->
-        <main class="flex-grow p-8 bg-gray-50">
-            <div class="p-6 mx-auto bg-white rounded-lg shadow-md">
+        <main class="w-3/4 bg-gray-50 p-8 overflow-auto max-h-[calc(100vh-64px)]">
+            <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="mb-4 text-2xl font-semibold">Time settings</h2>
                 <div class="pt-4 border-t border-gray-300">
                     <h3 class="mb-2 text-lg font-medium">Test Duration</h3>
@@ -72,10 +72,10 @@
                             <button type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md"
                                 onclick="cancelInfo()">Cancel</button>
                             <button type="button"
-                                class="px-4 py-2 text-white transition duration-300 bg-blue-600 rounded-md hover:bg-blue-700"
+                                class="px-4 py-2 text-white transition duration-300 bg-blue-500 rounded-md hover:bg-blue-600"
                                 onclick="saveInfo()">Save</button>
                             <button type="button"
-                                class="px-4 py-2 text-white transition duration-300 bg-green-600 rounded-md hover:bg-green-700 disabled:bg-gray-600" id="activateButton"
+                                class="px-4 py-2 text-white transition duration-300 bg-green-500 rounded-md hover:bg-green-600 disabled:bg-gray-600" id="activateButton"
                                 onclick="activateTest()">Activate
                                 Test</button>
                         </div>

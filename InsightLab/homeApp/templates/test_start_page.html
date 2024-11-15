@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -31,10 +31,8 @@
       {% include 'vertical_navbar.html' %}
 
       <!-- Main Content Area -->
-      <main class="flex-grow p-8 bg-gray-50">
-        <div
-          class="w-[100%] mx-w-lg bg-white p-6 shadow-md max-h-[75vh] rounded-lg content-container z-30"
-        >
+      <main class="w-3/4 bg-gray-50 p-8 overflow-auto max-h-[calc(100vh-64px)]">
+        <div class="bg-white p-6 rounded-lg shadow-md">
           <h2 class="mb-4 text-2xl font-semibold">Test start form</h2>
           <p class="mb-6 text-gray-600">
             Configure test start form and collect data to identify respondents.
@@ -75,20 +73,7 @@
                       class="text-sm text-gray-400 cursor-not-allowed"
                       disabled
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="inline w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2m-4 4v10m-4 0h8V11a1 1 0 00-1-1H9z"
-                        />
-                      </svg>
+                    <i class="fas fa-trash delete-icon"></i>
                     </button>
                   </td>
                 </tr>
@@ -221,6 +206,12 @@
         const tableBody = document.getElementById("table-body");
         const noDataRow = document.getElementById("no-data-row");
 
+        // Hide the clicked anchor tag in dropdown
+        const anchorTag = document.querySelector(`a[onclick="addField('${field}')"]`);
+        if (anchorTag) {
+          anchorTag.style.display = 'none';
+        }
+
         // Remove the "no data" row if it exists
         if (noDataRow) {
           tableBody.removeChild(noDataRow);
@@ -237,10 +228,8 @@
             <input type="checkbox" class="w-5 h-5 text-green-500 form-checkbox" checked disabled>
         </td>
         <td class="px-4 py-2 text-center">
-            <button class="text-sm text-gray-500 hover:text-gray-700" onclick="deleteRow(this)">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2m-4 4v10m-4 0h8V11a1 1 0 00-1-1H9z" />
-                </svg>
+            <button class="text-sm text-gray-500 hover:text-red-600 transition-colors" onclick="deleteRow(this)">
+                <i class="fas fa-trash delete-icon"></i>
             </button>
         </td>
     `;
@@ -259,6 +248,12 @@
         const fieldName = row.children[0].innerText; // Get the field name
         row.remove(); // Remove the row
 
+        // Show/unhide the corresponding anchor tag in dropdown
+        const anchorTag = document.querySelector(`a[onclick="addField('${fieldName}')"]`);
+        if (anchorTag) {
+          anchorTag.style.display = 'block';
+        }
+
         // Remove the field from the selectedFields array and update sessionStorage
         const index = selectedFields.indexOf(fieldName);
         if (index > -1) {
@@ -270,7 +265,7 @@
         }
 
         // If no more rows, add the "no data" row back
-        if (document.getElementById("table-body").childElementCount === 0) {
+        if (document.getElementById("table-body").childElementCount === 1) {
           const tableBody = document.getElementById("table-body");
           const noDataRow = document.createElement("tr");
           noDataRow.classList.add("border-t");
@@ -285,13 +280,49 @@
       function clearTable() {
         const tableBody = document.getElementById("table-body");
         tableBody.innerHTML = ""; // Clear all rows
+        tableBody.innerHTML = `                
+                <tr class="border-t">
+                  <td class="px-4 py-2">
+                    <span>First-Name</span>
+                  </td>
+                  <td class="px-4 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      class="w-5 h-5 text-green-500 form-checkbox"
+                      checked
+                      disabled
+                    />
+                  </td>
+                  <td class="px-4 py-2 text-center">
+                    <button
+                      class="text-sm text-gray-400 cursor-not-allowed"
+                      disabled
+                    >
+                    <i class="fas fa-trash delete-icon"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="border-t" id="no-data-row">
+                  <td colspan="3" class="px-4 py-2 text-center text-gray-500">
+                    No additional data will be required from the respondents.<br />If
+                    needed, click on "Add a Field".
+                  </td>
+                </tr>
+              `;
 
-        // Re-add the "First name" field as default
+        // Re-added the "First name" & "noDataRow" field as default
+
         selectedFields.length = 0; // Clear the selected fields array
         sessionStorage.setItem(
           "selectedFields",
           JSON.stringify(selectedFields)
         ); // Update sessionStorage
+
+        // Show all anchor tags in dropdown
+        const anchorTags = document.querySelectorAll('#dropdown-menu a');
+        anchorTags.forEach(tag => {
+          tag.style.display = 'block';
+        });
       }
 
       function confirmFields() {

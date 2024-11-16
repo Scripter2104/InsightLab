@@ -30,6 +30,10 @@ class RespondentAnswers(models.Model):
     points = models.IntegerField(default=0)
     time_taken = models.IntegerField(default=0)  # Time taken in seconds
     
+    class Meta: 
+        verbose_name_plural = "Respondent answers"
+        verbose_name = "Respondent answer"
+
     def __str__(self):
         # String representation of the model in admin
         return f"{self.respondent_data.respondent_id}"

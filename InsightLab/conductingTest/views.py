@@ -5,15 +5,25 @@ from .models import RespondentData, RespondentAnswers
 from django.utils import timezone
 import time
 import datetime
+from django.views.decorators.cache import never_cache
 
 
 # Create your views here.
 
+@never_cache
 def test_start_view(request, *ags, **kwargs):
     test = Test.objects.get(unique_id=kwargs['test_id'])
     testName = test.name
     testConfig = TestConfiguration.objects.get(test=test)
     fields = testConfig.additional_fields
+
+    # handles back navigation from question_page if the test has started
+    if 'test_is_present' in request.session:
+        return redirect('question_page')
+    # 'test_is_present' is not present but RespondentData for the test exists
+    # handles back navigation from test_end_page after test has ended
+    elif RespondentData.objects.filter(test_id=test, respondent_id=request.session.get("respondent_id")).exists():
+        return redirect('test_end_page')
 
     if request.method == 'POST':
         form_data = {
@@ -30,18 +40,23 @@ def test_start_view(request, *ags, **kwargs):
         respondent_data = RespondentData(**form_data)
         respondent_data.save()
         request.session['respondent_id'] = str(respondent_data.respondent_id)  # Convert to string
+        request.session['test_is_present'] = True
         return redirect('question_page')
 
     return render(request, 'start_test.html', {"testConfig": testConfig, "fields": fields, "testName": testName})
 
 
+@never_cache
 def question_page_view(request, *args, **kwargs):
+    # Handles back navigation from test_end_page
+    if 'test_is_present' not in request.session:
+        return redirect('test_end_page')
+    
     respondent = RespondentData.objects.get(respondent_id=request.session.get("respondent_id"))
     test_obj = respondent.test_id
     # Store common test data in session
     if 'test_data' not in request.session:
-        questions = list(Question.objects.filter(test=test_obj).values('unique_id', 'question_text', 'question_type',
-                                                                       'correct_points', 'incorrect_points'))
+        questions = list(Question.objects.filter(test=test_obj).values('unique_id', 'question_text', 'question_type', 'correct_points', 'incorrect_points'))
 
         for question in questions:
             question['unique_id'] = str(question['unique_id'])
@@ -70,8 +85,6 @@ def question_page_view(request, *args, **kwargs):
     current_index = test_data['current_question_index']
     total_marks = test_data['total_marks']
 
-    print(time_limit)
-
     # Get test object and validate if it's active
     test_obj = Test.objects.get(unique_id=test_id)
     if not test_obj.is_active:
@@ -98,8 +111,7 @@ def question_page_view(request, *args, **kwargs):
             "pass_marks": test_obj.pass_marks,
             "test_name": test_obj.name,
             "ending_time": str(time.localtime().tm_hour) + ":" + str(time.localtime().tm_min),
-            "starting_time": str(time.localtime(test_data["start_time"]).tm_hour) + ":" + str(
-                time.localtime(test_data["start_time"]).tm_min),
+            "starting_time": str(time.localtime(test_data["start_time"]).tm_hour) + ":" + str(time.localtime(test_data["start_time"]).tm_min),
             "first_name": respondent.first_name.capitalize(),
             "initials": respondent.first_name.strip()[0].upper(),
             "summary_message": test_obj.summary_message,
@@ -107,8 +119,8 @@ def question_page_view(request, *args, **kwargs):
             "total_time": str(datetime.timedelta(seconds=total_time)),
             "total_time_taken": str(datetime.timedelta(seconds=int(test_data["total_time_taken"])))
         }
-        request.session.pop("test_data", None)
 
+        request.session.pop("test_data", None)
         request.session["info"] = info
         return redirect('test_end_page')
 
@@ -141,12 +153,13 @@ def question_page_view(request, *args, **kwargs):
         time_taken = timezone.now().timestamp() - test_data['start_time']
 
         respondent_answers_data = {"respondent_data": respondent,
-                                   "question_id": current_question_obj,
-                                   "correct_answer": correct_answers,
-                                   "respondent_answer": respondent_answers,
-                                   "is_correct": is_correct,
-                                   "points": points,
-                                   "time_taken": time_taken}
+            "question_id": current_question_obj,
+            "correct_answer": correct_answers,
+            "respondent_answer": respondent_answers,
+            "is_correct": is_correct,
+            "points": points,
+            "time_taken": time_taken
+        }
         test_data["total_time_taken"] += time_taken
 
         respondentAnswer = RespondentAnswers(**respondent_answers_data)
@@ -178,7 +191,13 @@ def question_page_view(request, *args, **kwargs):
     return render(request, 'question_page.html', render_context)
 
 
+@never_cache
 def test_end_page_view(request, *args, **kwargs):
+    # Clear session 'test_is_present' on first visit to end test
+    # so back navigation to above (question_page_view) doesn't have it
+    if 'test_is_present' in request.session:
+        request.session.pop('test_is_present', None)
+        
     info_from_session = request.session.get("info", {})
     test_end_info = {
         "summary_message": info_from_session.get("summary_message"),

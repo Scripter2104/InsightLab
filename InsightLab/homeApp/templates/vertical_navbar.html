@@ -79,7 +79,6 @@ function setActiveIcon() {
     const currentPath = window.location.pathname;
     for (const [urlName, iconId] of Object.entries(urlToIconMap)) {
         if (currentPath.includes(urlName)) {
-            console.log(currentPath+" has "+urlName);
             document.getElementById(iconId).classList.add('text-green-500');
             break;
         }

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respondent Detail for {{ respondent.first_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <div class="mb-8 bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-xl font-semibold text-slate-800">Respondent details for: {{ respondent.first_name }}</h1>
+    </div>
+
+    {% for answer in detailed_answers %}
+    <div class="mb-6 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-md font-semibold mb-4">Question: {{ answer.question.question_text }}</h2>
+
+        <div>
+            {% if answer.question.question_type == 'single-choice' %}
+            {% for option in answer.options %}
+            <div class="flex items-center mb-2">
+                <input type="radio" id="option-{{ option.id }}" name="question-{{ answer.question.id }}" value="{{ option.option_text }}" {% if option.option_text in answer.respondent_answer %}checked{% endif %} disabled>
+                <label for="option-{{ option.id }}" class="ml-2 {% if option.option_text in answer.correct_answer %}bg-green-100{% endif %} {% if option.option_text in answer.respondent_answer and not answer.is_correct %}border border-red-500{% elif option.option_text in answer.respondent_answer and answer.is_correct %}border border-green-500{% endif %} px-2 py-1 rounded-md">
+                    {{ option.option_text }}
+                </label>
+            </div>
+            {% endfor %}
+
+            {% elif answer.question.question_type == 'multiple-choice' %}
+            {% for option in answer.options %}
+            <div class="flex items-center mb-2">
+                <input type="checkbox" id="option-{{ option.id }}" name="question-{{ answer.question.id }}" value="{{ option.option_text }}" {% if option.option_text in answer.respondent_answer %}checked{% endif %} disabled>
+                <label for="option-{{ option.id }}" class="ml-2 {% if option.option_text in answer.correct_answer %}bg-green-100{% endif %} {% if option.option_text in answer.respondent_answer and not answer.is_correct %}border border-red-500{% elif option.option_text in answer.respondent_answer and answer.is_correct %}border border-green-500{% endif %} px-2 py-1 rounded-md">{{ option.option_text }}</label>
+            </div>
+            {% endfor %}
+
+            {% elif answer.question.question_type == 'true-false' %}
+            <div class="flex items-center mb-2">
+                <input type="radio" id="true-{{ answer.question.id }}" name="question-{{ answer.question.id }}" value="True" {% if "True" in answer.respondent_answer %}checked{% endif %} disabled>
+                <label for="true-{{ answer.question.id }}" class="ml-2 {% if "True" in answer.correct_answer %}bg-green-100{% endif %} {% if "True" in answer.respondent_answer and not answer.is_correct %}border border-red-500{% elif "True" in answer.respondent_answer and answer.is_correct %}border border-green-500{% endif %} px-2 py-1 rounded-md">True</label>
+            </div>
+            <div class="flex items-center mb-2">
+                <input type="radio" id="false-{{ answer.question.id }}" name="question-{{ answer.question.id }}" value="False" {% if "False" in answer.respondent_answer %}checked{% endif %} disabled>
+                <label for="false-{{ answer.question.id }}" class="ml-2 {% if "False" in answer.correct_answer %}bg-green-100{% endif %} {% if "False" in answer.respondent_answer and not answer.is_correct %}border border-red-500{% elif "False" in answer.respondent_answer and answer.is_correct %}border border-green-500{% endif %} px-2 py-1 rounded-md">False</label>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>

@@ -22,8 +22,8 @@ def test_start_view(request, *ags, **kwargs):
         return redirect('question_page')
     # 'test_is_present' is not present but RespondentData for the test exists
     # handles back navigation from test_end_page after test has ended
-    # elif RespondentData.objects.filter(test_id=test, respondent_id=request.session.get("respondent_id")).exists():
-    #     return redirect('test_end_page')
+    elif RespondentData.objects.filter(test_id=test, respondent_id=request.session.get("respondent_id")).exists():
+        return redirect('test_end_page')
 
     if request.method == 'POST':
         form_data = {

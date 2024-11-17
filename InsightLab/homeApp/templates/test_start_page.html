@@ -1,243 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test Start Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <style>
-        /* Hide dropdown initially */
-        #dropdown-menu {
-            display: none;
-        }
+      /* Hide dropdown initially */
+      #dropdown-menu {
+        display: none;
+      }
 
-        /* Flex-grow for content area */
-        .flex-grow {
-            flex-grow: 1;
-        }
+      /* Flex-grow for content area */
+      .flex-grow {
+        flex-grow: 1;
+      }
     </style>
-</head>
+  </head>
 
-<body class="bg-gray-50">
+  <body class="overflow-hidden bg-gray-50">
     <!-- Horizontal Navbar -->
     {% include 'horizontal_navbar.html' %}
 
     <div class="flex min-h-screen">
-        <!-- Vertical Sidebar -->
-        {% include 'vertical_navbar.html' %}
+      <!-- Vertical Sidebar -->
+      {% include 'vertical_navbar.html' %}
 
-        <!-- Main Content Area -->
-        <div class="w-[100%] mx-w-lg bg-white p-6 shadow-md max-h-[75vh] rounded-lg content-container mt-6 ml-6 z-30">
+      <!-- Main Content Area -->
+      <main class="w-3/4 bg-gray-50 p-8 overflow-auto max-h-[calc(100vh-64px)]">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="mb-4 text-2xl font-semibold">Test start form</h2>
+          <p class="mb-6 text-gray-600">
+            Configure test start form and collect data to identify respondents.
+          </p>
 
-            <h2 class="text-lg font-semibold mb-4">TEST START FORM</h2>
-            <p class="text-gray-600 mb-6">Configure test start form and collect data to identify respondents.</p>
+          <!-- Table for Fields -->
+          <div class="mb-6">
+            <table id="fields-table" class="min-w-full border border-gray-200">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="px-4 py-2 font-medium text-left text-gray-700">
+                    FIELD
+                  </th>
+                  <th class="px-4 py-2 font-medium text-left text-gray-700">
+                    MANDATORY
+                  </th>
+                  <th class="px-4 py-2 font-medium text-left text-gray-700">
+                    REMOVE
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <!-- Pre-added First name-text field -->
+                <tr class="border-t">
+                  <td class="px-4 py-2">
+                    <span>First-Name</span>
+                  </td>
+                  <td class="px-4 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      class="w-5 h-5 text-green-500 form-checkbox"
+                      checked
+                      disabled
+                    />
+                  </td>
+                  <td class="px-4 py-2 text-center">
+                    <button
+                      class="text-sm text-gray-400 cursor-not-allowed"
+                      disabled
+                    >
+                    <i class="fas fa-trash delete-icon"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="border-t" id="no-data-row">
+                  <td colspan="3" class="px-4 py-2 text-center text-gray-500">
+                    No additional data will be required from the respondents.<br />If
+                    needed, click on "Add a Field".
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-            <!-- Table for Fields -->
-            <div class="mb-6">
-                <table id="fields-table" class="min-w-full border border-gray-200">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="px-4 py-2 text-left font-medium text-gray-700">FIELD</th>
-                            <th class="px-4 py-2 text-left font-medium text-gray-700">MANDATORY</th>
-                            <th class="px-4 py-2 text-left font-medium text-gray-700">REMOVE</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <!-- Pre-added First name-text field -->
-                        <tr class="border-t">
-                            <td class="px-4 py-2">
-                                <span>First name-text field</span>
-                            </td>
-                            <td class="px-4 py-2 text-center">
-                                <input type="checkbox" class="form-checkbox text-green-500 h-5 w-5" checked disabled>
-                            </td>
-                            <td class="px-4 py-2 text-center">
-                                <button class="text-gray-400 text-sm cursor-not-allowed" disabled>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2m-4 4v10m-4 0h8V11a1 1 0 00-1-1H9z" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr class="border-t" id="no-data-row">
-                            <td colspan="3" class="text-center px-4 py-2 text-gray-500">No additional data will be
-                                required from the respondents.<br>If needed, click on "Add a Field".</td>
-                        </tr>
-                    </tbody>
-                </table>
+          <!-- Dropdown Menu for Adding a Field -->
+          <div class="relative">
+            <button
+              class="flex items-center text-sm text-blue-500 hover:text-blue-700"
+              onclick="toggleDropdown()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add a Field
+            </button>
+
+            <!-- Dropdown menu -->
+            <div
+              id="dropdown-menu"
+              class="absolute w-48 mt-2 bg-white border border-gray-200 rounded-md shadow-lg"
+            >
+              <a
+                href="#"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onclick="addField('Last-Name')"
+                >Last-Name</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onclick="addField('Age')"
+                >Age</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onclick="addField('City')"
+                >City</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onclick="addField('Email-Address')"
+                >Email-Address</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onclick="addField('ID')"
+                >ID</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onclick="addField('Gender')"
+                >Gender</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onclick="addField('Phone')"
+                >Phone</a
+              >
             </div>
+          </div>
 
-            <!-- Dropdown Menu for Adding a Field -->
-            <div class="relative">
-                <button class="text-blue-500 hover:text-blue-700 text-sm flex items-center" onclick="toggleDropdown()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Add a Field
-                </button>
+          <!-- Message display -->
+          <p id="message" class="mt-4 text-center text-green-600 text-bold"></p>
 
-                <!-- Dropdown menu -->
-                <div id="dropdown-menu" class="absolute mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onclick="addField('Last name-text field')">Last name-text field</a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onclick="addField('Age-number')">Age-number</a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onclick="addField('City-text field')">City-text field</a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onclick="addField('Email Address-email')">Email Address-email</a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onclick="addField('ID-text field')">ID-text field</a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onclick="addField('Gender-single choice')">Gender-single choice</a>
-                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        onclick="addField('Phone-text field')">Phone-text field</a>
-                </div>
-            </div>
-
-            <!-- Message display -->
-            <p id="message" class="text-center text-bold text-green-600 mt-4"></p>
-
-            <!-- Confirm and Cancel buttons -->
-            <div class="flex justify-end space-x-4 mt-6">
-                <button class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-md"
-                    onclick="clearTable()">Cancel</button>
-                <button class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md"
-                    onclick="confirmFields()">Confirm</button>
-            </div>
+          <!-- Confirm and Cancel buttons -->
+          <div class="flex justify-end mt-6 space-x-4">
+            <button
+              class="px-4 py-2 font-semibold text-gray-800 bg-gray-300 rounded-md hover:bg-gray-400"
+              onclick="clearTable()"
+            >
+              Cancel
+            </button>
+            <button
+              class="px-4 py-2 font-semibold text-white bg-green-500 rounded-md hover:bg-green-600"
+              onclick="confirmFields()"
+            >
+              Confirm
+            </button>
+          </div>
         </div>
+      </main>
     </div>
 
     <script>
-        const selectedFields = [];
-        selectedFields.push("First name");
+      const selectedFields = [];
 
-        function toggleDropdown() {
-            const dropdown = document.getElementById('dropdown-menu');
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      function toggleDropdown() {
+        const dropdown = document.getElementById("dropdown-menu");
+        dropdown.style.display =
+          dropdown.style.display === "block" ? "none" : "block";
+      }
+
+      // Close dropdown if clicked outside
+      window.onclick = function (event) {
+        const dropdown = document.getElementById("dropdown-menu");
+        if (
+          !event.target.closest(".text-blue-500") &&
+          !event.target.closest("#dropdown-menu")
+        ) {
+          dropdown.style.display = "none";
+        }
+      };
+
+      function addField(field) {
+        const tableBody = document.getElementById("table-body");
+        const noDataRow = document.getElementById("no-data-row");
+
+        // Hide the clicked anchor tag in dropdown
+        const anchorTag = document.querySelector(`a[onclick="addField('${field}')"]`);
+        if (anchorTag) {
+          anchorTag.style.display = 'none';
         }
 
-        // Close dropdown if clicked outside
-        window.onclick = function (event) {
-            const dropdown = document.getElementById('dropdown-menu');
-            if (!event.target.closest('.text-blue-500') && !event.target.closest('#dropdown-menu')) {
-                dropdown.style.display = "none";
-            }
+        // Remove the "no data" row if it exists
+        if (noDataRow) {
+          tableBody.removeChild(noDataRow);
         }
 
-        function addField(field) {
-            const tableBody = document.getElementById('table-body');
-            const noDataRow = document.getElementById('no-data-row');
+        const newRow = document.createElement("tr");
+        newRow.classList.add("border-t");
 
-            if (noDataRow) {
-                tableBody.removeChild(noDataRow);
-            }
+        newRow.innerHTML = `
+        <td class="px-4 py-2">
+            <span>${field}</span>
+        </td>
+        <td class="px-4 py-2 text-center">
+            <input type="checkbox" class="w-5 h-5 text-green-500 form-checkbox" checked disabled>
+        </td>
+        <td class="px-4 py-2 text-center">
+            <button class="text-sm text-gray-500 hover:text-red-600 transition-colors" onclick="deleteRow(this)">
+                <i class="fas fa-trash delete-icon"></i>
+            </button>
+        </td>
+    `;
+        tableBody.appendChild(newRow);
 
-            const newRow = document.createElement('tr');
-            newRow.classList.add('border-t');
+        // Add field to selectedFields array and save to sessionStorage
+        selectedFields.push(field);
+        sessionStorage.setItem(
+          "selectedFields",
+          JSON.stringify(selectedFields)
+        );
+      }
 
-            newRow.innerHTML = `
-                <td class="px-4 py-2">
-                    <span>${field}</span>
-                </td>
-                <td class="px-4 py-2 text-center">
-                    <input type="checkbox" class="form-checkbox text-green-500 h-5 w-5" onchange="updateSelectedFields(this, '${field}')">
-                </td>
-                <td class="px-4 py-2 text-center">
-                    <button class="text-gray-500 hover:text-gray-700 text-sm" onclick="deleteRow(this)">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2m-4 4v10m-4 0h8V11a1 1 0 00-1-1H9z"/>
-                       </svg>
-                    </button>
-                </td>
-            `;
-            tableBody.appendChild(newRow);
+      function deleteRow(button) {
+        const row = button.closest("tr");
+        const fieldName = row.children[0].innerText; // Get the field name
+        row.remove(); // Remove the row
+
+        // Show/unhide the corresponding anchor tag in dropdown
+        const anchorTag = document.querySelector(`a[onclick="addField('${fieldName}')"]`);
+        if (anchorTag) {
+          anchorTag.style.display = 'block';
         }
 
-        function updateSelectedFields(checkbox, fieldName) {
-            if (checkbox.checked) {
-                selectedFields.push(fieldName); // Add the field to the array
-            } else {
-                const index = selectedFields.indexOf(fieldName);
-                if (index > -1) {
-                    selectedFields.splice(index, 1); // Remove the field from the array
-                }
-            }
-            console.log("Selected Fields: ", selectedFields);
-            localStorage.setItem('selectedFields', JSON.stringify(selectedFields));
-
+        // Remove the field from the selectedFields array and update sessionStorage
+        const index = selectedFields.indexOf(fieldName);
+        if (index > -1) {
+          selectedFields.splice(index, 1);
+          sessionStorage.setItem(
+            "selectedFields",
+            JSON.stringify(selectedFields)
+          );
         }
 
-        function deleteRow(button) {
-            const row = button.closest('tr');
-            const fieldName = row.children[0].innerText; // Get the field name
-            const checkbox = row.querySelector('input[type="checkbox"]');
-
-            if (checkbox.checked) {
-                const index = selectedFields.indexOf(fieldName);
-                if (index > -1) {
-                    selectedFields.splice(index, 1); // Remove the field from the array
-                }
-            }
-
-            row.parentNode.removeChild(row);
-
-            // Check if any rows left to display the no-data message
-            if (document.querySelectorAll('#table-body tr').length === 0) {
-                const noDataRow = document.createElement('tr');
-                noDataRow.id = 'no-data-row';
-                noDataRow.innerHTML = `<td colspan="3" class="text-center px-4 py-2 text-gray-500">No additional data will be required from the respondents.<br>If needed, click on "Add a Field".</td>`;
-                document.getElementById('table-body').appendChild(noDataRow);
-            }
+        // If no more rows, add the "no data" row back
+        if (document.getElementById("table-body").childElementCount === 1) {
+          const tableBody = document.getElementById("table-body");
+          const noDataRow = document.createElement("tr");
+          noDataRow.classList.add("border-t");
+          noDataRow.setAttribute("id", "no-data-row");
+          noDataRow.innerHTML = `
+            <td colspan="3" class="px-4 py-2 text-center text-gray-500">No additional data will be required from the respondents.<br>If needed, click on "Add a Field".</td>
+        `;
+          tableBody.appendChild(noDataRow);
         }
+      }
 
-        function clearTable() {
-            const firstElement = selectedFields[0];
-            selectedFields.length = 0;
-            selectedFields.push(firstElement);
-            localStorage.removeItem('selectedFields');
-            document.getElementById('table-body').innerHTML = `
+      function clearTable() {
+        const tableBody = document.getElementById("table-body");
+        tableBody.innerHTML = ""; // Clear all rows
+        tableBody.innerHTML = `                
                 <tr class="border-t">
-                    <td class="px-4 py-2">
-                        <span>First name-text field</span>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox" class="form-checkbox text-green-500 h-5 w-5" checked disabled>
-                    </td>
-                    <td class="px-4 py-2 text-center">
-                        <button class="text-gray-400 text-sm cursor-not-allowed" disabled>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2m-4 4v10m-4 0h8V11a1 1 0 00-1-1H9z" />
-                            </svg>
-                        </button>
-                    </td>
+                  <td class="px-4 py-2">
+                    <span>First-Name</span>
+                  </td>
+                  <td class="px-4 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      class="w-5 h-5 text-green-500 form-checkbox"
+                      checked
+                      disabled
+                    />
+                  </td>
+                  <td class="px-4 py-2 text-center">
+                    <button
+                      class="text-sm text-gray-400 cursor-not-allowed"
+                      disabled
+                    >
+                    <i class="fas fa-trash delete-icon"></i>
+                    </button>
+                  </td>
                 </tr>
                 <tr class="border-t" id="no-data-row">
-                    <td colspan="3" class="text-center px-4 py-2 text-gray-500">No additional data will be required from the respondents.<br>If needed, click on "Add a Field".</td>
+                  <td colspan="3" class="px-4 py-2 text-center text-gray-500">
+                    No additional data will be required from the respondents.<br />If
+                    needed, click on "Add a Field".
+                  </td>
                 </tr>
-            `;
+              `;
+
+        // Re-added the "First name" & "noDataRow" field as default
+
+        selectedFields.length = 0; // Clear the selected fields array
+        sessionStorage.setItem(
+          "selectedFields",
+          JSON.stringify(selectedFields)
+        ); // Update sessionStorage
+
+        // Show all anchor tags in dropdown
+        const anchorTags = document.querySelectorAll('#dropdown-menu a');
+        anchorTags.forEach(tag => {
+          tag.style.display = 'block';
+        });
+      }
+
+      function confirmFields() {
+        sessionStorage.setItem(
+          "selectedFields",
+          JSON.stringify(selectedFields)
+        ); // Save selected fields to sessionStorage
+        document.getElementById("message").innerText =
+          "Fields have been successfully saved."; // Display message
+        window.location.href = "{% url 'grading_and_summary' %}";
+      }
+
+      // Load fields from sessionStorage on page load
+      window.onload = function () {
+        const savedFields = JSON.parse(
+          sessionStorage.getItem("selectedFields") || "[]"
+        );
+        for (const field of savedFields) {
+          addField(field);
         }
-
-        function confirmFields() {
-            localStorage.setItem('selectedFields', JSON.stringify(selectedFields));
-        }
-
-        window.onload = function () {
-
-            localStorage.removeItem('selectedFields');
-            const storedFields = JSON.parse(localStorage.getItem('selectedFields'));
-            const existingFields = Array.from(document.querySelectorAll('#table-body tr')).map(row => row.children[0].innerText);
-
-        };
-
-
+      };
     </script>
-
-</body>
-
+  </body>
 </html>

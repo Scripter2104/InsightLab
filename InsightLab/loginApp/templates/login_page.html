@@ -67,27 +67,27 @@
 
 
         <form method="POST">
-        {% csrf_token %}
-        <div class="mb-4">
-            <label for="name" class="block text-left text-gray-600 mb-1">Username</label>
-            <input type="text" id="name" name="username" placeholder="Enter your username..." class="input input-bordered w-full" required />
-        </div>
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="name" class="block text-left text-gray-600 mb-1">Username</label>
+                <input type="text" id="name" name="username" placeholder="Enter your username..." class="input input-bordered w-full" required />
+            </div>
 
-        <div class="mb-4 relative">
-            <label for="password" class="block text-left text-gray-600 mb-1">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" class="input input-bordered w-full" required />
-            <button type="button" id="togglePassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700">👁️</button>
-        </div>
+            <div class="mb-4 relative">
+                <label for="password" class="block text-left text-gray-600 mb-1">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" class="input input-bordered w-full" required />
+                <button type="button" id="togglePassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700">👁️</button>
+            </div>
 
-        <div class="flex justify-between items-center mb-6">
-            <label class="flex items-center text-gray-600">
-                <input type="checkbox" class="mr-2"> Remember me
-            </label>
-            <a href="#" class="text-gray-600 hover:text-gray-800 text-sm">Forgot password?</a>
-        </div>
+            <div class="flex justify-between items-center mb-6">
+                <label class="flex items-center text-gray-600">
+                    <input type="checkbox" class="mr-2"> Remember me
+                </label>
+                <a href="#" class="text-gray-600 hover:text-gray-800 text-sm">Forgot password?</a>
+            </div>
 
-        <button type="submit" class="btn bg-black text-white w-full font-semibold py-2 rounded-lg hover:bg-gray-800 transition-colors">Sign in</button>
-</form>
+            <button type="submit" class="btn bg-black text-white w-full font-semibold py-2 rounded-lg hover:bg-gray-800 transition-colors">Sign in</button>
+        </form>
 
           <p class="mt-4 text-center text-gray-600">Don't have an account? <a href="{% url 'signup' %}" class="text-blue-500 hover:underline">Sign Up</a></p>
     </div>
@@ -104,14 +104,20 @@
         });
 
        document.addEventListener('DOMContentLoaded', function() {
-        const errorMessage = document.getElementById('error-message');
-        if (errorMessage) {
-            setTimeout(() => {
-                errorMessage.classList.add('fade-out');
-            }, 3000);
-        }
-    });
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                setTimeout(() => {
+                    errorMessage.classList.add('fade-out');
+                }, 3000);
+            }
+        });
 
+        // Force reload if the page is loaded from the browser's cache
+        window.addEventListener("pageshow", function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
 
     </script>
 </body>

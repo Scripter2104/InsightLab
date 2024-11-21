@@ -21,6 +21,7 @@ from loginApp.views import signup_view
 from homeApp.views import home_view, newtest_view, test_start_page_config, question_manager_view, grading_summary_view, \
     time_setting_view, activate_test
 from conductingTest.views import test_start_view, question_page_view, test_end_page_view
+from resultApp.views import respondent_list, respondent_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,6 +36,7 @@ urlpatterns = [
     path('InsightLab/<uuid:test_id>/', test_start_view, name='InsightLab'),
     path('newtest/activate_test/', activate_test, name='activate_test'),
     path('start Test', question_page_view, name='question_page'),
-    path('test_end', test_end_page_view, name='test_end_page'),
-
+    path('test_end/', test_end_page_view, name='test_end_page'),
+    path('test/<uuid:test_id>/respondents/', respondent_list, name='respondent_list'),
+    path('respondent/<uuid:respondent_id>/', respondent_detail, name='respondent_detail'),
 ]

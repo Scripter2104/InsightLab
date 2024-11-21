@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InsightLab</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .card-wrapper {
@@ -62,13 +62,17 @@
 
 <body class="bg-gray-100 text-gray-800 overflow-hidden">
 
-    <div class="flex min-h-screen">
+    <div class="relative flex min-h-screen">
 
         <!-- Sidebar -->
-        <aside class="h-dvh w-64 bg-white shadow-lg">
-            <div class="px-4 sm:px-6 py-4">
+        <aside id="sidebar" class="absolute md:relative ml-[-256px] md:ml-0 h-dvh w-64 bg-white shadow-lg">
+            <div class="flex items-center justify-between px-4 sm:px-6 py-4">
                 <h2 class="text-2xl font-bold text-green-600">InsightLab</h2>
+                <span class="p-2 text-xl active:text-blue-500 md:hidden" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-xmark"></i>
+                </span>
             </div>
+            <hr class="mx-3">
             <nav class="p-5">
                 <ul>
                     <li class="mb-3 p-2 rounded hover:bg-gray-200">
@@ -100,7 +104,10 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 px-6 py-4 max-h-screen overflow-y-auto ">
+        <div id="main" class="relative md:z-0 flex-1 px-6 py-4 max-h-screen overflow-y-auto ">
+            <span class="fixed top-6 left-6 text-xl active:text-blue-500 md:hidden" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </span>
             <!-- Header -->
             <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
                 <h1 class="text-2xl font-semibold">My Tests</h1>
@@ -112,8 +119,7 @@
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- Test Card -->
                 {% for test in tests %}
-                <div class="card-wrapper flex flex-col justify-between bg-gray-100 rounded-xl h-44 py-4 px-6"
-                    onclick="goToTest(event)"
+                <div class="card-wrapper flex flex-col justify-between bg-gray-100 rounded-xl h-auto py-4 px-6"
                     test_link={{test.link}}
                     test_id="{{test.unique_id}}"
                     {% if test.is_active %}
@@ -133,8 +139,23 @@
                     <h1 class="overflow-hidden text-xl font-semibold mt-2">{{test.name|striptags}}</h1>
                     <p class="text-gray-600">No description</p>
                     <div class="flex justify-between items-center mt-4">
-                        <span class="text-sm text-gray-500">0% avg. score</span>
-                        <span class="text-sm text-gray-500">Results (0)</span>
+                        <!-- Test Link -->
+                        <button onclick="window.location='{{test.link}}';" class="overflow-hidden text-left text-sm text-teal-500 hover:text-blue-500 ">
+                        <span class="my-2 mr-3 flex-1 focus:outline-none focus:opacity-80">
+                            {{test.link}}
+                        </span>
+                        </button>
+                        <!-- Results Button -->
+                        <button type="button" 
+                        class="py-2 px-3 inline-flex items-center gap-x-2 text-sm rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none" 
+                        onclick="window.location='{% url 'respondent_list' test.unique_id %}';">
+                            <svg width="12px" height="12px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g transform="scale(-1 1) translate(-24,0)">
+                                    <path style="fill:#1e40af;" d="M11.7518706,1.99956021 C13.2716867,1.99956021 14.5037411,3.23161462 14.5037411,4.75143076 L14.5037411,19.2499651 C14.5037411,20.7697812 13.2716867,22.0018356 11.7518706,22.0018356 C10.2320544,22.0018356 9,20.7697812 9,19.2499651 L9,4.75143076 C9,3.23161462 10.2320544,1.99956021 11.7518706,1.99956021 Z M18.7518706,6.99956021 C20.2716867,6.99956021 21.5037411,8.23161462 21.5037411,9.75143076 L21.5037411,19.2499651 C21.5037411,20.7697812 20.2716867,22.0018356 18.7518706,22.0018356 C17.2320544,22.0018356 16,20.7697812 16,19.2499651 L16,9.75143076 C16,8.23161462 17.2320544,6.99956021 18.7518706,6.99956021 Z M4.75187055,11.9995602 C6.27168669,11.9995602 7.5037411,13.2316146 7.5037411,14.7514308 L7.5037411,19.2499651 C7.5037411,20.7697812 6.27168669,22.0018356 4.75187055,22.0018356 C3.23205441,22.0018356 2,20.7697812 2,19.2499651 L2,14.7514308 C2,13.2316146 3.23205441,11.9995602 4.75187055,11.9995602 Z"/>
+                                </g>
+                            </svg>
+                            Results
+                        </button>
                     </div>
                 </div>
                 {% endfor %}
@@ -163,18 +184,25 @@
                         wrapper.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                     });
 
-                wrapper.addEventListener('mouseleave', () => {
-                    wrapper.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+                    wrapper.addEventListener('mouseleave', () => {
+                        wrapper.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+                    });
                 });
-            });
-        }
-    });
+            }
+        });
 
         function generateTest() {
             window.location.href = "{% url 'newtest' %}";
         }
 
-        function goToTest() {
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.getElementById('main');
+            sidebar.classList.toggle('ml-[-256px]');
+            main.classList.toggle('z-[-1]');
+        }
+
+        {% comment %} function goToTest() {
             const test = event.currentTarget;
             const link = test.getAttribute("test_link");
             const test_is_active = test.getAttribute("test_is_active");
@@ -185,10 +213,7 @@
             else {
                 alert('test is not active');
             }
-        }
-
-
-
+        } {% endcomment %}
 
     </script>
 

@@ -9,5 +9,8 @@
             "src": "/(.*)",
             "dest": "InsightLab/wsgi.py"
         }
+    ],
+    "rewites": [
+        {"sources": "/(.*)","destination": "/"}
     ]
 }

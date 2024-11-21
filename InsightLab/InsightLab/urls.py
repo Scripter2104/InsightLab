@@ -36,7 +36,7 @@ urlpatterns = [
     path('InsightLab/<uuid:test_id>/', test_start_view, name='InsightLab'),
     path('newtest/activate_test/', activate_test, name='activate_test'),
     path('start Test', question_page_view, name='question_page'),
-    path('test_end', test_end_page_view, name='test_end_page'),
+    path('test_end/', test_end_page_view, name='test_end_page'),
     path('test/<uuid:test_id>/respondents/', respondent_list, name='respondent_list'),
     path('respondent/<uuid:respondent_id>/', respondent_detail, name='respondent_detail'),
 ]

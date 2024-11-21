@@ -105,10 +105,9 @@ def activate_test(request):
                 )
                 question.save()
 
-                print(correctAnswer,answers,end='\n')
                 for index,option_text in enumerate(answers):
                         is_correct=index in correctAnswer
-                        print(index,option_text,correctAnswer,is_correct,end='\n')
+
                         option=Option(
                             question=question,
                             option_text=option_text,

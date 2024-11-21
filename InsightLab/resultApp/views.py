@@ -3,6 +3,7 @@ from homeApp.models import Test, Question
 from conductingTest.models import RespondentData, RespondentAnswers
 from django.db.models import Sum
 
+
 def respondent_list(request, test_id):
     test = get_object_or_404(Test, unique_id=test_id)
     respondents = RespondentData.objects.filter(test_id=test)
@@ -16,12 +17,15 @@ def respondent_list(request, test_id):
         total_time = answers.aggregate(Sum('time_taken'))['time_taken__sum'] or 0
 
         # Calculate score based on correct/incorrect points and equal weighting
-        correct_points = answers.filter(is_correct=True).aggregate(Sum('question_id__correct_points'))['question_id__correct_points__sum'] or 0
-        incorrect_points = answers.filter(is_correct=False).aggregate(Sum('question_id__incorrect_points'))['question_id__incorrect_points__sum'] or 0
+        correct_points = answers.filter(is_correct=True).aggregate(Sum('question_id__correct_points'))[
+                             'question_id__correct_points__sum'] or 0
+        incorrect_points = answers.filter(is_correct=False).aggregate(Sum('question_id__incorrect_points'))[
+                               'question_id__incorrect_points__sum'] or 0
 
-        if total_questions > 0 :  # Avoid division by zero 
-            percentage = (correct_points-incorrect_points)*100 / (test.questions.count()*(test.questions.first().correct_points))
-        else: 
+        if total_questions > 0:  # Avoid division by zero
+            percentage = (correct_points - incorrect_points) * 100 / (
+                        test.questions.count() * (test.questions.first().correct_points))
+        else:
             percentage = 0
 
         respondent_data.append({
@@ -38,10 +42,11 @@ def respondent_list(request, test_id):
     }
     return render(request, 'respondent_list.html', context)
 
+
 def respondent_detail(request, respondent_id):
     respondent = get_object_or_404(RespondentData, respondent_id=respondent_id)
     answers = RespondentAnswers.objects.filter(respondent_data=respondent)
-    
+
     detailed_answers = []
     for answer in answers:
         question = answer.question_id

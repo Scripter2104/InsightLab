@@ -1,3 +1,5 @@
+import json
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from homeApp.models import Test, TestConfiguration, Question, Option
@@ -22,8 +24,8 @@ def test_start_view(request, *ags, **kwargs):
         return redirect('question_page')
     # 'test_is_present' is not present but RespondentData for the test exists
     # handles back navigation from test_end_page after test has ended
-    elif RespondentData.objects.filter(test_id=test, respondent_id=request.session.get("respondent_id")).exists():
-        return redirect('test_end_page')
+    # elif RespondentData.objects.filter(test_id=test, respondent_id=request.session.get("respondent_id")).exists():
+    #     return redirect('test_end_page')
 
     if request.method == 'POST':
         form_data = {
@@ -49,6 +51,7 @@ def test_start_view(request, *ags, **kwargs):
 @never_cache
 def question_page_view(request, *args, **kwargs):
     # Handles back navigation from test_end_page
+
     if 'test_is_present' not in request.session:
         return redirect('test_end_page')
 
@@ -56,6 +59,7 @@ def question_page_view(request, *args, **kwargs):
     test_obj = respondent.test_id
     # Store common test data in session
     if 'test_data' not in request.session:
+
         questions = list(Question.objects.filter(test=test_obj).values('unique_id', 'question_text', 'question_type',
                                                                        'correct_points', 'incorrect_points'))
 
@@ -75,6 +79,20 @@ def question_page_view(request, *args, **kwargs):
             "total_time_taken": 0,
             "per_question_start_time": timezone.now().timestamp()
         }
+        if test_obj.time_per_question != 0:
+            total_time = test_obj.time_per_question * len(questions)
+        else:
+            total_time = test_obj.time_limit
+
+        cheatedInfo = {
+            "max_marks": test_obj.max_marks,
+            "test_name": test_obj.name,
+            "first_name": respondent.first_name,
+            "initials": respondent.first_name.strip()[0].upper(),
+            "total_time": str(datetime.timedelta(seconds=total_time)),
+            "cheated": True
+        }
+        request.session["cheatedInfo"] = cheatedInfo
 
     # Get session data
     test_data = request.session['test_data']
@@ -120,10 +138,9 @@ def question_page_view(request, *args, **kwargs):
             "summary_message": test_obj.summary_message,
             "date": str(datetime.date.today()),
             "total_time": str(datetime.timedelta(seconds=total_time)),
-            "total_time_taken": str(datetime.timedelta(seconds=int(test_data["total_time_taken"])))
+            "total_time_taken": str(datetime.timedelta(seconds=int(test_data["total_time_taken"]))),
+            "cheated": False
         }
-
-        print(info["total_time_taken"])
 
         request.session.pop("test_data", None)
         request.session["info"] = info
@@ -204,26 +221,48 @@ def question_page_view(request, *args, **kwargs):
 
 @never_cache
 def test_end_page_view(request, *args, **kwargs):
-    # Clear session 'test_is_present' on first visit to end test
-    # so back navigation to above (question_page_view) doesn't have it
-    if 'test_is_present' in request.session:
-        request.session.pop('test_is_present', None)
+    if 'info' in request.session and request.session["info"].get("cheated") == False:
+        # Clear session 'test_is_present' on first visit to end test
+        # so back navigation to above (question_page_view) doesn't have it
+        if 'test_is_present' in request.session:
+            request.session.pop('test_is_present', None)
 
-    info_from_session = request.session.get("info", {})
-    test_end_info = {
-        "summary_message": info_from_session.get("summary_message"),
-        "total_marks": info_from_session.get("total_marks"),
-        "max_marks": info_from_session.get("max_marks"),
-        "pass_marks": info_from_session.get("pass_marks"),
-        "test_name": info_from_session.get("test_name"),
-        "first_name": info_from_session.get("first_name"),
-        "initials": info_from_session.get("initials"),
-        "end_time": info_from_session.get("ending_time"),
-        "start_time": info_from_session.get("starting_time"),
-        "date": info_from_session.get("date"),
-        "total_time": info_from_session.get("total_time"),
-        "total_time_taken": info_from_session.get("total_time_taken"),
-        "result": "Pass" if info_from_session.get("total_marks") >= info_from_session.get("pass_marks") else "Fail"
-    }
+        info_from_session = request.session.get("info", {})
+        test_end_info = {
+            "summary_message": info_from_session.get("summary_message"),
+            "total_marks": info_from_session.get("total_marks"),
+            "max_marks": info_from_session.get("max_marks"),
+            "pass_marks": info_from_session.get("pass_marks"),
+            "test_name": info_from_session.get("test_name"),
+            "first_name": info_from_session.get("first_name"),
+            "initials": info_from_session.get("initials"),
+            "end_time": info_from_session.get("ending_time"),
+            "start_time": info_from_session.get("starting_time"),
+            "date": info_from_session.get("date"),
+            "total_time": info_from_session.get("total_time"),
+            "total_time_taken": info_from_session.get("total_time_taken"),
+            "result": "Pass" if info_from_session.get("total_marks") >= info_from_session.get("pass_marks") else "Fail",
+            "cheated": False
+        }
 
-    return render(request, 'test_end_page.html', {**test_end_info})
+        return render(request, 'test_end_page.html', {**test_end_info})
+    else:
+        info = request.session["cheatedInfo"]
+        test_end_info = {
+            "summary_message": "Unfortunately test ended. We noticed some irregularities during the test ",
+            "total_marks": 0,
+            "max_marks": info.get("max_marks"),
+            "pass_marks": 100,
+            "test_name": info.get("test_name"),
+            "first_name": info.get("first_name"),
+            "initials": info.get("initials"),
+            "end_time": "0:0:0",
+            "start_time": "0:0:0",
+            "date": str(datetime.date.today()),
+            "total_time": info.get("total_time"),
+            "total_time_taken": "0:0:0",
+            "result": "Fail",
+            "cheated": True
+        }
+        request.session.pop("test_data", None)
+        return render(request, 'test_end_page.html', {**test_end_info})

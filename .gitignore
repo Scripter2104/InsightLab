@@ -13,6 +13,8 @@ migrations/
 # Virtual Environments
 venv/
 env/
+.env
+*.env
 
 # Node Modules (for Tailwind CSS or other JS dependencies)
 node_modules/

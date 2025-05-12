@@ -4,117 +4,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.15.2/dist/full.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        .bg-light-gradient {
-            background: linear-gradient(135deg, #f3f4f6, #fafbfc);
-            background-size: cover;
+        body {
+            background: linear-gradient(135deg, #e5e7eb, #f9fafb);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
-        .hidden {
-            display: none;
+
+        .signup-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            transition: transform 0.3s ease;
         }
-        .text-red-500 {
-            color: red;
+
+        .signup-card:hover {
+            transform: translateY(-5px);
         }
-        .text-yellow-500 {
-            color: yellow;
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(45deg, #dc3545, #f87171);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .text-green-500 {
-            color: green;
+
+        .error-message {
+            animation: shake 0.7s;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(0); }
+            20% { transform: translate(-5px, 0); }
+            40% { transform: translate(5px, 0); }
+            60% { transform: translate(-5px, 0); }
+            80% { transform: translate(5px, 0); }
+            100% { transform: translate(0); }
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+
+        .form-control:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #dc3545, #b91c1c);
+            border: none;
+            border-radius: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .btn-eye {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+        }
+
+        @media (max-width: 576px) {
+            .signup-card {
+                max-width: 100%;
+                margin: 0 0.5rem;
+            }
+
+            .form-control,
+            .btn-primary {
+                font-size: 0.9rem;
+            }
+
+            .logo {
+                width: 48px;
+                height: 48px;
+            }
         }
     </style>
 </head>
-<body class="bg-light-gradient flex items-center justify-center">
-
-    <div class="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center transform transition duration-500">
-        <div class="flex justify-center mb-4">
-            <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center">
-                <span class="text-white text-3xl font-bold">🌊</span>
+<body>
+    <div class="signup-card card p-4">
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show error-message" id="error-message" role="alert">
+                {{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        {% endif %}
+
+        <div class="text-center mb-4">
+            <div class="logo mx-auto">
+                <span class="text-white fs-3">🌊</span>
+            </div>
+            <h2 class="h5 fw-semibold mt-3 text-dark">Create Account</h2>
+            <p class="text-muted small">Join us to enjoy exclusive benefits!</p>
         </div>
-        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Create Account</h2>
-        <p class="text-gray-500 mb-6">Join us to enjoy exclusive benefits!</p>
 
-        <form id="signupForm" method="post">
-             {% csrf_token %}
-            <div class="mb-4">
-                <label for="username" class="block text-left text-gray-600 mb-1">Full Name</label>
-                <input type="text" id="username" name="username" placeholder="Enter your full name" class="input input-bordered w-full" required aria-required="true" />
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label small fw-medium text-dark">Full Name</label>
+                <input type="text" id="username" name="username" placeholder="Enter your full name" class="form-control" required />
             </div>
 
-            <div class="mb-4">
-                <label for="email" class="block text-left text-gray-600 mb-1">Email Address</label>
-                <input type="email" id="email" name="useremail" placeholder="Enter your email" class="input input-bordered w-full" required aria-required="true" />
+            <div class="mb-3">
+                <label for="email" class="form-label small fw-medium text-dark">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" class="form-control" required />
             </div>
 
-            <div class="mb-4 relative">
-                <label for="password" class="block text-left text-gray-600 mb-1">Password</label>
-                <input type="password" id="password" name="password1" placeholder="Create a password" class="input input-bordered w-full" required aria-required="true" />
-                <button type="button" id="togglePassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700" aria-label="Toggle password visibility">👁️</button>
-            </div>
-             <div id="password-strength" class="hidden mb-4 text-left"></div> <!-- Password strength indicator -->
-
-
-            <div class="mb-4 relative">
-                <label for="confirm-password" class="block text-left text-gray-600 mb-1">Confirm Password</label>
-                <input type="password" id="confirm-password" name="password2" placeholder="Confirm your password" class="input input-bordered w-full" required aria-required="true" />
-                <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-10 text-gray-500 hover:text-gray-700" aria-label="Toggle confirm password visibility">👁️</button>
+            <div class="input-wrapper mb-3">
+                <label for="password" class="form-label small fw-medium text-dark">Password</label>
+                <input type="password" id="password" name="password1" placeholder="Create a password" class="form-control" required />
+                <button type="button" id="togglePassword" class="btn-eye">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
 
-            <div id="passwordError" class="text-red-500 hidden mb-4">Passwords do not match.</div>
+            <div class="input-wrapper mb-3">
+                <label for="confirm-password" class="form-label small fw-medium text-dark">Confirm Password</label>
+                <input type="password" id="confirm-password" name="password" placeholder="Enter your password again" class="form-control" required />
+                <button type="button" id="toggleConfirmPassword" class="btn-eye">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
 
-            <button type="submit" class="btn bg-black text-white w-full font-semibold py-2 rounded-lg hover:bg-gray-800 transition-colors">Sign Up</button>
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap mt-3">
+                <a href="#" class="text-decoration-none small text-primary">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-semibold">Sign Up</button>
         </form>
 
-        <p class="mt-4 text-center text-gray-600">Already have an account? <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Log in</a></p>
+        <p class="mt-3 text-center text-muted small">
+            Already have an account? <a href="{% url 'login' %}" class="text-primary text-decoration-none">Log in</a>
+        </p>
     </div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script>
         const password = document.getElementById("password");
         const confirmPassword = document.getElementById("confirm-password");
         const togglePassword = document.getElementById("togglePassword");
         const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
-        const passwordError = document.getElementById("passwordError");
-        const passwordStrength = document.getElementById("password-strength");
 
         togglePassword.addEventListener("click", function () {
             const type = password.getAttribute("type") === "password" ? "text" : "password";
             password.setAttribute("type", type);
-            this.textContent = type === "password" ? "👁️" : "🙈";
+            this.querySelector("i").classList.toggle("fa-eye-slash");
+            this.querySelector("i").classList.toggle("fa-eye");
         });
 
         toggleConfirmPassword.addEventListener("click", function () {
             const type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
             confirmPassword.setAttribute("type", type);
-            this.textContent = type === "password" ? "👁️" : "🙈";
+            this.querySelector("i").classList.toggle("fa-eye-slash");
+            this.querySelector("i").classList.toggle("fa-eye");
         });
 
         confirmPassword.addEventListener("input", function () {
             if (password.value !== confirmPassword.value) {
-                passwordError.classList.remove("hidden");
+                confirmPassword.setCustomValidity("Passwords do not match.");
             } else {
-                passwordError.classList.add("hidden");
-            }
-        });
-
-        password.addEventListener("input", function() {
-            const strengthText = passwordStrength;
-            strengthText.classList.remove("hidden");
-            const strength = password.value.length;
-            if (strength < 4) {
-                strengthText.textContent = "Weak";
-                strengthText.classList.add("text-red-500");
-                strengthText.classList.remove("text-yellow-500", "text-green-500");
-            } else if (strength < 8) {
-                strengthText.textContent = "Medium";
-                strengthText.classList.remove("text-red-500", "text-green-500");
-                strengthText.classList.add("text-yellow-500");
-            } else {
-                strengthText.textContent = "Strong";
-                strengthText.classList.remove("text-red-500", "text-yellow-500");
-                strengthText.classList.add("text-green-500");
+                confirmPassword.setCustomValidity("");
             }
         });
     </script>

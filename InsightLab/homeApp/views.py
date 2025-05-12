@@ -9,7 +9,6 @@ from django.http import HttpResponse
 from .models import Test, TestConfiguration, Option, Question
 
 
-
 # Create your views here.
 
 def home_view(request, *ags, **kwargs):
@@ -131,3 +130,18 @@ def activate_test(request):
             return JsonResponse({'error': 'Invalid JSON \n' + str(type(e)) + ' ' + str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def deleteTest(request,*args,**kwargs):
+    try:
+        if request.method=='POST':
+            test_id=json.loads(request.body)
+            test=Test.objects.get(unique_id=test_id)
+            test.delete()
+        return JsonResponse({"responce":"ok"})
+    except Exception as e:
+        return JsonResponse({"error":e})
+
+
+
+

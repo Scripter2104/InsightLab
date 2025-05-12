@@ -40,6 +40,7 @@ def respondent_list(request, test_id):
         'test': test,
         'respondent_data': respondent_data,
     }
+    print(context['respondent_data'][0])
     return render(request, 'respondent_list.html', context)
 
 

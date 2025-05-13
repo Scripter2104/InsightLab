@@ -53,14 +53,15 @@ def respondent_list(request, test_id):
     print(time)
 
     context = {
-        'test': test,
-        'respondent_data': respondent_data,
-        'lowest_score': lowest_score,
-        'highest_score': highest_score,
-        'average_score': round(total_score / total_respondents, 2),
-        'average_time_taken': round(total_time_taken1 / total_respondents, 2),
-        'total_time':time
+    'test': test,
+    'respondent_data': respondent_data,
+    'lowest_score': lowest_score,
+    'highest_score': highest_score,
+    'average_score': round(total_score / total_respondents, 2) if total_respondents > 0 else 0,
+    'average_time_taken': round(total_time_taken1 / total_respondents, 2) if total_respondents > 0 else 0,
+    'total_time': time
     }
+
 
     return render(request, 'respondent_list.html', context)
 

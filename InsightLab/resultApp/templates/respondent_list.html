@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Respondents for {{ test.name|striptags }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- AG-Grid CSS and JS -->
     <link href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
@@ -29,6 +33,22 @@
             {% endif %}
 
         </div>
+
+        <!-- Chart Section -->
+        <div class="bg-white border border-gray-200 rounded-xl shadow-2xl mt-10 p-6">
+            <h3 class="text-2xl font-semibold text-slate-800 mb-6">Test Insights</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Score Chart -->
+                <div class="p-4 bg-gray-50 rounded-lg">
+                <canvas id="scoreChart"></canvas>
+                </div>
+                <!-- Time Chart -->
+                <div class="p-4 bg-gray-50 rounded-lg">
+                <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -38,12 +58,12 @@
 
     // Prepare AG-Grid columns
     const columnDefs = [
-    { headerName: "Sr. No.", valueGetter: "node.rowIndex + 1", width: 100, minWidth: 80 },
-    { headerName: "First Name", field: "first_name", flex: 2, minWidth: 150 },
-    { headerName: "Score (%)", field: "percentage", flex: 1, minWidth: 100 },
-    { headerName: "Attempted/Total", field: "attempted_total", flex: 2, minWidth: 120 },
-    { headerName: "Time Taken (s)", field: "total_time", flex: 1, minWidth: 100 }
-];
+        { headerName: "Sr. No.", valueGetter: "node.rowIndex + 1", width: 100, minWidth: 80 },
+        { headerName: "First Name", field: "first_name", flex: 2, minWidth: 150 },
+        { headerName: "Score (%)", field: "percentage", flex: 1, minWidth: 100 },
+        { headerName: "Attempted/Total", field: "attempted_total", flex: 2, minWidth: 120 },
+        { headerName: "Time Taken (s)", field: "total_time", flex: 1, minWidth: 100 }
+    ];
 
 
 
@@ -81,8 +101,129 @@
      {% if respondent_data %}
         const eGridDiv = document.querySelector('#grid');
         agGrid.createGrid(eGridDiv, gridOptions);
-        gridOptions.api.sizeColumnsToFit();
+
     {% endif %}
+
+     // Grab contexts
+  const scoreCtx = document.getElementById('scoreChart').getContext('2d');
+  const timeCtx  = document.getElementById('timeChart' ).getContext('2d');
+
+  // NEW Gradients
+  const scoreGradient = scoreCtx.createLinearGradient(0, 0, 0, 400);
+  scoreGradient.addColorStop(0, '#2dd4bf');   // teal-400
+  scoreGradient.addColorStop(0.5, '#3b82f6'); // blue-500
+  scoreGradient.addColorStop(1, '#a78bfa');   // purple-400
+
+  const timeGradient = timeCtx.createLinearGradient(0, 0, 400, 0);
+  timeGradient.addColorStop(0, '#f472b6'); // pink-400
+  timeGradient.addColorStop(1, '#db2777'); // pink-600
+
+  // Chart data from Django context
+  const highestScore = {{ highest_score }};
+  const lowestScore  = {{ lowest_score }};
+  const averageScore = {{ average_score }};
+  const averageTime  = {{ average_time_taken }};
+
+  console.log(averageTime)
+  console.log(averageScore)
+  console.log(lowestScore)
+  console.log(highestScore)
+
+  // Score Distribution Bar Chart
+  new Chart(scoreCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Lowest', 'Average', 'Highest'],
+      datasets: [{
+        label: 'Score (%)',
+        data: [lowestScore, averageScore, highestScore],
+        backgroundColor: scoreGradient,
+        borderRadius: 10,
+        barPercentage: 0.6,
+        categoryPercentage: 0.5,
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 1500, easing: 'easeOutQuart' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#111827',
+          titleColor: '#f9fafb',
+          bodyColor: '#e5e7eb',
+          padding: 12,
+          borderWidth: 1,
+          borderColor: '#374151',
+          cornerRadius: 8,
+          titleFont: { size: 14, weight: '600' },
+          bodyFont:  { size: 13 }
+        },
+        title: {
+          display: true,
+          text: 'Score Distribution',
+          color: '#111827',
+          font: { size: 18, weight: '600' },
+          padding: { bottom: 20 }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#4b5563', font: { size: 13 } }
+        },
+        y: {
+          beginAtZero: true,
+          max: 100,
+          grid: { color: '#e5e7eb' },
+          ticks: { color: '#4b5563', font: { size: 13 } }
+        }
+      }
+    }
+  });
+
+  // Average Time Doughnut Chart
+  new Chart(timeCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Avg Time (s)', 'Remaining'],
+      datasets: [{
+        label: 'Time (s)',
+        data: [averageTime, Math.max(0, {{ total_time }} - averageTime)],
+        backgroundColor: [timeGradient, '#f3f4f6'],
+        hoverOffset: 8,
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '70%',
+      animation: { animateRotate: true, duration: 1200, easing: 'easeOutCubic' },
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#374151', padding: 20 } },
+        tooltip: {
+          backgroundColor: '#111827',
+          titleColor: '#f9fafb',
+          bodyColor: '#e5e7eb',
+          padding: 12,
+          cornerRadius: 8,
+          titleFont: { size: 14, weight: '600' },
+          bodyFont:  { size: 13 }
+        },
+        title: {
+          display: true,
+          text: 'Average Time Taken',
+          color: '#111827',
+          font: { size: 18, weight: '600' },
+          padding: { bottom: 20 }
+        }
+      }
+    }
+  });
+
+  
+
 
     
 </script>

@@ -3,7 +3,6 @@ from homeApp.models import Test, Question
 from conductingTest.models import RespondentData, RespondentAnswers
 from django.db.models import Sum # type: ignore
 
-
 def respondent_list(request, test_id):
     test = get_object_or_404(Test, unique_id=test_id)
     respondents = RespondentData.objects.filter(test_id=test)
@@ -40,8 +39,15 @@ def respondent_list(request, test_id):
         'test': test,
         'respondent_data': respondent_data,
     }
-    print(context['respondent_data'][0])
+
+  
+    if respondent_data:
+        print(respondent_data[0])  # Debugging first respondent's data if available
+    else:
+        print("No respondent data available.")
+    
     return render(request, 'respondent_list.html', context)
+
 
 
 def respondent_detail(request, respondent_id):

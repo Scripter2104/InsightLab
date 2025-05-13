@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,8 +14,7 @@
             display: inline-block;
             transition: transform 0.1s linear;
             transform-style: preserve-3d;
-            box-shadow: inset 10px 10px 15px #dbdcdd, inset -10px -10px 15px #ffffff;1
-            /* Add transition for smooth tilt */
+            box-shadow: inset 10px 10px 15px #dbdcdd, inset -10px -10px 15px #ffffff;
         }
 
         .card-wrapper:hover {
@@ -35,8 +35,6 @@
             left: 1px;
             width: 5px;
             background: linear-gradient(to bottom, #84fab0, #8fd3f4, #84fab0);
-            /* background: linear-gradient(to bottom, #43e97b, #38f9d7  , #43e97b); */
-            /* background: linear-gradient(to bottom, #37ecba, #72afd3  , #37ecba); */
             background-size: 100% 200%;
             animation: gradientMove 4s ease infinite;
             border-top-left-radius: 12px;
@@ -60,7 +58,7 @@
     </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800 overflow-hidden">
+<body class="bg-gray-100 text-gray-800">
 
     <div class="relative flex min-h-screen">
 
@@ -102,6 +100,49 @@
                 </ul>
             </nav>
         </aside>
+
+        <!-- Main Content -->
+            <main class="flex-1 p-8">
+            <h1 class="text-3xl font-bold mb-8 text-gray-800">My Account</h1>
+
+            <!-- Profile Info -->
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-10">
+                <!-- Avatar -->
+                {% if user.profile.avatar_url %}
+                    <img src="{{ user.profile.avatar_url }}"
+                        alt="Avatar"
+                        class="w-28 h-28 rounded-full border-2 border-gray-300">
+                {% else %}
+                    <div class="w-28 h-28 flex items-center justify-center rounded-full border-2 border-gray-300 bg-gray-200 text-gray-600 text-5xl">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                {% endif %}
+
+
+                <!-- Name, Email, Place -->
+                <div class="space-y-1">
+                    <p class="text-2xl font-semibold text-gray-900">{{ user.username }}</p>
+                    <p class="text-gray-700">{{ user.email }}</p>
+                    <p class="text-gray-600">Location: {{ user.profile.place|default:"Not specified" }}</p>
+                </div>
+            </div>
+
+            <!-- Test Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <p class="text-4xl font-bold text-green-600">{{ test_data.tests_count }}</p>
+                    <p class="mt-2 text-gray-600">Total Tests</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <p class="text-4xl font-bold text-blue-600">{{ test_data.active_tests }}</p>
+                    <p class="mt-2 text-gray-600">Active Tests</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <p class="text-4xl font-bold text-red-600">{{ test_data.ended_tests }}</p>
+                    <p class="mt-2 text-gray-600">Ended Tests</p>
+                </div>
+            </div>
+    </main>
 
     </div>
 

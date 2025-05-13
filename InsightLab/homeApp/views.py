@@ -144,7 +144,15 @@ def deleteTest(request,*args,**kwargs):
 
 
 def userAccount(request, *args, **kwargs):
-    return render(request,'myAccount.html',{})
+    user_id=request.session.get('user_id')
+    tests_count=Test.objects.filter(user=user_id).count()
+    active_tests=Test.objects.filter(user=user_id,is_active=True).count()
+    test_data={
+        "tests_count":tests_count,
+        "active_tests":active_tests,
+        "ended_tests":tests_count-active_tests
+    }
+    return render(request,'myAccount.html',{"test_data":test_data})
 
 def deactivateTest(request,*args, **kwargs):
     print("Entered\n\n")

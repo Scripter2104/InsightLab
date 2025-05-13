@@ -1,5 +1,4 @@
 <header class="bg-white shadow-lg border-b">
-
             <nav class="px-4 sm:px-6">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center ">
@@ -17,36 +16,96 @@
                         </a>
                     </div>
                 </div>
-            </nav>
-        </header>
+            </nav> 
+    </header>
 
         <!-- Logout Modal -->
-            <div id="modalBackdrop"
-                class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-50 transition-opacity duration-300 ease-in-out">
-                <div class="bg-white p-8 rounded-xl shadow-xl max-w-sm w-full relative">
-                    <h2 class="text-xl font-bold mb-6 text-gray-800">Are you sure you want to log out?</h2>
-                    <div class="flex justify-end space-x-4">
-                        <button id="confirmLogoutBtn"
-                            class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Yes</button>
-                        <button id="cancelLogoutBtn"
-                            class="bg-gray-400 hover:bg-gray-500 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">No</button>
-                    </div>
+        <div id="modalBackdrop"
+            class="hidden fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50 transition-all duration-300 ease-in-out">
+            <div class="bg-white/10 backdrop-blur-xl text-white border border-white/20 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-scale-in relative">
+                <div class="flex justify-center mb-4">
+                <div class="bg-rose-100/20 text-rose-400 rounded-full p-3 shadow-lg animate-fade-in">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                    </svg>
+                </div>
+                </div>
+                <h2 class="text-center text-xl font-semibold text-white mb-2">Ready to leave?</h2>
+                <p class="text-center text-sm text-white/70 mb-6">You will be logged out of your session.</p>
+                <div class="flex justify-center space-x-4">
+                <button id="confirmLogoutBtn"
+                    class="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-full font-semibold transition hover:shadow-xl hover:scale-105">
+                    Log out
+                </button>
+                <button id="cancelLogoutBtn"
+                    class="border border-white/30 hover:border-white/60 text-white/80 hover:text-white px-5 py-2 rounded-full font-semibold transition hover:shadow-lg hover:scale-105">
+                    Cancel
+                </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Home Confirmation Modal -->
-            <div id="modalBackdrop2"
-                class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-50 transition-opacity duration-300 ease-in-out">
-                <div class="bg-white p-8 rounded-xl shadow-xl max-w-sm w-full relative">
-                    <h2 class="text-xl font-bold mb-6 text-gray-800">Do you want to exit to home?</h2>
-                    <div class="flex justify-end space-x-4">
-                        <button id="backToHomeBtn"
-                            class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Home</button>
-                        <button id="continueEditingBtn"
-                            class="bg-gray-400 hover:bg-gray-500 text-white font-medium px-6 py-2 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">Continue Editing</button>
-                    </div>
+        <!-- Home Confirmation Modal -->
+        <div id="modalBackdrop2"
+            class="hidden fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50 transition-all duration-300 ease-in-out">
+            <div class="bg-white/10 backdrop-blur-xl text-white border border-white/20 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-scale-in relative">
+                <div class="flex justify-center mb-4">
+                <div class="bg-indigo-100/20 text-indigo-400 rounded-full p-3 shadow-lg animate-fade-in">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-6 9 6v6a9 9 0 11-18 0V9z" />
+                    </svg>
+                </div>
+                </div>
+                <h2 class="text-center text-xl font-semibold text-white mb-2">Back to home?</h2>
+                <p class="text-center text-sm text-white/70 mb-6">Unsaved changes might be lost.</p>
+                <div class="flex justify-center space-x-4">
+                <button id="backToHomeBtn"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-semibold transition hover:shadow-xl hover:scale-105">
+                    Home
+                </button>
+                <button id="continueEditingBtn"
+                    class="border border-white/30 hover:border-white/60 text-white/80 hover:text-white px-5 py-2 rounded-full font-semibold transition hover:shadow-lg hover:scale-105">
+                    Continue Editing
+                </button>
                 </div>
             </div>
+        </div>
+
+<!-- Animation Styles -->
+<style>
+  @keyframes scale-in {
+    from {
+      transform: scale(0.92);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out;
+  }
+</style>
+
 
 <script>
     function confirmationMessage() {

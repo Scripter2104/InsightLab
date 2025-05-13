@@ -14,14 +14,16 @@ Including another URLconf
     1. Import  function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+from django.contrib import admin # type: ignore
+from django.urls import path, include # type: ignore
 from loginApp.views import login_view
 from loginApp.views import signup_view
 from homeApp.views import home_view, newtest_view, test_start_page_config, question_manager_view, grading_summary_view, \
     time_setting_view, activate_test, deleteTest, userAccount, deactivateTest
 from conductingTest.views import test_start_view, question_page_view, test_end_page_view
 from resultApp.views import respondent_list, respondent_detail
+from django.conf import settings # type: ignore
+from django.conf.urls.static import static # type: ignore
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,4 +45,4 @@ urlpatterns = [
     path('home/account/', userAccount, name="account"),
     path('home/deactivateTest/',deactivateTest, name="deactivateTest"),
     # path('auth/', include('social_django.urls', namespace='social')),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # type: ignore

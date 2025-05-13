@@ -12,6 +12,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+STATIC_URL = '/static/'
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,7 +26,7 @@ INSTALLED_APPS = [
     'homeApp',
     'conductingTest',
     'resultApp',
-    'social_django',  # ✅ Required for social-auth
+    'social_django',  
 ]
 
 MIDDLEWARE = [

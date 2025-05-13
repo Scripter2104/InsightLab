@@ -1,9 +1,9 @@
 # models.py
-from django.db import models
-from django.contrib.auth.models import User
+from django.db import models # type: ignore
+from django.contrib.auth.models import User # type: ignore
 import uuid
-from django.urls import reverse
-from django.utils import timezone
+from django.urls import reverse # type: ignore
+from django.utils import timezone # type: ignore
 
 
 class Test(models.Model):

@@ -32,6 +32,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             request.session.set_expiry(3*60*60*24)
+            request.session['user_id']=user.id
             return redirect('home')
         else:
             messages.error(request, 'Invalid username or password.')

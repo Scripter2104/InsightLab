@@ -18,8 +18,16 @@
             <div class="px-6 py-4 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-slate-800">Respondents for test: {{ test.name|striptags }}</h2>
             </div>
-            <!-- AG-Grid Container -->
-            <div id="grid" class="ag-theme-quartz p-4 rounded-lg shadow-lg" style="height: 600px; width: 100%;"></div>
+          
+            {% if respondent_data %}
+                <!-- AG-Grid Container -->
+                <div id="grid" class="ag-theme-quartz p-4 rounded-lg shadow-lg" style="height: 600px; width: 100%;"></div>
+            {% else %}
+                <div class="px-6 py-4 text-center text-gray-600">
+                    <p>No respondents available for this test.</p>
+                </div>
+            {% endif %}
+
         </div>
     </div>
 </div>
@@ -70,10 +78,11 @@
 
  
     // Initialize the AG-Grid with the grid options
-    const eGridDiv = document.querySelector('#grid');
-    agGrid.createGrid(eGridDiv, gridOptions);
-
-    gridOptions.api.sizeColumnsToFit();
+     {% if respondent_data %}
+        const eGridDiv = document.querySelector('#grid');
+        agGrid.createGrid(eGridDiv, gridOptions);
+        gridOptions.api.sizeColumnsToFit();
+    {% endif %}
 
     
 </script>

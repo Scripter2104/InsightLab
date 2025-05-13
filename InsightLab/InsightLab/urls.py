@@ -11,15 +11,15 @@ Class-based views
     1. Add an import:  from other_app.views import Home
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
-    1. Import the include() function: from django.urls import include, path
+    1. Import  function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from loginApp.views import login_view
 from loginApp.views import signup_view
 from homeApp.views import home_view, newtest_view, test_start_page_config, question_manager_view, grading_summary_view, \
-    time_setting_view, activate_test, deleteTest
+    time_setting_view, activate_test, deleteTest, userAccount, deactivateTest
 from conductingTest.views import test_start_view, question_page_view, test_end_page_view
 from resultApp.views import respondent_list, respondent_detail
 
@@ -40,5 +40,7 @@ urlpatterns = [
     path('test/<uuid:test_id>/respondents/', respondent_list, name='respondent_list'),
     path('respondent/<uuid:respondent_id>/', respondent_detail, name='respondent_detail'),
     path('home/delete_test/', deleteTest, name="delete_test"),
-    #path('auth/', include('social_django.urls', namespace='social')),
+    path('home/account/', userAccount, name="account"),
+    path('home/deactivateTest/',deactivateTest, name="deactivateTest"),
+    # path('auth/', include('social_django.urls', namespace='social')),
 ]

@@ -143,5 +143,25 @@ def deleteTest(request,*args,**kwargs):
         return JsonResponse({"error":e})
 
 
+def userAccount(request, *args, **kwargs):
+    return render(request,'myAccount.html',{})
+
+def deactivateTest(request,*args, **kwargs):
+    print("Entered\n\n")
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        test_id = data.get('test_id')
+        test_status = data.get('test_status')
+        print(test_id,test_status)
+
+        if test_status:
+            Test.objects.filter(id=test_id).update(is_active=False)
+        else:
+            Test.objects.filter(id=test_id).update(is_active=True)
+        
+        return JsonResponse({'message': 'Test de-activated successfully', 'test_id': test_id})
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
 
 

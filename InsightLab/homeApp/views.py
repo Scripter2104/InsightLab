@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from .models import Test
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.urls import reverse # type: ignore
+from django.contrib.auth.decorators import login_required # type: ignore
+from django.http import JsonResponse # type: ignore
 import json
-from django.conf import settings
-from django.http import HttpResponse
+from django.conf import settings # type: ignore
+from django.http import HttpResponse # type: ignore
 from .models import Test, TestConfiguration, Option, Question
 
 

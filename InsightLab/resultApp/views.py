@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404 # type: ignore
 from homeApp.models import Test, Question
 from conductingTest.models import RespondentData, RespondentAnswers
-from django.db.models import Sum
+from django.db.models import Sum # type: ignore
 
 
 def respondent_list(request, test_id):

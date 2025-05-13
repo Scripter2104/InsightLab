@@ -1,14 +1,14 @@
 import json
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import JsonResponse # type: ignore
+from django.shortcuts import render, redirect # type: ignore
+from django.http import HttpResponse # type: ignore
 from homeApp.models import Test, TestConfiguration, Question, Option
 from .models import RespondentData, RespondentAnswers
-from django.utils import timezone
+from django.utils import timezone # type: ignore
 import time
 import datetime
-from django.views.decorators.cache import never_cache
-from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.cache import never_cache # type: ignore
+from django.core.exceptions import ObjectDoesNotExist # type: ignore
 
 
 

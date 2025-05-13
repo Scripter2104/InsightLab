@@ -8,16 +8,29 @@ from django.utils import timezone
 import time
 import datetime
 from django.views.decorators.cache import never_cache
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 # Create your views here.
 
 @never_cache
 def test_start_view(request, *ags, **kwargs):
-    test = Test.objects.get(unique_id=kwargs['test_id'])
-    testName = test.name
-    testConfig = TestConfiguration.objects.get(test=test)
-    fields = testConfig.additional_fields
+    try:
+        test = Test.objects.get(unique_id=kwargs['test_id'])
+        testName = test.name
+        testConfig = TestConfiguration.objects.get(test=test)
+        fields = testConfig.additional_fields
+    except ObjectDoesNotExist:
+        return HttpResponse(
+            """
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                <h1 style="font-family: Arial, sans-serif; color: #DC2626; text-align: center;">
+                    The test you're trying to access does not exist or has been deleted.
+                </h1>
+            </div>
+            """
+        )
 
     # handles back navigation from question_page if the test has started
     if 'test_is_present' in request.session:
@@ -40,10 +53,21 @@ def test_start_view(request, *ags, **kwargs):
             'phone': request.POST.get('phone') if 'Phone' in fields else None,
         }
         respondent_data = RespondentData(**form_data)
-        respondent_data.save()
-        request.session['respondent_id'] = str(respondent_data.respondent_id)  # Convert to string
-        request.session['test_is_present'] = True
-        return redirect('question_page')
+        if test.is_active:
+            respondent_data.save()
+            request.session['respondent_id'] = str(respondent_data.respondent_id)  # Convert to string
+            request.session['test_is_present'] = True
+            return redirect('question_page')
+        else:
+             return HttpResponse(
+            """
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                <h1 style="font-family: Arial, sans-serif; color: #16A34A; text-align: center;">
+                    Test is not active
+                </h1>
+            </div>
+            """
+        )
 
     return render(request, 'start_test.html', {"testConfig": testConfig, "fields": fields, "testName": testName})
 

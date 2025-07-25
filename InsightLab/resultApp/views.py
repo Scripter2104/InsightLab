@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404 # type: ignore
 from homeApp.models import Test, Question
 from conductingTest.models import RespondentData, RespondentAnswers
 from django.db.models import Sum # type: ignore
+from django.http import JsonResponse # type: ignore
 
 def respondent_list(request, test_id):
     test = get_object_or_404(Test, unique_id=test_id)
@@ -65,8 +66,6 @@ def respondent_list(request, test_id):
 
     return render(request, 'respondent_list.html', context)
 
-
-
 def respondent_detail(request, respondent_id):
     respondent = get_object_or_404(RespondentData, respondent_id=respondent_id)
     answers = RespondentAnswers.objects.filter(respondent_data=respondent)
@@ -89,3 +88,8 @@ def respondent_detail(request, respondent_id):
         'detailed_answers': detailed_answers,
     }
     return render(request, 'respondent_detail.html', context)
+
+def exportStudentResults(request, test_id, *args, **kwargs):
+    test = get_object_or_404(Test, unique_id=test_id)
+    print("inside export button click   "+test.name)
+    return JsonResponse({"error":"Invalid request method"})

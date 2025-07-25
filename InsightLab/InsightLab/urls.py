@@ -21,7 +21,7 @@ from loginApp.views import signup_view
 from homeApp.views import home_view, newtest_view, test_start_page_config, question_manager_view, grading_summary_view, \
     time_setting_view, activate_test, deleteTest, userAccount, deactivateTest
 from conductingTest.views import test_start_view, question_page_view, test_end_page_view
-from resultApp.views import respondent_list, respondent_detail
+from resultApp.views import respondent_list, respondent_detail,exportStudentResults
 from django.conf import settings # type: ignore
 from django.conf.urls.static import static # type: ignore
 
@@ -43,6 +43,7 @@ urlpatterns = [
     path('respondent/<uuid:respondent_id>/', respondent_detail, name='respondent_detail'),
     path('home/delete_test/', deleteTest, name="delete_test"),
     path('home/account/', userAccount, name="account"),
-    path('home/deactivateTest/',deactivateTest, name="deactivateTest"),
+    path('home/deactivateTest/', deactivateTest, name="deactivateTest"),
+    path('test/<uuid:test_id>/export/', exportStudentResults, name='exportStudentResults'),
     # path('auth/', include('social_django.urls', namespace='social')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # type: ignore

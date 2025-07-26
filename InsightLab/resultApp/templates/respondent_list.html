@@ -85,57 +85,64 @@
 {% if respondent_data %}
 <script>
 
-    async function exportResult(testId){
-         try {
+    async function exportResult(testId, event) {
+    // Get the button that was clicked to show a loading state
+    const button = event.currentTarget;
+    const originalButtonText = button.textContent;
+    button.textContent = 'Exporting...';
+    button.disabled = true;
 
-
+    try {
+        // 1. Make the API request to your Django backend
         const response = await fetch(`/test/${testId}/export/`);
 
-
+        // Handle errors from the server (e.g., 404 Not Found, 500 Server Error)
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`Failed to export: ${response.status} - ${errorText}`);
         }
 
+        // 2. Get the filename from the 'Content-Disposition' header sent by Django
+        const disposition = response.headers.get('Content-Disposition');
+        let filename = `test-results-${testId}.xlsx`; // A default filename
+        if (disposition && disposition.includes('attachment')) {
+            const filenameMatch = disposition.match(/filename="(.+?)"/);
+            if (filenameMatch && filenameMatch.length > 1) {
+                filename = filenameMatch[1];
+            }
+        }
 
-<!--        const disposition = response.headers.get('Content-Disposition');-->
-<!--        let filename = `test-results-${testId}.xlsx`; // Default filename-->
-<!--        if (disposition && disposition.includes('attachment')) {-->
-<!--            const filenameMatch = disposition.match(/filename="(.+?)"/);-->
-<!--            if (filenameMatch.length > 1) {-->
-<!--                filename = filenameMatch[1];-->
-<!--            }-->
-<!--        }-->
+        // 3. Get the raw file data as a Blob (Binary Large Object)
+        const blob = await response.blob();
 
+        // 4. Create a temporary URL that points to the Blob in the browser's memory
+        const url = window.URL.createObjectURL(blob);
 
-<!--        const blob = await response.blob();-->
+        // 5. Create a temporary, hidden anchor <a> element
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename; // This attribute tells the browser to download the file
 
+        // 6. Add the anchor to the page and programmatically click it to trigger the download
+        document.body.appendChild(a);
+        a.click();
 
-<!--        const url = window.URL.createObjectURL(blob);-->
-
-
-<!--        const a = document.createElement('a');-->
-<!--        a.style.display = 'none'; // Hide the element-->
-<!--        a.href = url;-->
-<!--        a.download = filename; // Set the download filename-->
-
-
-<!--        document.body.appendChild(a);-->
-<!--        a.click();-->
-
-
-<!--        window.URL.revokeObjectURL(url);-->
-<!--        a.remove();-->
+        // 7. Clean up by removing the anchor and revoking the temporary URL
+        window.URL.revokeObjectURL(url);
+        a.remove();
 
     } catch (error) {
         console.error('Export Error:', error);
-        alert('An error occurred while exporting the file.');
+        alert('An error occurred while exporting the file. Please check the console for details.');
     } finally {
-
-
+        // 8. Always restore the button to its original state, even if an error occurred
+        button.textContent = originalButtonText;
+        button.disabled = false;
     }
+}
 
-    }
+
 
     // Prepare AG-Grid columns
     const columnDefs = [

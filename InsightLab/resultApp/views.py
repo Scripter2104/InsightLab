@@ -1,8 +1,13 @@
-from django.shortcuts import render, get_object_or_404 # type: ignore
+import csv
+from django.shortcuts import render, get_object_or_404  # type: ignore
 from homeApp.models import Test, Question
 from conductingTest.models import RespondentData, RespondentAnswers
-from django.db.models import Sum # type: ignore
-from django.http import JsonResponse # type: ignore
+from django.db.models import Sum  # type: ignore
+from django.http import JsonResponse, HttpResponse  # type: ignore
+from django.utils.html import strip_tags
+
+
+
 
 def respondent_list(request, test_id):
     test = get_object_or_404(Test, unique_id=test_id)
@@ -29,7 +34,7 @@ def respondent_list(request, test_id):
 
         if total_questions > 0:
             percentage = (correct_points - incorrect_points) * 100 / (
-                    total_questions * (test.questions.first().correct_points))
+                    total_questions * test.questions.first().correct_points)
         else:
             percentage = 0
 
@@ -45,26 +50,27 @@ def respondent_list(request, test_id):
             'total_time': total_time_taken,
             'percentage': percentage
         })
+        print(respondent)
 
-    if test.time_limit!=None:
-        time=test.time_limit
-    if test.time_per_question!=None:
-        time=test.time_per_question * total_questions
+    if test.time_limit is not None:
+        time = test.time_limit
+    if test.time_per_question is not None:
+        time = test.time_per_question * total_questions
 
     print(time)
 
     context = {
-    'test': test,
-    'respondent_data': respondent_data,
-    'lowest_score': lowest_score,
-    'highest_score': highest_score,
-    'average_score': round(total_score / total_respondents, 2) if total_respondents > 0 else 0,
-    'average_time_taken': round(total_time_taken1 / total_respondents, 2) if total_respondents > 0 else 0,
-    'total_time': time
+        'test': test,
+        'respondent_data': respondent_data,
+        'lowest_score': lowest_score,
+        'highest_score': highest_score,
+        'average_score': round(total_score / total_respondents, 2) if total_respondents > 0 else 0,
+        'average_time_taken': round(total_time_taken1 / total_respondents, 2) if total_respondents > 0 else 0,
+        'total_time': time
     }
 
-
     return render(request, 'respondent_list.html', context)
+
 
 def respondent_detail(request, respondent_id):
     respondent = get_object_or_404(RespondentData, respondent_id=respondent_id)
@@ -89,7 +95,60 @@ def respondent_detail(request, respondent_id):
     }
     return render(request, 'respondent_detail.html', context)
 
+
 def exportStudentResults(request, test_id, *args, **kwargs):
-    test = get_object_or_404(Test, unique_id=test_id)
-    print("inside export button click   "+test.name)
-    return JsonResponse({"error":"Invalid request method"})
+    if request.method == 'GET':
+        try:
+            test = get_object_or_404(Test, unique_id=test_id)
+            respondents = RespondentData.objects.filter(test_id=test)
+
+            if not respondents.exists():
+                return HttpResponse("No respondent data found to export.", status=404)
+
+            # 1. Prepare a list of dictionaries with only the data you need for the CSV.
+            data_for_csv = []
+            total_questions = test.questions.count()
+
+            for respondent in respondents:
+                answers = RespondentAnswers.objects.filter(respondent_data=respondent)
+                correct_points = answers.filter(is_correct=True).aggregate(
+                    Sum('question_id__correct_points'))['question_id__correct_points__sum'] or 0
+                incorrect_points = answers.filter(is_correct=False).aggregate(
+                    Sum('question_id__incorrect_points'))['question_id__incorrect_points__sum'] or 0
+
+                # Calculate percentage score
+                if total_questions > 0 and test.questions.first().correct_points > 0:
+                    percentage = (correct_points - incorrect_points) * 100 / (
+                            total_questions * test.questions.first().correct_points)
+                else:
+                    percentage = 0
+
+                # Append a clean dictionary to the list
+                data_for_csv.append({
+                    'Name': respondent.first_name,
+                    'Email': respondent.email,
+                    'Score (%)': f'{percentage:.2f}',
+                })
+
+
+            response = HttpResponse(
+                content_type='text/csv',
+                headers={'Content-Disposition': f'attachment; filename="results-{strip_tags(test.name)}.csv"'},
+            )
+            writer = csv.writer(response)
+
+
+            writer.writerow(data_for_csv[0].keys())
+
+            # 4. Write data rows
+            for row in data_for_csv:
+
+                writer.writerow(row.values())
+
+            return response
+
+        except Exception as e:
+            print(f"Export Error: {e}")
+            return JsonResponse({"error": "An error occurred during the export process."}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"})

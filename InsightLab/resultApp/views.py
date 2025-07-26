@@ -1,6 +1,8 @@
 import csv
+from dataclasses import fields
+
 from django.shortcuts import render, get_object_or_404  # type: ignore
-from homeApp.models import Test, Question
+from homeApp.models import Test, Question, TestConfiguration
 from conductingTest.models import RespondentData, RespondentAnswers
 from django.db.models import Sum  # type: ignore
 from django.http import JsonResponse, HttpResponse  # type: ignore
@@ -107,8 +109,19 @@ def exportStudentResults(request, test_id, *args, **kwargs):
 
             # 1. Prepare a list of dictionaries with only the data you need for the CSV.
             data_for_csv = []
+            fields = TestConfiguration.objects.get(test=test).additional_fields
+            FIELD_MAPPING = {
+                "ID": "id_number",
+                "Email-Address": "email",
+                "Gender": "gender",
+                "City": "city",
+                "Age": "age",
+                "Phone": "phone",
+                "Last Name": "last_name",
+                # Add any other possible fields here
+            }
             total_questions = test.questions.count()
-
+            var = 'first_name'
             for respondent in respondents:
                 answers = RespondentAnswers.objects.filter(respondent_data=respondent)
                 correct_points = answers.filter(is_correct=True).aggregate(
@@ -123,17 +136,27 @@ def exportStudentResults(request, test_id, *args, **kwargs):
                 else:
                     percentage = 0
 
+                field_dict = dict()
+                for field in fields:
+                    if FIELD_MAPPING.get(field):
+                        value = getattr(respondent, FIELD_MAPPING.get(field))
+
+                        if value is not None and value != '':
+                            field_dict[field] = value
+
                 # Append a clean dictionary to the list
                 data_for_csv.append({
                     'Name': respondent.first_name,
-                    'Email': respondent.email,
+                    **field_dict,
+                    # 'Email': respondent.email,
                     'Score (%)': f'{percentage:.2f}',
                 })
 
 
             response = HttpResponse(
                 content_type='text/csv',
-                headers={'Content-Disposition': f'attachment; filename="results-{strip_tags(test.name)}.csv"'},
+                # headers={'Content-Disposition': f'attachment; filename="results-{strip_tags(test.name)}.csv"'},
+                headers={'Content-Disposition': f'attachment; filename="results.csv"'},
             )
             writer = csv.writer(response)
 
